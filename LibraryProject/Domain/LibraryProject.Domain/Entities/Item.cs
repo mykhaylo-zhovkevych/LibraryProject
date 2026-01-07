@@ -16,7 +16,6 @@ namespace LibraryProject.Domain.Entities
         public bool IsReserved => ReservedBy is not null;
         public ItemType ItemType { get; set; }
 
-
         public Item(string name, ItemType itemType)
         {
             Id = Guid.NewGuid();
@@ -24,6 +23,29 @@ namespace LibraryProject.Domain.Entities
             ItemType = itemType;
         }
 
+        public bool CheckBorrowPossible()
+        {
+            if (IsBorrowed)
+                return false;
+
+            if (IsReserved)
+                return false;
+
+            return true;
+        }
+
+        public bool CheckReservePossible()
+        {
+            if (!IsBorrowed)
+                return false;
+
+            if (IsReserved)
+                return false;
+
+            return true;
+        }
+
+        // TODO: Use this methods
         public void BorrowItem()
         {
             IsBorrowed = true;

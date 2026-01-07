@@ -51,11 +51,11 @@
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+              "Name": "ST:0:0:{b9a151ce-ef7c-4fe1-a6aa-4777e6e518f3}"
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{b9a151ce-ef7c-4fe1-a6aa-4777e6e518f3}"
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
             }
           ]
         }

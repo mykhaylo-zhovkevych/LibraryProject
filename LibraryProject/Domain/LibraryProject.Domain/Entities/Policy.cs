@@ -8,11 +8,12 @@ namespace LibraryProject.Domain.Entities
 {
     public class Policy
     {
+        //TODO: think about setter for porperties
         public Guid Id { get; init; }
         public string? PolicyName { get; init; }
-        public uint Extensions { get; private set; }
-        public decimal LoanFees { get; private set; }
-        public uint LoanPeriodInDays { get; private set; }
+        public uint Extensions { get; set; }
+        public decimal LoanFees { get; set; }
+        public uint LoanPeriodInDays { get; set; }
 
 
         public Policy()
@@ -28,18 +29,6 @@ namespace LibraryProject.Domain.Entities
             LoanFees = loanFees;
             LoanPeriodInDays = loanPeriodInDays;
 
-        }
-
-        // For testing reason: changed to public, must be internal per default 
-        // TODO:Think better way to handle 
-        public void SetValues(uint extensions, decimal loanFees, uint loanPeriodInDays)
-        {
-            if (extensions < 0) throw new ArgumentOutOfRangeException(nameof(extensions));
-            if (loanFees < 0) throw new ArgumentOutOfRangeException(nameof(loanFees));
-
-            Extensions = extensions;
-            LoanFees = loanFees;
-            LoanPeriodInDays = loanPeriodInDays;
         }
     }
 }

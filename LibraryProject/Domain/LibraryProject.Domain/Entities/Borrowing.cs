@@ -56,6 +56,7 @@ namespace LibraryProject.Domain.Entities
 
         }
 
+
         public override string ToString()
         {
             return $"User: {User.Name}, Item: {Item.Name}, LoanDate: {LoanDate}" +

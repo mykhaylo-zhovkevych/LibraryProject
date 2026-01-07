@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Application.Services
 {
-    internal class AccountService
+    public class AccountService
     {
     }
 }

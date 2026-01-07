@@ -1,8 +1,17 @@
 {
   "ExpandedNodes": [
     "",
-    "\\LibraryProject"
+    "\\LibraryProject",
+    "\\LibraryProject\\Domain",
+    "\\LibraryProject\\Domain\\LibraryProject.Domain",
+    "\\LibraryProject\\Infrastructure",
+    "\\LibraryProject\\Infrastructure\\LibraryProject.Infrastructure",
+    "\\LibraryProject\\Infrastructure\\LibraryProject.Infrastructure\\Persistence",
+    "\\LibraryProject\\Infrastructure\\LibraryProject.Infrastructure\\Persistence\\InMemory",
+    "\\LibraryProject\\Infrastructure\\LibraryProject.Infrastructure\\Repositories",
+    "\\LibraryProject\\Presentation",
+    "\\LibraryProject\\Presentation\\LibraryProject.Presentation"
   ],
-  "SelectedNode": "\\LibraryProject\\Application",
+  "SelectedNode": "\\LibraryProject\\Presentation\\LibraryProject.Presentation",
   "PreviewInSolutionExplorer": false
 }

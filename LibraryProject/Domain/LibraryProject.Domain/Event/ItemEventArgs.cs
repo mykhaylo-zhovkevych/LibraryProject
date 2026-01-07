@@ -9,6 +9,8 @@ namespace LibraryProject.Domain.Event
 {
     public class ItemEventArgs : EventArgs
     {
+        public event EventHandler<ItemEventArgs>? InformReserver;
+
         public string Message { get; set; }
         public Item Item { get; }
         public User? ReservedUser { get; set; }
@@ -19,5 +21,11 @@ namespace LibraryProject.Domain.Event
             Item = item;
             ReservedUser = reservedUser;
         }
+
+        private void OnInformReserver(ItemEventArgs e)
+        {
+            InformReserver?.Invoke(this, e);
+        }
+
     }
 }
