@@ -9,11 +9,24 @@ namespace LibraryProject.Domain.Entities
     public class Shelf
     {
         public int ShelfId { get; private set; }
+
         
-        public Shelf(int shelfNumber)
+        private readonly List<Item> _items = new();
+        public IReadOnlyList<Item> Items => _items;
+
+        public Shelf(int shelfId)
         {
-            ShelfId = shelfNumber;
+            ShelfId = shelfId;
         }
 
+        public void AddItem(Item item)
+        {
+            _items.Add(item);
+        }
+
+        public bool RemoveItem(Item item)
+        {
+            return _items.Remove(item);
+        }
     }
 }

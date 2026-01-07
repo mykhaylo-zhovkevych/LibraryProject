@@ -22,9 +22,9 @@ namespace LibraryProject.Application.Services
 
         public bool AddPolicy(UserType userType, ItemType itemType, Policy policy)
         {
-            Policy foundPolicy = _policyRepository.GetPolicy(userType, itemType);
+            Policy? foundPolicy = _policyRepository.GetPolicy(userType, itemType);
 
-            if (foundPolicy == null)
+            if (foundPolicy != null)
             {
                 return false;
             }
@@ -35,7 +35,7 @@ namespace LibraryProject.Application.Services
 
         public Policy UpdatePolicyValues(UserType userType, ItemType itemType, uint extensions, decimal loanFees, uint loanPeriodDays)
         {
-            Policy foundPolicy = _policyRepository.GetPolicy(userType, itemType);
+            Policy? foundPolicy = _policyRepository.GetPolicy(userType, itemType);
 
             if (foundPolicy == null)
             {
@@ -50,7 +50,7 @@ namespace LibraryProject.Application.Services
 
         public bool RemovePolicy(UserType userType, ItemType itemType)
         {
-            Policy foundPolicy = _policyRepository.GetPolicy(userType, itemType);
+            Policy? foundPolicy = _policyRepository.GetPolicy(userType, itemType);
 
             if (foundPolicy == null)
             {

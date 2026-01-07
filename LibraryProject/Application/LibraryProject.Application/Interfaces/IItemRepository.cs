@@ -10,8 +10,9 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IItemRepository
     {
-        void SaveItemToStorage(Item item);
-        void RemoveItemFromStorage(Item item);
+        void AddToShelf(Item item);
+        void RemoveFromShelf(Item item);
+        Shelf GetOrCreateDefaultShelf();
         Item? GetExistingItem(string name, ItemType itemType);
         Shelf? GetShelfById(int id);
 

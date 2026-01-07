@@ -19,11 +19,12 @@ namespace LibraryProject.Infrastructure.Repositories
             _storage = storage;
         }
 
-        public User GetExistingUser(string name, UserType userType)
+        public User? GetExistingUser(string name, UserType userType)
         {
             return _storage.Users
                 .FirstOrDefault(u => u.Name == name && u.UserType == userType);
         }
+
 
         public User? GetExistingUserById(Guid id)
         {

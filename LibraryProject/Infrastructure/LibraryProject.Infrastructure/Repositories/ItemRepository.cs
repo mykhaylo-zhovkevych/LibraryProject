@@ -13,6 +13,7 @@ namespace LibraryProject.Infrastructure.Repositories
     public class ItemRepository : IItemRepository
     {
         private readonly InMemoryStorage _storage;
+        private const int DefaultShelfId = 100;
 
         public ItemRepository(InMemoryStorage storage)
         {
@@ -32,17 +33,31 @@ namespace LibraryProject.Infrastructure.Repositories
                 .FirstOrDefault(s => s.ShelfId == id);
         }
 
-        // TODO: Add Validation not business rule, but data integrity
-        public void RemoveItemFromStorage(Item item)
+        public void AddToShelf(Item item)
         {
-            _storage.Items.Remove(item);
+            var shelf = GetOrCreateDefaultShelf();
+            shelf.AddItem(item);
         }
 
-        public void SaveItemToStorage(Item item)
+        public void RemoveFromShelf(Item item)
         {
-            _storage.Items.Add(item);
+            foreach (var shelf in _storage.Shelves)
+                shelf.RemoveItem(item);
         }
 
-        public void AddShelf(Shelf shelf) => _storage.Shelves.Add(shelf);
+        public Shelf GetOrCreateDefaultShelf()
+        {
+            var shelf = _storage.Shelves.FirstOrDefault(s => s.ShelfId == DefaultShelfId);
+            if (shelf == null)
+            {
+                shelf = new Shelf(DefaultShelfId);
+                AddShelf(shelf);
+            }
+            return shelf;
+        }
+
+        private void AddShelf(Shelf shelf) => _storage.Shelves.Add(shelf);
+
+        
     }
 }

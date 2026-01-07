@@ -16,20 +16,27 @@ namespace LibraryProject.Application.Services
         private readonly IBorrowingsRepository _borrowedRepository;
         private readonly IPolicyRepository _policyRepository;
 
+        public event EventHandler<ItemEventArgs>? InformReserver;
+
         public BorrowingService(IBorrowingsRepository borrowedfRepository, IPolicyRepository policyRepository)
         {
             _borrowedRepository = borrowedfRepository;
             _policyRepository = policyRepository;
         }
 
+        private void OnInformReserver(ItemEventArgs e)
+        {
+            InformReserver?.Invoke(this, e);
+        }
+
         public bool CreateBorrowedItem(User user, Item item)
         {
-            if(item.CheckBorrowPossible())
+            if(!item.CheckBorrowPossible())
             {
                 throw new IsAlreadyBorrowedException(item);
             }
 
-            Policy activePolicy = _policyRepository.GetPolicy(user.UserType, item.ItemType);
+            Policy activePolicy = _policyRepository.GetPolicy(user.UserType, item.ItemType) ?? throw new NonExistingPolicyException();
             uint allowedCredits = activePolicy.Extensions;
 
             Borrowing newBorrowing = new Borrowing(user, item, activePolicy);
@@ -42,7 +49,7 @@ namespace LibraryProject.Application.Services
 
         public bool ReturnBorrowedItem(User user, Item item)
         {
-            Borrowing activeBorrowing = _borrowedRepository
+            Borrowing? activeBorrowing = _borrowedRepository
                 .GetActiveBorrowings(user.Id)
                 .FirstOrDefault(b => b.Item.Id == item.Id && b.Item.Id == item.Id);
 
@@ -63,7 +70,7 @@ namespace LibraryProject.Application.Services
 
         public bool ExtendBorrowingPeriod(User user, Item item)
         {
-            Borrowing activeBorrowing = _borrowedRepository
+            Borrowing? activeBorrowing = _borrowedRepository
                 .GetActiveBorrowings(user.Id)
                 .FirstOrDefault(b => b.Item.Id == item.Id && 
                                 b.Item.Id == item.Id);

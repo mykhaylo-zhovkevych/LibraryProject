@@ -41,5 +41,15 @@ namespace LibraryProject.Infrastructure.Repositories
 
             return (item, user);
         }
+
+        public void RemoveBorrowingFromStorage(Borrowing borrowing)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveBorrowingToStorage(Borrowing borrowing)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -18,18 +18,19 @@ namespace LibraryProject.Application.Services
             _userRepository = userRepository;
         }
 
-        public (bool, User) CreateNewUser(string name, UserType userType)
+        // Or bool later determine
+        public User CreateNewUser(string name, UserType userType)
         {
-            User newUser = new User(name, userType);
-
-            if (string.IsNullOrEmpty(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
-                return (false, null);
+                throw new ArgumentException("Name is required");
             }
 
+            User newUser = new User(name, userType);
             _userRepository.SaveUserToStorage(newUser);
-            return (true, newUser);
+            return newUser;
         }
+
 
 
 

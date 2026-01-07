@@ -22,34 +22,34 @@ namespace LibraryProject.Application.Services
         // TODO: Add Validation business rule
         public void AddItemToShelf(Item item)
         {
-
-            _itemRepository.SaveItemToStorage(item);
+            _itemRepository.AddToShelf(item);
         }
 
-        public void RemoveItemFromShelf(Item item)
-        {
-            _itemRepository.RemoveItemFromStorage(item);
-        }
+
+        //public void RemoveItemFromShelf(Item item)
+        //{
+        //    _itemRepository.RemoveFromShelf(item);
+        //}
 
         public (bool Success, Item? Item) CreateNewItem(string name, ItemType itemType)
         {
-            Item newItem = new Item(name, itemType);
 
-            // search for a shelf
-
+   
             if (string.IsNullOrEmpty(name))
             {
                 return (false, null);
             }
+            Item newItem = new Item(name, itemType);
 
-            _itemRepository.SaveItemToStorage(newItem);
+            AddItemToShelf(newItem);
+
             return (true, newItem);
         }
 
         // TODO: make the rest of ex like this one
         public bool CreateReservedItem(User user, Item item)
         {
-            if (item.CheckReservePossible())
+            if (!item.CheckReservePossible())
             {
                 throw new IsAlreadyReservedException(item);
             }
@@ -58,6 +58,7 @@ namespace LibraryProject.Application.Services
             return true;
         }
 
+        // TODO: add the UpdateUserProfile, DleteUserProfile
         public bool CancelReservation(User user, Item item)
         {
             if (item.ReservedBy != user)
