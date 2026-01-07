@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Infrastructure.Repositories
 {
+    //TODO: make more seperate cause of single responsibility principle
     public class LibraryRepository : IShelfRepository
     {
         private readonly InMemoryStorage _storage;

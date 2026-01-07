@@ -1,8 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "rxrsTy9XO6A=",
+  "dgSpecHash": "C12cOAHo7ro=",
   "success": true,
-  "projectFilePath": "C:\\Users\\chmyzh1\\source\\repos\\LibraryProject\\LibraryProject\\Infrastructure\\LibraryProject.Infrastructure\\LibraryProject.Infrastructure.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\mzovk\\Source\\Repos\\LibraryProject\\LibraryProject\\Infrastructure\\LibraryProject.Infrastructure\\LibraryProject.Infrastructure.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mzovk\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.22\\microsoft.windowsdesktop.app.ref.8.0.22.nupkg.sha512",
+    "C:\\Users\\mzovk\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.22\\microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "C:\\Users\\mzovk\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.22\\microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
   "logs": []
 }

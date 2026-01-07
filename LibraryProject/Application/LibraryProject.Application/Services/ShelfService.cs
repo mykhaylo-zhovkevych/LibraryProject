@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace LibraryProject.Application.Services
 {
     // This service uses the implementation from the infrastructure layer 
+    // TODO: integrate with ItemService 
     public class ShelfService
     {
         private readonly IShelfRepository _shelfRepository;
