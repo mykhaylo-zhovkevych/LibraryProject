@@ -19,12 +19,14 @@ namespace LibraryProject.Infrastructure.Repositories
         }
         public Account? GetAccountByUsername(string userName)
         {
-            return _storage.Accounts.Where(u => u.Name == userName).FirstOrDefault();
+            return _storage.Accounts.FirstOrDefault(u => u.Name == userName);
+
         }
 
         public Account? GetAccountByAccountId(int accountId)
         {
-            return _storage.Accounts.Where(u => u.AccountId == accountId).FirstOrDefault();
+            return _storage.Accounts.FirstOrDefault(u => u.AccountId == accountId);
+
         }
 
         public void DeleteAccountFromStorage(Account account)

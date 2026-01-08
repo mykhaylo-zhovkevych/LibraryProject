@@ -42,7 +42,7 @@ namespace LibraryProject.Application.Services
             }
 
             Policy activePolicy = _policyRepository.GetPolicy(user.UserType, item.ItemType) ?? throw new NonExistingPolicyException();
-            uint allowedCredits = activePolicy.Extensions;
+            // uint allowedCredits = activePolicy.Extensions;
 
             Borrowing newBorrowing = new Borrowing(user, item, activePolicy);
 
@@ -58,13 +58,14 @@ namespace LibraryProject.Application.Services
 
             Borrowing? activeBorrowing = _borrowedRepository
                 .GetActiveBorrowings(user.Id)
-                .FirstOrDefault(b => b.Item.Id == item.Id && b.Item.Id == item.Id);
+                .FirstOrDefault(b => b.Item.Id == item.Id);
 
             if (activeBorrowing == null)
             {
                 throw new ArgumentException($"No entries was found for this user {user.Name}");
             }
 
+            activeBorrowing.Item.ReturnItem();
             activeBorrowing.ReturnBorrowing(activeBorrowing);
 
             if (activeBorrowing.Item.IsReserved)

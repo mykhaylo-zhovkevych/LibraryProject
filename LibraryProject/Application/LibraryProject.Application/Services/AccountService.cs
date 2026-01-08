@@ -1,13 +1,14 @@
-﻿using LibraryProject.Application.Interfaces;
+﻿using LibraryProject.Application.Dto;
+using LibraryProject.Application.Interfaces;
 using LibraryProject.Domain.Entities;
 using LibraryProject.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 
 namespace LibraryProject.Application.Services
 {
@@ -25,7 +26,7 @@ namespace LibraryProject.Application.Services
         }
 
 
-        public Account Login (Guid userId, string? name, string password)
+        public LoginSession Login (Guid userId, string name, string password)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -51,7 +52,13 @@ namespace LibraryProject.Application.Services
                 throw new SecurityException("Account is suspended.");
             } 
 
-            return account;
+            User? user = _userRepository.GetExistingUserById(userId);
+            if (user == null)
+            {
+                throw new SecurityException("Invalid credentials.");
+            }
+
+            return new LoginSession(user.Id, user.UserType, account.Name);
         }
 
         public Account RegisterNewAccount(Guid userId, string userName, string password, string email)

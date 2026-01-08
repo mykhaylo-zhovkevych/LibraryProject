@@ -24,23 +24,22 @@ namespace LibraryProject.Application.Services
 
         public void RemoveItemFromShelf(Item item)
         {
-            _authorizationService.EnsureAdmin();
-
             if (item == null)
             {
                 throw new NonExistingItemException();
             }
+            _authorizationService.EnsureAdmin();
 
             _itemRepository.RemoveFromShelf(item);
         }
 
-        public Item? CreateItem(string name, ItemType itemType)
+        public Item CreateItem(string name, ItemType itemType)
         {
-            _authorizationService.EnsureAdmin();
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Item name cannot be null or empty.");
             }
+            _authorizationService.EnsureAdmin();
 
             Item newItem = new Item(name, itemType);
             AddItemToShelf(newItem);
@@ -49,39 +48,37 @@ namespace LibraryProject.Application.Services
 
         public bool CreateReservedItem(User user, Item item)
         {
-            _authorizationService.EnsureAuthenticated();
-
             if (!item.CheckReservePossible())
             {
                 throw new IsAlreadyReservedException(item);
             }
+            _authorizationService.EnsureAuthenticated();
             item.ReserveItem(user);
             return true;
         }
 
         public bool CancelReservation(User user, Item item)
         {
-            _authorizationService.EnsureAuthenticated();
             if (item.ReservedBy != user)
             {
                 throw new ArgumentException($"{user.Name} has no reservation for {item.Name}");
             }
+            _authorizationService.EnsureAuthenticated();
             item.ReturnItem();
             return true;
         }
 
         public bool ChangeItemName(Item item, string newName)
         {
-            _authorizationService.EnsureAdmin();
-            if (string.IsNullOrWhiteSpace(newName))
-            {
-                throw new ArgumentException("Item name cannot be null or empty.");
-            }
-
             if (item == null)
             {
                 throw new NonExistingItemException();
             }
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("Item name cannot be null or empty.");
+            }
+            _authorizationService.EnsureAdmin();
 
             item.UpdateItemName(newName);
             return true;   

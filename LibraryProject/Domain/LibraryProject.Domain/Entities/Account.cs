@@ -37,12 +37,12 @@ namespace LibraryProject.Domain.Entities
 
         public void ReactivateAccount()
         {
-            IsSuspended = true;
+            IsSuspended = false;
         }
 
         public void DeactivateAccount()
         {
-            IsSuspended = false;
+            IsSuspended = true;
         }
 
 

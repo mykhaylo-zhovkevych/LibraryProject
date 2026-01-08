@@ -59,7 +59,9 @@ namespace LibraryProject.Infrastructure.Repositories
         public void RemoveFromShelf(Item item)
         {
             foreach (var shelf in _storage.Shelves)
+            {
                 shelf.RemoveItem(item);
+            }
         }
         private void AddShelf(Shelf shelf) => _storage.Shelves.Add(shelf);
 
