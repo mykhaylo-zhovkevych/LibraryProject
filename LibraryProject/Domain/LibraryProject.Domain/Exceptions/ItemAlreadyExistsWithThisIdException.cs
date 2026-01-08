@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Domain.Exceptions
 {
-    public class IsAlreadyReservedException : Exception
+    public class ItemAlreadyExistsWithThisIdException : Exception
     {
-        public IsAlreadyReservedException(Item item) : base($"Apology, but {item.Name} is allready reserved") { }
+        public ItemAlreadyExistsWithThisIdException(Item item) : base($"Apology, but {item.Name} already exist with this Id.") { }
     }
 }

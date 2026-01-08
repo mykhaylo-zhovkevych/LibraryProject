@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Domain.Exceptions
 {
-    public class IsAlreadyReservedException : Exception
+    public class IsAreadyTakenBySomeoneElseException : Exception
     {
-        public IsAlreadyReservedException(Item item) : base($"Apology, but {item.Name} is allready reserved") { }
+        public IsAreadyTakenBySomeoneElseException(Account account) : base($"Apology, but {account.Name} is allready used.") { }
     }
 }

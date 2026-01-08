@@ -14,7 +14,7 @@ namespace LibraryProject.Domain.Entities
         public string Name { get; private set; }
         public string Password { get; private set; }
         public string? Email { get; private set; } = string.Empty;
-        public bool IsActive { get; private set; } = false;
+        public bool IsSuspended { get; private set; } = false;
 
 
         public Account(User userId, string name, string password, string? email = null)
@@ -24,7 +24,28 @@ namespace LibraryProject.Domain.Entities
             Name = name;
             Password = password;
             Email = email;
+            IsSuspended = true;
         }
-    }
 
+        public bool CanBeSuspended()
+        {
+            if (IsSuspended)
+            return false;
+
+            return true;
+        }
+
+        public void ReactivateAccount()
+        {
+            IsSuspended = true;
+        }
+
+        public void DeactivateAccount()
+        {
+            IsSuspended = false;
+        }
+
+
+
+    }   
 }

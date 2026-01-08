@@ -13,64 +13,138 @@ namespace LibraryProject.Application.Services
     public class ItemService
     {
         private readonly IItemRepository _itemRepository;
+        private readonly IAuthorizationService _authorizationService;
 
-        public ItemService(IItemRepository itemfRepository)
+        public ItemService(IItemRepository itemfRepository, IAuthorizationService authorizationService)
         {
             _itemRepository = itemfRepository;
-        }
-
-        // TODO: Add Validation business rule
-        public void AddItemToShelf(Item item)
-        {
-            _itemRepository.AddToShelf(item);
+            _authorizationService = authorizationService;
         }
 
 
-        //public void RemoveItemFromShelf(Item item)
-        //{
-        //    _itemRepository.RemoveFromShelf(item);
-        //}
-
-        public (bool Success, Item? Item) CreateNewItem(string name, ItemType itemType)
+        public void RemoveItemFromShelf(Item item)
         {
+            _authorizationService.EnsureAdmin();
 
-   
-            if (string.IsNullOrEmpty(name))
+            if (item == null)
             {
-                return (false, null);
+                throw new NonExistingItemException();
             }
-            Item newItem = new Item(name, itemType);
 
-            AddItemToShelf(newItem);
-
-            return (true, newItem);
+            _itemRepository.RemoveFromShelf(item);
         }
 
-        // TODO: make the rest of ex like this one
+        public Item? CreateItem(string name, ItemType itemType)
+        {
+            _authorizationService.EnsureAdmin();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Item name cannot be null or empty.");
+            }
+
+            Item newItem = new Item(name, itemType);
+            AddItemToShelf(newItem);
+            return newItem;
+        }
+
         public bool CreateReservedItem(User user, Item item)
         {
+            _authorizationService.EnsureAuthenticated();
+
             if (!item.CheckReservePossible())
             {
                 throw new IsAlreadyReservedException(item);
             }
-
             item.ReserveItem(user);
             return true;
         }
 
-        // TODO: add the UpdateUserProfile, DleteUserProfile
         public bool CancelReservation(User user, Item item)
         {
+            _authorizationService.EnsureAuthenticated();
             if (item.ReservedBy != user)
             {
                 throw new ArgumentException($"{user.Name} has no reservation for {item.Name}");
             }
-
             item.ReturnItem();
             return true;
         }
 
+        public bool ChangeItemName(Item item, string newName)
+        {
+            _authorizationService.EnsureAdmin();
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("Item name cannot be null or empty.");
+            }
+
+            if (item == null)
+            {
+                throw new NonExistingItemException();
+            }
+
+            item.UpdateItemName(newName);
+            return true;   
+        }
+
+        public IEnumerable<Item> SearchForDesiredItem(
+            string? nameContains = null,
+            bool? isBorrowed = null,
+            bool? isReserved = null,
+            int? yearSelected = null,
+            ItemType? itemType = null,
+            Func<Item, bool>? customPredicate = null
+            )
+        {
+            IEnumerable<Item> items = _itemRepository.GetAllItemsFromShelves().AsEnumerable();
+
+            string term = nameContains?.Trim();
+
+            if (!string.IsNullOrWhiteSpace(term))
+            {
+                items = items.Where(i => i.Name.Contains(term, StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (isBorrowed != null)
+            {
+                items = items.Where(i => i.IsBorrowed == isBorrowed);
+            }
+
+            if (yearSelected.HasValue)
+            {
+                items = items.Where(i => i.Year == yearSelected.Value);
+            }
+
+            if (isReserved.HasValue)
+            {
+                items = items.Where(i => i.IsReserved == isReserved);
+            }
+
+            if (itemType != null)
+            {
+                items = items.Where(i => itemType.Equals(i.ItemType));
+            }
+
+            if (customPredicate != null)
+            {
+                items = items.Where(customPredicate);
+            }
+            return items.ToList();
+        }
 
 
+        private void AddItemToShelf(Item item)
+        {
+            Item? interestedItem = _itemRepository.GetExistingItem(item.Name, item.ItemType);
+
+            if (interestedItem != null && interestedItem.Id == item.Id)
+            {
+                throw new ItemAlreadyExistsWithThisIdException(item);
+            }
+            else
+            {
+                _itemRepository.AddToShelf(item);
+            }
+        }
     }
 }

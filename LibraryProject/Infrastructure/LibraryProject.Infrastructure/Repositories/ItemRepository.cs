@@ -33,17 +33,6 @@ namespace LibraryProject.Infrastructure.Repositories
                 .FirstOrDefault(s => s.ShelfId == id);
         }
 
-        public void AddToShelf(Item item)
-        {
-            var shelf = GetOrCreateDefaultShelf();
-            shelf.AddItem(item);
-        }
-
-        public void RemoveFromShelf(Item item)
-        {
-            foreach (var shelf in _storage.Shelves)
-                shelf.RemoveItem(item);
-        }
 
         public Shelf GetOrCreateDefaultShelf()
         {
@@ -56,8 +45,23 @@ namespace LibraryProject.Infrastructure.Repositories
             return shelf;
         }
 
+        public List<Item> GetAllItemsFromShelves()
+        {
+            return _storage.Shelves.SelectMany(s => s.Items).ToList();
+        }
+
+        public void AddToShelf(Item item)
+        {
+            var shelf = GetOrCreateDefaultShelf();
+            shelf.AddItem(item);
+        }
+
+        public void RemoveFromShelf(Item item)
+        {
+            foreach (var shelf in _storage.Shelves)
+                shelf.RemoveItem(item);
+        }
         private void AddShelf(Shelf shelf) => _storage.Shelves.Add(shelf);
 
-        
     }
 }

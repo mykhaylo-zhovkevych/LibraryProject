@@ -42,11 +42,5 @@ namespace LibraryProject.Infrastructure.Repositories
             _storage.Users.Remove(user);
         }
 
-        // this method dont belong in here
-        //public User UpdateUserProfile(Guid id, UserType newType)
-        //{
-        //    return _storage.UpdateUserProfile(id, newType);
-        //}
-
     }
 }

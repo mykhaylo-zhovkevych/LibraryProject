@@ -11,9 +11,10 @@ namespace LibraryProject.Application.Interfaces
     {
         void SaveBorrowingToStorage(Borrowing borrowing);
         void RemoveBorrowingFromStorage(Borrowing borrowing);
-        (Item?, User?) GetPossibleBorrowing(Guid userId, Guid itemId);
+        //(Item?, User?) GetPossibleBorrowing(Guid userId, Guid itemId);
         List<Borrowing> GetActiveBorrowings(Guid userId);
-
+        List<Borrowing> GetInactiveBorrowings(Guid userId);
+        List<Borrowing> GetAllBorrowings(Guid userId);
 
     }
 }

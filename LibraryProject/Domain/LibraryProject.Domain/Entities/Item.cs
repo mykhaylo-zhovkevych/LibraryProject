@@ -10,7 +10,8 @@ namespace LibraryProject.Domain.Entities
     public class Item
     {
         public Guid Id { get; init; }
-        public string Name { get; }
+        public string Name { get; set; }
+        public int Year { get; }
         public bool IsBorrowed { get; set; } = false;
         public User? ReservedBy { get; internal set; }
         public bool IsReserved => ReservedBy is not null;
@@ -45,7 +46,6 @@ namespace LibraryProject.Domain.Entities
             return true;
         }
 
-        // TODO: Use this methods
         public void BorrowItem()
         {
             IsBorrowed = true;
@@ -59,6 +59,11 @@ namespace LibraryProject.Domain.Entities
         public void ReturnItem()
         {
             ReservedBy = null;
+        }
+
+        public void UpdateItemName(string newName)
+        { 
+            Name = newName;
         }
 
         public override string ToString()

@@ -14,14 +14,17 @@ namespace LibraryProject.Application.Services
     public class PolicyService
     {
         private readonly IPolicyRepository _policyRepository;
+        private readonly IAuthorizationService _authorizationService;
 
-        public PolicyService(IPolicyRepository policyRepository)
+        public PolicyService(IPolicyRepository policyRepository, IAuthorizationService authorizationService)
         {
             _policyRepository = policyRepository;
+            _authorizationService = authorizationService;
         }
 
         public bool AddPolicy(UserType userType, ItemType itemType, Policy policy)
         {
+            _authorizationService.EnsureAdmin();
             Policy? foundPolicy = _policyRepository.GetPolicy(userType, itemType);
 
             if (foundPolicy != null)
@@ -35,6 +38,7 @@ namespace LibraryProject.Application.Services
 
         public Policy UpdatePolicyValues(UserType userType, ItemType itemType, uint extensions, decimal loanFees, uint loanPeriodDays)
         {
+            _authorizationService.EnsureAdmin();
             Policy? foundPolicy = _policyRepository.GetPolicy(userType, itemType);
 
             if (foundPolicy == null)
@@ -50,6 +54,7 @@ namespace LibraryProject.Application.Services
 
         public bool RemovePolicy(UserType userType, ItemType itemType)
         {
+            _authorizationService.EnsureAdmin();
             Policy? foundPolicy = _policyRepository.GetPolicy(userType, itemType);
 
             if (foundPolicy == null)
@@ -60,13 +65,6 @@ namespace LibraryProject.Application.Services
             _policyRepository.RemovePolicyFromStorage(userType, itemType);
             return true;
         }
-
-  
-
-        //public static void ClearPolicies()
-        //{
-        //    PolicyService.Policies.Clear();
-        //}
 
     }
 }

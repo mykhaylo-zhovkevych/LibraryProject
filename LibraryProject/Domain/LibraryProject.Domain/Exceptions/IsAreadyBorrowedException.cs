@@ -9,9 +9,6 @@ namespace LibraryProject.Domain.Exceptions
 {
     public class IsAlreadyBorrowedException : Exception
     {
-        public IsAlreadyBorrowedException(Item item)
-                : base($"Apology, but {item.Name} is non retrievable")
-        {
-        }
+        public IsAlreadyBorrowedException(Item item) : base($"Apology, but {item.Name} is non retrievable") { }
     }
 }

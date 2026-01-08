@@ -15,6 +15,7 @@ namespace LibraryProject.Application.Interfaces
         Shelf GetOrCreateDefaultShelf();
         Item? GetExistingItem(string name, ItemType itemType);
         Shelf? GetShelfById(int id);
+        List<Item> GetAllItemsFromShelves();
 
 
     }

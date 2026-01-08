@@ -10,7 +10,7 @@ namespace LibraryProject.Domain.Enum
     {
         Student,
         Teacher,
-        ExternalUser
-        // Officer
+        ExternalUser,
+        Admin
     }
 }

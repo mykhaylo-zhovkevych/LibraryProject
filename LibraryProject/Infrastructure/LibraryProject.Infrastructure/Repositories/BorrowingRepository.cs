@@ -18,15 +18,24 @@ namespace LibraryProject.Infrastructure.Repositories
             _storage = storage;
         }
 
-        //public (bool Success, string Message) CreateBorrowing(User user, Item item)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
         public List<Borrowing> GetActiveBorrowings(Guid userId)
         {
             return _storage.Borrowings
                 .Where(b => b.User.Id == userId && !b.IsReturned)
+                .ToList();
+        }
+
+        public List<Borrowing> GetInactiveBorrowings(Guid userId)
+        {
+            return _storage.Borrowings
+                .Where(b => b.User.Id == userId && b.IsReturned)
+                .ToList();
+        }
+
+        public List<Borrowing> GetAllBorrowings(Guid userId)
+        {
+            return _storage.Borrowings
+                .Where(b => b.User.Id == userId)
                 .ToList();
         }
 
@@ -44,12 +53,12 @@ namespace LibraryProject.Infrastructure.Repositories
 
         public void RemoveBorrowingFromStorage(Borrowing borrowing)
         {
-            throw new NotImplementedException();
+            _storage.Borrowings.Remove(borrowing);
         }
 
         public void SaveBorrowingToStorage(Borrowing borrowing)
         {
-            throw new NotImplementedException();
+            _storage.Borrowings.Add(borrowing);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using LibraryProject.Application.Interfaces;
 using LibraryProject.Domain.Entities;
+using LibraryProject.Domain.Enum;
 using LibraryProject.Domain.Event;
 using LibraryProject.Domain.Exceptions;
 using Microsoft.VisualBasic;
@@ -15,13 +16,15 @@ namespace LibraryProject.Application.Services
     {
         private readonly IBorrowingsRepository _borrowedRepository;
         private readonly IPolicyRepository _policyRepository;
+        private readonly IAuthorizationService _authorizationService;
 
         public event EventHandler<ItemEventArgs>? InformReserver;
 
-        public BorrowingService(IBorrowingsRepository borrowedfRepository, IPolicyRepository policyRepository)
+        public BorrowingService(IBorrowingsRepository borrowedfRepository, IPolicyRepository policyRepository, IAuthorizationService authorizationService)
         {
             _borrowedRepository = borrowedfRepository;
             _policyRepository = policyRepository;
+            _authorizationService = authorizationService;
         }
 
         private void OnInformReserver(ItemEventArgs e)
@@ -31,7 +34,9 @@ namespace LibraryProject.Application.Services
 
         public bool CreateBorrowedItem(User user, Item item)
         {
-            if(!item.CheckBorrowPossible())
+            _authorizationService.EnsureAuthenticated();
+
+            if (!item.CheckBorrowPossible())
             {
                 throw new IsAlreadyBorrowedException(item);
             }
@@ -49,6 +54,8 @@ namespace LibraryProject.Application.Services
 
         public bool ReturnBorrowedItem(User user, Item item)
         {
+            _authorizationService.EnsureAuthenticated();
+
             Borrowing? activeBorrowing = _borrowedRepository
                 .GetActiveBorrowings(user.Id)
                 .FirstOrDefault(b => b.Item.Id == item.Id && b.Item.Id == item.Id);
@@ -70,6 +77,8 @@ namespace LibraryProject.Application.Services
 
         public bool ExtendBorrowingPeriod(User user, Item item)
         {
+            _authorizationService.EnsureAuthenticated();
+
             Borrowing? activeBorrowing = _borrowedRepository
                 .GetActiveBorrowings(user.Id)
                 .FirstOrDefault(b => b.Item.Id == item.Id && 
@@ -83,5 +92,27 @@ namespace LibraryProject.Application.Services
             return activeBorrowing.Extend();
         }
 
+        public List<Borrowing> SearchAllBorrowingsByUserId(Guid userId)
+        {
+            _authorizationService.EnsureAdmin();
+            List<Borrowing> borrowings = _borrowedRepository.GetAllBorrowings(userId);
+            return borrowings;
+        }
+
+        public List<Borrowing> SearchForActiveBorrowingsByUserId(Guid userId)
+        {
+            _authorizationService.EnsureAuthenticated();
+
+            List<Borrowing> borrowings = _borrowedRepository.GetActiveBorrowings(userId);
+            return borrowings;
+        }
+
+        public List<Borrowing> SearchForInactiveBorrowingsByUserId(Guid userId)
+        {
+            _authorizationService.EnsureAuthenticated();
+
+            List<Borrowing> borrowings = _borrowedRepository.GetInactiveBorrowings(userId);
+            return borrowings;
+        }
     }
 }
