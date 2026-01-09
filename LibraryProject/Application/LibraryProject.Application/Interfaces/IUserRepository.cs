@@ -10,10 +10,10 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IUserRepository
     {
-        void SaveUser(User user);
-        void RemoveUser(User user);
-        User? GetExistingUserById(Guid id);
-        User? GetExistingUser(string name, UserType userType);
+        Task SaveUserAsync(User user, CancellationToken ct = default);
+        Task RemoveUserAsync(User user, CancellationToken ct = default);
+        Task<User?> GetExistingUserByIdAsync(Guid id, CancellationToken ct = default);
+        Task<User?> GetExistingUserAsync(string name, UserType userType, CancellationToken ct = default);
 
     }
 }

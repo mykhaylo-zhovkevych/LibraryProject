@@ -32,7 +32,7 @@ namespace LibraryProject.Application.Services
             InformReserver?.Invoke(this, e);
         }
 
-        public bool CreateBorrowedItem(User user, Item item)
+        public async Task<bool> CreateBorrowedItem(User user, Item item, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
 
@@ -41,24 +41,20 @@ namespace LibraryProject.Application.Services
                 throw new IsAlreadyBorrowedException(item);
             }
 
-            Policy activePolicy = _policyRepository.GetPolicy(user.UserType, item.ItemType) ?? throw new NonExistingPolicyException();
+            Policy activePolicy = await _policyRepository.GetPolicyAsync(user.UserType, item.ItemType, ct) ?? throw new NonexistentPolicyException();
             // uint allowedCredits = activePolicy.Extensions;
 
             Borrowing newBorrowing = new Borrowing(user, item, activePolicy);
 
-            _borrowedRepository.SaveBorrowing(newBorrowing);
+            await _borrowedRepository.SaveBorrowingAsync(newBorrowing);
             item.BorrowItem();
-
             return true;
         }
 
-        public bool ReturnBorrowedItem(User user, Item item)
+        public async Task<bool> ReturnBorrowedItem(User user, Item item, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-
-            Borrowing? activeBorrowing = _borrowedRepository
-                .GetActiveBorrowings(user.Id)
-                .FirstOrDefault(b => b.Item.Id == item.Id);
+            Borrowing? activeBorrowing = await _borrowedRepository.GetActiveBorrowingAsync(user.Id, item.Id, ct);
 
             if (activeBorrowing == null)
             {
@@ -76,14 +72,10 @@ namespace LibraryProject.Application.Services
             return true;
         }
 
-        public bool ExtendBorrowingPeriod(User user, Item item)
+        public async Task<bool> ExtendBorrowingPeriod(User user, Item item, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-
-            Borrowing? activeBorrowing = _borrowedRepository
-                .GetActiveBorrowings(user.Id)
-                .FirstOrDefault(b => b.Item.Id == item.Id && 
-                                b.Item.Id == item.Id);
+            Borrowing? activeBorrowing = await _borrowedRepository.GetActiveBorrowingAsync(user.Id, item.Id, ct);
 
             if (activeBorrowing == null)
             {
@@ -93,26 +85,24 @@ namespace LibraryProject.Application.Services
             return activeBorrowing.Extend();
         }
 
-        public List<Borrowing> SearchAllBorrowingsByUserId(Guid userId)
+        public async Task<List<Borrowing>> SearchAllBorrowingsByUserId(Guid userId, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
-            List<Borrowing> borrowings = _borrowedRepository.GetAllBorrowings(userId);
+            List<Borrowing> borrowings =  await _borrowedRepository.GetAllBorrowingsAsync(userId, ct);
             return borrowings;
         }
 
-        public List<Borrowing> SearchForActiveBorrowingsByUserId(Guid userId)
+        public async Task<List<Borrowing>> SearchForActiveBorrowingsByUserId(Guid userId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-
-            List<Borrowing> borrowings = _borrowedRepository.GetActiveBorrowings(userId);
+            List<Borrowing> borrowings = await _borrowedRepository.GetActiveBorrowingsAsync(userId, ct);
             return borrowings;
         }
 
-        public List<Borrowing> SearchForInactiveBorrowingsByUserId(Guid userId)
+        public async Task<List<Borrowing>> SearchForInactiveBorrowingsByUserId(Guid userId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-
-            List<Borrowing> borrowings = _borrowedRepository.GetInactiveBorrowings(userId);
+            List<Borrowing> borrowings = await _borrowedRepository.GetInactiveBorrowingsAsync(userId, ct);
             return borrowings;
         }
     }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Domain.Exceptions
 {
-    public class IsAlreadyReservedException : Exception
+    public class PolicyUsedByException : Exception
     {
-        public IsAlreadyReservedException(Item item) : base($"Apology, but {item.Name} is allready reserved") { }
+        public PolicyUsedByException(Policy policy) : base($"Apology, but {policy.PolicyName} is allready registered.") { }
     }
 }

@@ -9,9 +9,9 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IAccountRepository
     {
-        void SaveAccount(Account account);
-        void DeleteAccount(Account account);
-        Account? GetAccountByAccountId(int accountId);
-        Account? GetAccountByUsername(string userName);
+        Task SaveAccountAsync(Account account, CancellationToken ct = default);
+        Task DeleteAccountAsync(Account account, CancellationToken ct = default);
+        Task<Account?> GetAccountByAccountIdAsync(int accountId, CancellationToken ct = default);
+        Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default);
     }
 }

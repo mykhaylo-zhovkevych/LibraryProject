@@ -21,18 +21,18 @@ namespace LibraryProject.Application.Services
             _authorizationService = authorizationService;
         }
 
-        public void RemoveItemFromShelf(Item item)
+        public async Task RemoveItemAsync(Item item, CancellationToken ct)
         {
             if (item == null)
             {
-                throw new NonExistingItemException();
+                throw new NonexistentItemException();
             }
             _authorizationService.EnsureAdmin();
 
-            _itemRepository.RemoveFromShelf(item);
+            await _itemRepository.RemoveFromShelfAsync(item, ct);
         }
 
-        public Item CreateItem(string name, ItemType itemType)
+        public async Task<Item> CreateItem(string name, ItemType itemType, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -41,7 +41,7 @@ namespace LibraryProject.Application.Services
             _authorizationService.EnsureAdmin();
 
             Item newItem = new Item(name, itemType);
-            AddItemToShelf(newItem);
+            await AddItemToShelf(newItem, ct);
             return newItem;
         }
 
@@ -49,7 +49,7 @@ namespace LibraryProject.Application.Services
         {
             if (!item.CheckReservePossible())
             {
-                throw new IsAlreadyReservedException(item);
+                throw new ItemUsedByException(item);
             }
             _authorizationService.EnsureAuthenticated();
             item.ReserveItem(user);
@@ -71,7 +71,7 @@ namespace LibraryProject.Application.Services
         {
             if (item == null)
             {
-                throw new NonExistingItemException();
+                throw new NonexistentItemException();
             }
             if (string.IsNullOrWhiteSpace(newName))
             {
@@ -83,7 +83,7 @@ namespace LibraryProject.Application.Services
             return true;   
         }
 
-        public IEnumerable<Item> SearchForDesiredItem(
+        public async Task<IEnumerable<Item>> SearchForDesiredItem(
             string? nameContains = null,
             bool? isBorrowed = null,
             bool? isReserved = null,
@@ -92,7 +92,7 @@ namespace LibraryProject.Application.Services
             Func<Item, bool>? customPredicate = null
             )
         {
-            IEnumerable<Item> items = _itemRepository.GetAllItemsFromShelves().AsEnumerable();
+            IEnumerable<Item> items = await _itemRepository.GetAllItemsFromShelvesAsync();
 
             string term = nameContains?.Trim();
 
@@ -129,9 +129,9 @@ namespace LibraryProject.Application.Services
         }
 
 
-        private void AddItemToShelf(Item item)
+        private async Task<Item> AddItemToShelf(Item item, CancellationToken ct)
         {
-            Item? interestedItem = _itemRepository.GetExistingItem(item.Name, item.ItemType);
+            Item? interestedItem = await _itemRepository.GetExistingItemAsync(item.Name, item.ItemType);
 
             if (interestedItem != null && interestedItem.Id == item.Id)
             {
@@ -139,7 +139,8 @@ namespace LibraryProject.Application.Services
             }
             else
             {
-                _itemRepository.AddToShelf(item);
+                await _itemRepository.AddToShelfAsync(item);
+                return item;
             }
         }
     }

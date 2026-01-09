@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Infrastructure.Persistence.InMemory
 {
-    public class InMemoryStorage
+    public class LibraryStorage
     {
         public List<Account> Accounts { get; } = new();
         public Dictionary<(UserType UserType, ItemType ItemType), Policy> Policies { get; private set; } = new();

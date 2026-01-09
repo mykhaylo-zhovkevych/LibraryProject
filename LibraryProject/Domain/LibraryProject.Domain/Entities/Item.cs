@@ -13,8 +13,13 @@ namespace LibraryProject.Domain.Entities
         public string Name { get; set; }
         public int Year { get; }
         public bool IsBorrowed { get; set; } = false;
+
+        // EF-Friendly Fk instead of only nvavigation 
+        public Guid? ReservedById { get; internal set; }
         public User? ReservedBy { get; internal set; }
         public bool IsReserved => ReservedBy is not null;
+        //EF-Friendly Fk to shefl (required for Shelves.Items persistence)
+        public int ShelfId { get; set; }
         public ItemType ItemType { get; set; }
 
         public Item(string name, ItemType itemType)

@@ -26,7 +26,7 @@ namespace LibraryProject.Application.Services
         }
 
 
-        public LoginSession Login (Guid userId, string name, string password)
+        public async Task<LoginSession> Login (Guid userId, string name, string password, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -38,7 +38,7 @@ namespace LibraryProject.Application.Services
                 throw new ArgumentException("Password is required.", nameof(password));
             }
 
-            Account? account = _accountRepository.GetAccountByUsername(name);
+            Account? account = await _accountRepository.GetAccountByUsernameAsync(name, ct);
             if(account == null || account.UserId != userId)
             {
                 throw new SecurityException("Invalid credentials.");
@@ -52,7 +52,7 @@ namespace LibraryProject.Application.Services
                 throw new SecurityException("Account is suspended.");
             } 
 
-            User? user = _userRepository.GetExistingUserById(userId);
+            User? user = await _userRepository.GetExistingUserByIdAsync(userId, ct);
             if (user == null)
             {
                 throw new SecurityException("Invalid credentials.");
@@ -61,9 +61,8 @@ namespace LibraryProject.Application.Services
             return new LoginSession(user.Id, user.UserType, account.Name);
         }
 
-        public Account RegisterNewAccount(Guid userId, string userName, string password, string email)
+        public async Task<Account> RegisterNewAccount(Guid userId, string userName, string password, string email, CancellationToken ct)
         {
-     
             if (string.IsNullOrWhiteSpace(userName) || userName.Length > 20)
             {
                 throw new ArgumentException("Username is required and must be less than 20 characters.");
@@ -74,30 +73,30 @@ namespace LibraryProject.Application.Services
                 throw new ArgumentException("Password is required and must be at least 8 characters long.");
             }
 
-            User? user = _userRepository.GetExistingUserById(userId);
+            User? user = await _userRepository.GetExistingUserByIdAsync(userId);
             if (user == null) {
-                throw new NonExistingUserException();
+                throw new NonexistentUserException();
             }
-            Account? account = _accountRepository.GetAccountByUsername(userName);
+            Account? account = await _accountRepository.GetAccountByUsernameAsync(userName);
             if (account != null) {
-                throw new IsAreadyTakenBySomeoneElseException(account);
+                throw new AccountUsedException(account);
             }
 
             string hashedPassword = HashPassword(password);
             Account newAccount = new Account (user, userName, hashedPassword, email);
 
-            _accountRepository.SaveAccount(newAccount);
+            await _accountRepository.SaveAccountAsync(newAccount);
             return newAccount;
         }
 
-        public bool DeleteAccount(int accountId, Guid userId)
+        public async Task<bool> DeleteAccount(int accountId, Guid userId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-            Account? interestedAccount = _accountRepository.GetAccountByAccountId(accountId);
+            Account? interestedAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId, ct);
 
             if (interestedAccount != null && interestedAccount.UserId == userId)
             {
-                _accountRepository.DeleteAccount(interestedAccount);
+                await _accountRepository.DeleteAccountAsync(interestedAccount, ct);
                 return true;
             }
             else 
@@ -107,11 +106,10 @@ namespace LibraryProject.Application.Services
 
         }
 
-        public bool SuspendAccount(int accountId)
+        public async Task<bool> SuspendAccount(int accountId, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
-
-            Account? interestedAccount = _accountRepository.GetAccountByAccountId(accountId);
+            Account? interestedAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId, ct);
 
             if (interestedAccount != null && interestedAccount.CanBeSuspended() )
             {

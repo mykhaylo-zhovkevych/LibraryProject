@@ -14,7 +14,6 @@ namespace LibraryProject.Domain.Entities
         public Policy Policy { get; }
         public DateTime LoanDate { get; private set; }
         public DateTime DueDate { get; private set; }
-
         public DateTime? ReturnDate { get; set; }
         public bool IsReturned => ReturnDate.HasValue;
 
@@ -35,7 +34,7 @@ namespace LibraryProject.Domain.Entities
         {
             if (Item.IsReserved)
             {
-                throw new IsAlreadyReservedException(Item);
+                throw new ItemUsedByException(Item);
             }
 
             if (RemainingExtensionCredits == 0)
@@ -55,7 +54,6 @@ namespace LibraryProject.Domain.Entities
             borrowing.Item.IsBorrowed = false;
 
         }
-
 
         public override string ToString()
         {

@@ -2,6 +2,7 @@
 using LibraryProject.Domain.Entities;
 using LibraryProject.Domain.Enum;
 using LibraryProject.Domain.Exceptions;
+using LibraryProject.Domain.Exceptions.Nonexistent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,46 +22,44 @@ namespace LibraryProject.Application.Services
             _authorizationService = authorizationService;
         }
 
-        public User CreateUser(string name, UserType userType)
+        public async Task<User> CreateUser(string name, UserType userType, CancellationToken ct)
         {
-            _authorizationService.EnsureAdmin();
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Name is required.");
             }
+            _authorizationService.EnsureAdmin();
 
             User newUser = new User(name, userType);
-            _userRepository.SaveUser(newUser);
-             return newUser;
+            await _userRepository.SaveUserAsync(newUser);
+            return newUser;
         }
 
-        public User UpdateUserProfile(Guid id, UserType newType)
+        public async Task<User> UpdateUserProfile(Guid id, UserType newType)
         {
             _authorizationService.EnsureAuthenticated();
-            User? interestedUser = _userRepository.GetExistingUserById(id);
+            User? interestedUser = await _userRepository.GetExistingUserByIdAsync(id);
 
             if (interestedUser == null)
             {
-                throw new NonExistingUserException();
+                throw new NonexistentUserException();
             }
 
             interestedUser.ChangeUserProfile(newType);
             return interestedUser;
         }
 
-        public User DeleteExistingUser(Guid id)
+        public async Task<User> DeleteExistingUser(Guid id)
         {
             _authorizationService.EnsureAdmin();
-            User? interestedUser = _userRepository.GetExistingUserById(id);
+            User? interestedUser = await _userRepository.GetExistingUserByIdAsync(id);
             if (interestedUser == null)
             {
-                throw new NonExistingUserException();
+                throw new NonexistentUserException();
             }
 
-            _userRepository.RemoveUser(interestedUser);
+            await _userRepository.RemoveUserAsync(interestedUser);
             return interestedUser;
         }
-
-
     }
 }

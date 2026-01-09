@@ -1030,6 +1030,20 @@
         "runtime": {
           "bin/placeholder/LibraryProject.Domain.dll": {}
         }
+      },
+      "LibraryProject.Presentation.Shared/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "LibraryProject.Application": "1.0.0",
+          "LibraryProject.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/LibraryProject.Presentation.Shared.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/LibraryProject.Presentation.Shared.dll": {}
+        }
       }
     }
   },
@@ -3056,11 +3070,17 @@
       "type": "project",
       "path": "../../Domain/LibraryProject.Domain/LibraryProject.Domain.csproj",
       "msbuildProject": "../../Domain/LibraryProject.Domain/LibraryProject.Domain.csproj"
+    },
+    "LibraryProject.Presentation.Shared/1.0.0": {
+      "type": "project",
+      "path": "../../Presentation/LibraryProject.Presentation.Shared/LibraryProject.Presentation.Shared.csproj",
+      "msbuildProject": "../../Presentation/LibraryProject.Presentation.Shared/LibraryProject.Presentation.Shared.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net8.0": [
       "LibraryProject.Application >= 1.0.0",
+      "LibraryProject.Presentation.Shared >= 1.0.0",
       "Microsoft.EntityFrameworkCore >= 9.0.11",
       "Microsoft.EntityFrameworkCore.Sqlite.Core >= 9.0.11",
       "Microsoft.EntityFrameworkCore.Tools >= 9.0.11"
@@ -3101,6 +3121,9 @@
           "projectReferences": {
             "C:\\Users\\chmyzh1\\source\\repos\\LibraryProject\\LibraryProject\\Application\\LibraryProject.Application\\LibraryProject.Application.csproj": {
               "projectPath": "C:\\Users\\chmyzh1\\source\\repos\\LibraryProject\\LibraryProject\\Application\\LibraryProject.Application\\LibraryProject.Application.csproj"
+            },
+            "C:\\Users\\chmyzh1\\source\\repos\\LibraryProject\\LibraryProject\\Presentation\\LibraryProject.Presentation.Shared\\LibraryProject.Presentation.Shared.csproj": {
+              "projectPath": "C:\\Users\\chmyzh1\\source\\repos\\LibraryProject\\LibraryProject\\Presentation\\LibraryProject.Presentation.Shared\\LibraryProject.Presentation.Shared.csproj"
             }
           }
         }

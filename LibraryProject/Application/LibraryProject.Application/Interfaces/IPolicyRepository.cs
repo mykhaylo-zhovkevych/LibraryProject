@@ -10,8 +10,8 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IPolicyRepository
     {
-        void SavePolicy(UserType userType, ItemType itemType, Policy policy);
-        void RemovePolicy(UserType userType, ItemType itemType);
-        Policy? GetPolicy(UserType userType, ItemType itemType);
+        Task SavePolicyAsync(UserType userType, ItemType itemType, Policy policy, CancellationToken ct = default);
+        Task RemovePolicyAsync(UserType userType, ItemType itemType, CancellationToken ct = default);
+        Task<Policy?> GetPolicyAsync(UserType userType, ItemType itemType, CancellationToken ct = default);
     }
 }

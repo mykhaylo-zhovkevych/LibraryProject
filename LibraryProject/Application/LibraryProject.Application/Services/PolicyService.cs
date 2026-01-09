@@ -2,6 +2,7 @@
 using LibraryProject.Domain.Entities;
 using LibraryProject.Domain.Enum;
 using LibraryProject.Domain.Exceptions;
+using LibraryProject.Domain.Exceptions.Nonexistent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,50 +23,49 @@ namespace LibraryProject.Application.Services
             _authorizationService = authorizationService;
         }
 
-        public bool AddPolicy(UserType userType, ItemType itemType, Policy policy)
+        public async Task<bool> AddPolicy(UserType userType, ItemType itemType, Policy policy, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
-            Policy? foundPolicy = _policyRepository.GetPolicy(userType, itemType);
+            Policy? foundPolicy = await _policyRepository.GetPolicyAsync(userType, itemType, ct);
 
             if (foundPolicy != null)
             {
-                return false;
+                throw new PolicyUsedByException(foundPolicy);
             }
 
-            _policyRepository.SavePolicy(userType, itemType, policy);
+            await _policyRepository.SavePolicyAsync(userType, itemType, policy, ct);
             return true;
         }
 
-        public Policy UpdatePolicyValues(UserType userType, ItemType itemType, uint extensions, decimal loanFees, uint loanPeriodDays)
+        public async Task<Policy> UpdatePolicyValues(UserType userType, ItemType itemType, uint extensions, decimal loanFees, uint loanPeriodDays, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
-            Policy? foundPolicy = _policyRepository.GetPolicy(userType, itemType);
+            Policy? foundPolicy = await _policyRepository.GetPolicyAsync(userType, itemType, ct);
 
             if (foundPolicy == null)
             {
-                throw new NonExistingPolicyException();
+                throw new NonexistentPolicyException();
             }
             foundPolicy.Extensions = extensions;
             foundPolicy.LoanFees = loanFees;
             foundPolicy.LoanPeriodInDays = loanPeriodDays;
-            
-            _policyRepository.SavePolicy(userType, itemType, foundPolicy);
+
+            await _policyRepository.SavePolicyAsync(userType, itemType, foundPolicy, ct);
             return foundPolicy;
         }
 
-        public bool RemovePolicy(UserType userType, ItemType itemType)
+        public async Task<bool> RemovePolicy(UserType userType, ItemType itemType, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
-            Policy? foundPolicy = _policyRepository.GetPolicy(userType, itemType);
+            Policy? foundPolicy = await _policyRepository.GetPolicyAsync(userType, itemType, ct);
 
             if (foundPolicy == null)
             {
-                return false;
+                throw new NonexistentPolicyException();
             }
 
-            _policyRepository.RemovePolicy(userType, itemType);
+            await _policyRepository.RemovePolicyAsync(userType, itemType);
             return true;
         }
-
     }
 }

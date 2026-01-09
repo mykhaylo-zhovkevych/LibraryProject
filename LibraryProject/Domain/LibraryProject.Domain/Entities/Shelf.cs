@@ -13,9 +13,9 @@ namespace LibraryProject.Domain.Entities
         private readonly List<Item> _items = new();
         public IReadOnlyList<Item> Items => _items;
 
-        public Shelf(int shelfId)
+        public Shelf(int? shelfId == null)
         {
-            ShelfId = shelfId;
+            ShelfId = shelfId ?? new Random().Next(1, int.MaxValue);
         }
 
         public void AddItem(Item item)

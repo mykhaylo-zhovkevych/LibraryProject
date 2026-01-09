@@ -9,12 +9,13 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IBorrowingsRepository
     {
-        void SaveBorrowing(Borrowing borrowing);
-        void RemoveBorrowing(Borrowing borrowing);
+        Task SaveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default);
+        Task RemoveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default);
         //(Item?, User?) GetPossibleBorrowing(Guid userId, Guid itemId);
-        List<Borrowing> GetActiveBorrowings(Guid userId);
-        List<Borrowing> GetInactiveBorrowings(Guid userId);
-        List<Borrowing> GetAllBorrowings(Guid userId);
+        Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default);
+        Task<Borrowing?> GetActiveBorrowingAsync(Guid userId, Guid itemId, CancellationToken ct = default);
+        Task<List<Borrowing>> GetInactiveBorrowingsAsync(Guid userId, CancellationToken ct = default);
+        Task<List<Borrowing>> GetAllBorrowingsAsync(Guid userId, CancellationToken ct = default);
 
     }
 }

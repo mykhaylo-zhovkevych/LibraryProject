@@ -10,12 +10,12 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IItemRepository
     {
-        void AddToShelf(Item item);
-        void RemoveFromShelf(Item item);
-        Shelf GetOrCreateDefaultShelf();
-        Item? GetExistingItem(string name, ItemType itemType);
-        Shelf? GetShelfById(int id);
-        List<Item> GetAllItemsFromShelves();
+        Task AddToShelfAsync(Item item, CancellationToken ct = default);
+        Task RemoveFromShelfAsync(Item item, CancellationToken ct = default);
+        Task<Shelf> GetOrCreateDefaultShelfAsync(CancellationToken ct = default);
+        Task<Item?> GetExistingItemAsync(string name, ItemType itemType, CancellationToken ct = default);
+        Task<Shelf?> GetShelfByIdAsync(int id, CancellationToken ct = default);
+        Task<IEnumerable<Item>> GetAllItemsFromShelvesAsync(CancellationToken ct = default);
 
 
     }
