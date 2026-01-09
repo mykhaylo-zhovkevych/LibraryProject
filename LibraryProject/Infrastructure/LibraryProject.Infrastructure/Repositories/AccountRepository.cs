@@ -29,12 +29,12 @@ namespace LibraryProject.Infrastructure.Repositories
 
         }
 
-        public void DeleteAccountFromStorage(Account account)
+        public void DeleteAccount(Account account)
         {
             _storage.Accounts.Remove(account);
         }
 
-        public void SaveAccountToStorage(Account account)
+        public void SaveAccount(Account account)
         {
             _storage.Accounts.Add(account);
         }

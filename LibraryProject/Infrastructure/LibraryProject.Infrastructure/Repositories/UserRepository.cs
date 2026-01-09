@@ -32,12 +32,12 @@ namespace LibraryProject.Infrastructure.Repositories
                 .FirstOrDefault(u => u.Id == id);
         }
 
-        public void SaveUserToStorage(User user)
+        public void SaveUser(User user)
         {
             _storage.Users.Add(user);
         }
 
-        public void RemoveUserFromStorage(User user)
+        public void RemoveUser(User user)
         {
             _storage.Users.Remove(user);
         }

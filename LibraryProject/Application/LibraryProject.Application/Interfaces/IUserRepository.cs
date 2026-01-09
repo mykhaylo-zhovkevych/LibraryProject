@@ -10,8 +10,8 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IUserRepository
     {
-        void SaveUserToStorage(User user);
-        void RemoveUserFromStorage(User user);
+        void SaveUser(User user);
+        void RemoveUser(User user);
         User? GetExistingUserById(Guid id);
         User? GetExistingUser(string name, UserType userType);
 

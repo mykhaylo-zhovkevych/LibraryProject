@@ -51,12 +51,12 @@ namespace LibraryProject.Infrastructure.Repositories
             return (item, user);
         }
 
-        public void RemoveBorrowingFromStorage(Borrowing borrowing)
+        public void RemoveBorrowing(Borrowing borrowing)
         {
             _storage.Borrowings.Remove(borrowing);
         }
 
-        public void SaveBorrowingToStorage(Borrowing borrowing)
+        public void SaveBorrowing(Borrowing borrowing)
         {
             _storage.Borrowings.Add(borrowing);
         }

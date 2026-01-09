@@ -9,8 +9,8 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IAccountRepository
     {
-        void SaveAccountToStorage(Account account);
-        void DeleteAccountFromStorage(Account account);
+        void SaveAccount(Account account);
+        void DeleteAccount(Account account);
         Account? GetAccountByAccountId(int accountId);
         Account? GetAccountByUsername(string userName);
     }

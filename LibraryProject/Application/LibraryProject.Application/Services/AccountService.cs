@@ -86,7 +86,7 @@ namespace LibraryProject.Application.Services
             string hashedPassword = HashPassword(password);
             Account newAccount = new Account (user, userName, hashedPassword, email);
 
-            _accountRepository.SaveAccountToStorage(newAccount);
+            _accountRepository.SaveAccount(newAccount);
             return newAccount;
         }
 
@@ -97,7 +97,7 @@ namespace LibraryProject.Application.Services
 
             if (interestedAccount != null && interestedAccount.UserId == userId)
             {
-                _accountRepository.DeleteAccountFromStorage(interestedAccount);
+                _accountRepository.DeleteAccount(interestedAccount);
                 return true;
             }
             else 

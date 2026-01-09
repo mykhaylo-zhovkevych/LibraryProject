@@ -43,7 +43,7 @@ Kunde
    - Buch hinzufügen → Formular ausfüllen → speichern
    - Buch bearbeiten → Buch auswählen → Änderungen speichern
    - Buch löschen → Buch auswählen → löschen
-4. System aktualisiert lokale Daten (In-Memory(File) + optional persistent)
+4. System aktualisiert lokale Daten (In-Memory + optional persistent)
 
 **Akzeptanzkriterien**
 1. Der Admin kann ein oder mehrere Bücher ins System einfügen.
@@ -52,7 +52,7 @@ Kunde
 
 ### Use Case 2: Benutzerverwaltung
 
-**Beschreibung:** Als Admin möchte ich Kundenkonten verwalten können, um in Sonderfällen bestimmte Aktionen durchzuführen, z.B. Kundenkonten löschen oder sperren.
+**Beschreibung:** Als Admin möchte ich Kundenkonten und Kunde verwalten können, um in Sonderfällen bestimmte Aktionen durchzuführen, z.B. sperren.
 
 **Ablauf:**
 1. Admin meldet sich an.
@@ -60,7 +60,7 @@ Kunde
 3. Admin kann:
    - Kunde manuelle hinzufügen → Formular ausfüllen→ speichern
    - Kunde bearbeiten → Änderungen speichern
-   - Kunde löschen
+   - Kunde auswählen → löschen
 4. System aktualisiert lokale Daten
 
 **Akzeptanzkriterien**
@@ -68,7 +68,25 @@ Kunde
 2. Der Admin kann neue Kunden ins System einfügen.
 3. Der Admin kann bestehende Kundeninformationen bearbeiten.
 
-### Use Case 3: Ausleihvorgänge überwachen
+## Use Case 3: Richtlinie Verwaltung
+
+**Beschreibung** Als Admin möchte ich eine Überblick von alle Richtlinien haben, damit die Infrastruktur Beziehungen zwischen Objekten und Entitäten korrekte definieren kann. 
+
+**Ablauf:**
+1. Admin meldet sich an.
+2. Admin wählt "Richtlinien Verwaltung"
+3. Admin kann:
+	- Richtlinie manuelle hinzufügen → Formular ausfüllen → speichern 
+	- Richtlinie aktualisieren →  Änderungen speichern
+	- Richtlinie auswählen → löschen
+4. System aktualisiert lokale Daten
+
+**Akzeptanzkriterien**
+5. Der Admin kann neue Policy ins System einfügen.
+6. Der Admin kann bestehende Policy aus dem System löschen.
+7. Der Admin kann bestehende Policy Information aktualisieren. 
+
+### Use Case 4: Ausleihvorgänge überwachen
 
 **Beschreibung** Als Admin möchte ich die vollständige Ausleihhistorie eines Kunden einsehen können, um einen Überblick zu erhalten.
 
@@ -82,7 +100,7 @@ Kunde
 1. Der Admin kann die gesamte Ausleihhistorie eines spezifischen Kunden einsehen.
 
 
-### Use Case 4 Systemregistrierung
+### Use Case 5 Systemregistrierung
 
 **Beschreibung** Als Kunde möchte ich selbständig neue Konto eröffnen können, damit ich bequem Bibliothek Infrastruktur nutzen kann.
 
@@ -98,7 +116,7 @@ Kunde
 **Akzeptanzkriterien**
 1. Der Kunde kann mit gegebenen authentifizierung ID sich in System einmelden.
 
-### Use Case 5 Buchverwaltung
+### Use Case 6 Buchverwaltung
 
 **Beschreibung** Als Kunde möchte ich Bücher ausleihen, reservieren und zurückgeben können, um die Bibliotheksinfrastruktur nutzen zu können.
 
@@ -116,7 +134,7 @@ Kunde
 2. Der Kunde kann ein spezifisches Buch basierend auf individuellen Zeiteinschränkungen reservieren.
 3. Der Kunde kann ein spezifisches Buch zurückgeben.
 
-### Use Case 6 Systemverwaltung
+### Use Case 7 Systemverwaltung
 
 **Beschreibung** Als Kunde möchte ich bequem durch alle Bücher suchen können, damit ich effizient interessante Artikel finde.
 
@@ -131,7 +149,7 @@ Kunde
 **Akzeptanzkriterien**
 1. Der Kunde kann Bücher anhand spezifischer Artikelinformationen z.B. Genre suchen.
 
-### Use Case 7 Kontoverwaltung
+### Use Case 8 Kontoverwaltung
 
 **Beschreibung** Als Kunde möchte ich ein Verwaltungspanel haben, damit ich mein Konto selbstständig löschen kann.
 
@@ -147,7 +165,7 @@ Kunde
 1. Der Kunde kann sein eigenes Konto schliessen.
 2. Der Kunde kann seine Kundeninformationen aktualisieren.
 
-### Use Case 8 Kontoverwaltung
+### Use Case 9 Kontoverwaltung
 
 **Beschreibung** Als Kunde möchte ich meine Ausleihhistorie übersichtlich einsehen können, um zu wissen, wie viele Bücher ich aktuell ausgeliehen habe.
 
@@ -161,7 +179,20 @@ Kunde
 
 **Akzeptanzkriterien**
 1. Der Kunde kann die gesamte Ausleihhistorie einsehen.
-2. Der Kunde kann spezifische Artikel aus der Ausleihhistorie entfernen (optional).
+2. Der Kunde kann die aktive und inaktive Ausleihhistorie auswählen.
+3. Der Kunde kann spezifische Artikel aus der Ausleihhistorie entfernen (optional).
+
+---
+
+## Arbeitsplan und Arbeitspakete mit Aufwandsschätzungen
+
+| Datum                   | Zeit | Arbeitspaket                        | Erwartete Aufgabe                           | Erledigte Aufgabe |
+| ----------------------- | ---- | ----------------------------------- | ------------------------------------------- | ----------------- |
+| 05.01.2026 / 06.01.2026 |      | Vorbereitung und Konzept erstellung | Das fertig Konzept                          |                   |
+| 07.01.2026 / 09.01.2026 |      | Projektinitialisierung              | Die Core Projekt und allfällige Remastering |                   |
+| 12.01.2026 / 16.01.2026 |      | Desktop App Implementierung         |                                             |                   |
+| 19.01.2026 / 23.01.2026 |      | Web App Implementierung             |                                             |                   |
+| 26.01.2026 / 30.01.2026 |      | Refactoring                         |                                             |                   |
 
 ---
 ## Architekturkonzept
@@ -196,8 +227,21 @@ Dies ermöglicht eine bessere Testbarkeit, Wartbarkeit und Erweiterbarkeit der A
    Querschnittsthemen wie Logging, Validierung oder Security sind komplexer umzusetzen.
 
 **Warum diese Architektur wurden ausgewählt?**
-Ich habe diese Architektur ausgewählt, weil ist passt für die kleine bis Mitlernen Projekten die eine gemeinsamen Geschäftslogik haben müssen und die Trennung zwischen Sichten ermöglichen flexiblem Erwartbarkeit ohne die Kernlogik zu verändern müssen.
+Ich habe diese Architektur ausgewählt, weil das passt für die kleine bis mitlernen Projekten die eine gemeinsamen Geschäftslogik haben müssen und die Trennung zwischen Sichten ermöglichen flexiblem Erwartbarkeit ohne die Kernlogik zu verändern müssen.
 
+---
 ## Datenkonzept
 
+![[Pasted diagram.png]]
+
 **Wie und Wo werden die Daten gespeichert?**
+Die Daten werden an zwei Orten gespeichert. Die erste Implementierung erfolgt REM und die zweite erfolgt mit SQLite.
+
+
+
+## Testprotokoll
+
+| Modul | Aufgabe          | Verantwortung Aufgabe | Ergebnis      | Beteiligt an der Ergebniserstellung |
+| ----- | ---------------- | --------------------- | ------------- | ----------------------------------- |
+| Tests | Test durchführen | Testverantwortlicher  | Testprotokoll | Tester                              |
+|       |                  |                       |               |                                     |

@@ -21,7 +21,6 @@ namespace LibraryProject.Application.Services
             _authorizationService = authorizationService;
         }
 
-
         public void RemoveItemFromShelf(Item item)
         {
             if (item == null)

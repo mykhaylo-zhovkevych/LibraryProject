@@ -32,7 +32,7 @@ namespace LibraryProject.Application.Services
                 return false;
             }
 
-            _policyRepository.SavePolicyToStorage(userType, itemType, policy);
+            _policyRepository.SavePolicy(userType, itemType, policy);
             return true;
         }
 
@@ -48,7 +48,8 @@ namespace LibraryProject.Application.Services
             foundPolicy.Extensions = extensions;
             foundPolicy.LoanFees = loanFees;
             foundPolicy.LoanPeriodInDays = loanPeriodDays;
-            // Possible error not saving
+            
+            _policyRepository.SavePolicy(userType, itemType, foundPolicy);
             return foundPolicy;
         }
 
@@ -62,7 +63,7 @@ namespace LibraryProject.Application.Services
                 return false;
             }
 
-            _policyRepository.RemovePolicyFromStorage(userType, itemType);
+            _policyRepository.RemovePolicy(userType, itemType);
             return true;
         }
 

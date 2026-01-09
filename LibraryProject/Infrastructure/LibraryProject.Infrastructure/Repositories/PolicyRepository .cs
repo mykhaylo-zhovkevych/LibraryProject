@@ -28,13 +28,13 @@ namespace LibraryProject.Infrastructure.Repositories
             return policy;
         }
 
-        public void RemovePolicyFromStorage(UserType userType, ItemType itemType)
+        public void RemovePolicy(UserType userType, ItemType itemType)
         {
             _key = (userType, itemType);
             _storage.Policies.Remove(_key);
         }
 
-        public void SavePolicyToStorage(UserType userType, ItemType itemType, Policy policy)
+        public void SavePolicy(UserType userType, ItemType itemType, Policy policy)
         {
             _key = (userType, itemType);
             _storage.Policies.Add(_key, policy);

@@ -46,7 +46,7 @@ namespace LibraryProject.Application.Services
 
             Borrowing newBorrowing = new Borrowing(user, item, activePolicy);
 
-            _borrowedRepository.SaveBorrowingToStorage(newBorrowing);
+            _borrowedRepository.SaveBorrowing(newBorrowing);
             item.BorrowItem();
 
             return true;

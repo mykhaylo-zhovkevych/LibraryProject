@@ -36,7 +36,7 @@ namespace LibraryProject.Infrastructure.Repositories
 
         public Shelf GetOrCreateDefaultShelf()
         {
-            var shelf = _storage.Shelves.FirstOrDefault(s => s.ShelfId == DefaultShelfId);
+            Shelf? shelf = _storage.Shelves.FirstOrDefault(s => s.ShelfId == DefaultShelfId);
             if (shelf == null)
             {
                 shelf = new Shelf(DefaultShelfId);
@@ -52,7 +52,7 @@ namespace LibraryProject.Infrastructure.Repositories
 
         public void AddToShelf(Item item)
         {
-            var shelf = GetOrCreateDefaultShelf();
+            Shelf shelf = GetOrCreateDefaultShelf();
             shelf.AddItem(item);
         }
 

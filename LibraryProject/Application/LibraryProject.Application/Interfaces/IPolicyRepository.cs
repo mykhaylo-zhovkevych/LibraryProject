@@ -10,8 +10,8 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IPolicyRepository
     {
-        void SavePolicyToStorage(UserType userType, ItemType itemType, Policy policy);
-        void RemovePolicyFromStorage(UserType userType, ItemType itemType);
+        void SavePolicy(UserType userType, ItemType itemType, Policy policy);
+        void RemovePolicy(UserType userType, ItemType itemType);
         Policy? GetPolicy(UserType userType, ItemType itemType);
     }
 }

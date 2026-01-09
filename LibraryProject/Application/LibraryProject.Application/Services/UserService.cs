@@ -30,7 +30,7 @@ namespace LibraryProject.Application.Services
             }
 
             User newUser = new User(name, userType);
-            _userRepository.SaveUserToStorage(newUser);
+            _userRepository.SaveUser(newUser);
              return newUser;
         }
 
@@ -57,7 +57,7 @@ namespace LibraryProject.Application.Services
                 throw new NonExistingUserException();
             }
 
-            _userRepository.RemoveUserFromStorage(interestedUser);
+            _userRepository.RemoveUser(interestedUser);
             return interestedUser;
         }
 

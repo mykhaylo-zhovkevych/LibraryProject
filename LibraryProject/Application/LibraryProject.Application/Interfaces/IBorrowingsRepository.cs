@@ -9,8 +9,8 @@ namespace LibraryProject.Application.Interfaces
 {
     public interface IBorrowingsRepository
     {
-        void SaveBorrowingToStorage(Borrowing borrowing);
-        void RemoveBorrowingFromStorage(Borrowing borrowing);
+        void SaveBorrowing(Borrowing borrowing);
+        void RemoveBorrowing(Borrowing borrowing);
         //(Item?, User?) GetPossibleBorrowing(Guid userId, Guid itemId);
         List<Borrowing> GetActiveBorrowings(Guid userId);
         List<Borrowing> GetInactiveBorrowings(Guid userId);
