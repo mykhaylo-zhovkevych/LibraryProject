@@ -8,13 +8,11 @@ namespace LibraryProject.Domain.Entities
 {
     public class Policy
     {
-        //TODO: think about setter for porperties
-        public Guid Id { get; init; }
-        public string? PolicyName { get; init; }
+        public Guid Id { get; private set; }
+        public string? PolicyName { get; private set; }
         public uint Extensions { get; set; }
         public decimal LoanFees { get; set; }
         public uint LoanPeriodInDays { get; set; }
-
 
         public Policy()
         {

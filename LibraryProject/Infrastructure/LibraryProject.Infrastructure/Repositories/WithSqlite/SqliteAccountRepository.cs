@@ -1,5 +1,7 @@
 ﻿using LibraryProject.Application.Interfaces;
 using LibraryProject.Domain.Entities;
+using LibraryProject.Infrastructure.Persistence.InSqlite;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,24 +12,37 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 {
     public class SqliteAccountRepository : IAccountRepository
     {
-        public Task DeleteAccountAsync(Account account, CancellationToken ct = default)
+        private readonly LibraryDbContext _db;
+        public SqliteAccountRepository(LibraryDbContext db) => _db = db;
+
+        public async Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            ct.ThrowIfCancellationRequested();
+            return await _db.Accounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.Name == userName, ct);
         }
 
-        public Task<Account?> GetAccountByAccountIdAsync(int accountId, CancellationToken ct = default)
+        public async Task<Account?> GetAccountByAccountIdAsync(int accountId, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            ct.ThrowIfCancellationRequested();
+            return await _db.Accounts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(a => a.AccountId == accountId, ct);
         }
 
-        public Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Task SaveAccountAsync(Account account, CancellationToken ct = default)
+        public async Task DeleteAccountAsync(Account account, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            ct.ThrowIfCancellationRequested();
+            _db.Accounts.Remove(account);
+            await _db.SaveChangesAsync(ct);
+        }
+        public async Task SaveAccountAsync(Account account, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            await _db.Accounts.AddAsync(account, ct);
+            await _db.SaveChangesAsync(ct);
         }
     }
 }

@@ -16,6 +16,7 @@ namespace LibraryProject.Domain.Entities
         public string? Email { get; private set; } = string.Empty;
         public bool IsSuspended { get; private set; } = false;
 
+        protected Account() { }
 
         public Account(User userId, string name, string password, string? email = null)
         {

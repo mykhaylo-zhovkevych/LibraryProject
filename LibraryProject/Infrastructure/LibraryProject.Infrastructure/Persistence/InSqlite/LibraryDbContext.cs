@@ -11,21 +11,17 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
 {
     public class LibraryDbContext : DbContext
     {
-        public DbSet<User> Users { get; set; }
-        public DbSet<Account> Accounts { get; set; }
-        public DbSet<Shelf> Shelves { get; set; }
-        public DbSet<Borrowing> Borrowings { get; set; }
-        public DbSet<PolicyEntry> PolicyEntries { get; set; }
+        public LibraryDbContext(DbContextOptions<LibraryDbContext> options): base(options) { }
+
+        public DbSet<User> Users => Set<User>();
+        public DbSet<Account> Accounts => Set<Account>();
+        public DbSet<Shelf> Shelves => Set<Shelf>();
+        public DbSet<Borrowing> Borrowings => Set<Borrowing>();
+        public DbSet<PolicyEntry> PolicyEntries => Set<PolicyEntry>();
 
         // Persis items even tought not exposed to EF
-        public DbSet<Item> Items { get; set; }
+        public DbSet<Item> Items => Set<Item>();
 
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            // Do i need fetch the connection string from configuration?
-            base.OnConfiguring(optionsBuilder);
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -36,11 +32,13 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
                 b.ToTable("Policies");
                 b.HasKey(x => new { x.UserType, x.ItemType });
 
-                // Look up later
+                // Will automatically created with EF
                 b.Property(x => x.PolicyName).HasMaxLength(20);
-                b.Property(x => x.LoanFees).HasColumnType("decimal(18,2)");
+                //b.Property(x => x.LoanFees);
+                //b.Property(x => x.Extensions);
+                //b.Property(x => x.LoadPeriodInDays);
             });
-
+             
             modelBuilder.Entity<Shelf>(b =>
             {
                 b.HasKey(x => x.ShelfId);
@@ -64,6 +62,41 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
                     .HasForeignKey(nameof(Item.ReservedById))
                     .OnDelete(DeleteBehavior.SetNull);
             });
+
+            modelBuilder.Entity<User>(b =>
+            {
+                b.HasKey(x => x.Id);
+
+            });
+
+            modelBuilder.Entity<Account>(b =>
+            {
+                b.HasKey(x => x.AccountId);
+
+                b.HasIndex(x => x.Name).IsUnique();
+
+                b.HasOne<User>()
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+            });
+            modelBuilder.Entity<Borrowing>(b =>
+            {
+                b.HasKey(x => x.BorrowingId);
+
+                b.HasOne(x => x.User)
+                    .WithMany()
+                    .HasForeignKey(x => x.UserId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(x => x.Item)
+                    .WithMany()
+                    .HasForeignKey(x => x.ItemId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
         }
     }
 }

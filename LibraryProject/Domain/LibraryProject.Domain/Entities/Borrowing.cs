@@ -9,7 +9,12 @@ namespace LibraryProject.Domain.Entities
 {
     public class Borrowing
     {
+        public Guid BorrowingId { get; private set; }
+
+        public Guid UserId { get; private set; }
         public User User { get; init; }
+
+        public Guid ItemId { get; private set; }
         public Item Item { get; init; }
         public Policy Policy { get; }
         public DateTime LoanDate { get; private set; }
@@ -19,6 +24,7 @@ namespace LibraryProject.Domain.Entities
 
         public uint RemainingExtensionCredits { get; private set; }
 
+        protected Borrowing() { }
         public Borrowing(User user, Item item, Policy policy)
         {
             User = user;

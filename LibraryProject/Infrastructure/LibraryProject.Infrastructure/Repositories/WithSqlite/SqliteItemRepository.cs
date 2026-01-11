@@ -1,6 +1,8 @@
 ﻿using LibraryProject.Application.Interfaces;
 using LibraryProject.Domain.Entities;
 using LibraryProject.Domain.Enum;
+using LibraryProject.Infrastructure.Persistence.InSqlite;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,34 +13,63 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 {
     public class SqliteItemRepository : IItemRepository
     {
-        public Task AddToShelfAsync(Item item, CancellationToken ct = default)
+        private readonly LibraryDbContext _db;
+        private const int DefaultShelfId = 100;
+
+        public SqliteItemRepository(LibraryDbContext db) => _db = db;
+
+        public async Task<Item?> GetExistingItemAsync(string name, ItemType itemType, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            ct.ThrowIfCancellationRequested();
+            return await _db.Items
+                .AsNoTracking()
+                .FirstOrDefaultAsync(i => i.Name == name && i.ItemType == itemType, ct);
         }
 
-        public Task<IEnumerable<Item>> GetAllItemsFromShelvesAsync(CancellationToken ct = default)
+        public async Task<Shelf?> GetShelfByIdAsync(int id, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            ct.ThrowIfCancellationRequested();
+            return await _db.Shelves.FirstOrDefaultAsync(s => s.ShelfId == id, ct);
         }
 
-        public Task<Item?> GetExistingItemAsync(string name, ItemType itemType, CancellationToken ct = default)
+        public async Task<Shelf> GetOrCreateDefaultShelfAsync(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            ct.ThrowIfCancellationRequested();
+            Shelf? shelf = await _db.Shelves.FirstOrDefaultAsync(s => s.ShelfId == DefaultShelfId, ct);
+            if (shelf != null)
+            {
+                return shelf;
+            }
+
+            shelf = new Shelf(DefaultShelfId);
+            await _db.Shelves.AddAsync(shelf, ct);
+            await _db.SaveChangesAsync(ct);
+            return shelf;
         }
 
-        public Task<Shelf> GetOrCreateDefaultShelfAsync(CancellationToken ct = default)
+        public async Task<IEnumerable<Item>> GetAllItemsFromShelvesAsync(CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            ct.ThrowIfCancellationRequested();
+
+            return await _db.Items
+                .AsNoTracking()
+                .ToListAsync(ct);
+        }
+        public async Task RemoveFromShelfAsync(Item item, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            _db.Items.Remove(item);
+            await _db.SaveChangesAsync(ct);
         }
 
-        public Task<Shelf?> GetShelfByIdAsync(int id, CancellationToken ct = default)
+        public async Task AddToShelfAsync(Item item, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            ct.ThrowIfCancellationRequested();
+            Shelf shelf = await GetOrCreateDefaultShelfAsync(ct);
+            shelf.AddItem(item);
+
+            await _db.SaveChangesAsync(ct);
         }
 
-        public Task RemoveFromShelfAsync(Item item, CancellationToken ct = default)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

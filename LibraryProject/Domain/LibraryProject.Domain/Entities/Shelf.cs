@@ -13,7 +13,9 @@ namespace LibraryProject.Domain.Entities
         private readonly List<Item> _items = new();
         public IReadOnlyList<Item> Items => _items;
 
-        public Shelf(int? shelfId == null)
+        protected Shelf() { }
+
+        public Shelf(int? shelfId = null)
         {
             ShelfId = shelfId ?? new Random().Next(1, int.MaxValue);
         }
@@ -21,6 +23,7 @@ namespace LibraryProject.Domain.Entities
         public void AddItem(Item item)
         {
             _items.Add(item);
+            item.ShelfId = ShelfId;
         }
 
         public bool RemoveItem(Item item)

@@ -13,7 +13,7 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite.Entities
         public ItemType ItemType { get; set; }
 
         // Policy id extra 
-        public Guid Id { get; set; }
+        //public Guid Id { get; set; }
         public string? PolicyName { get; set; }
         public uint Extensions { get; set; }
         public decimal LoanFees { get; set; }

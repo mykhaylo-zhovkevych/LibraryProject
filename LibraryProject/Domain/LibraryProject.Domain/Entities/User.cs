@@ -13,7 +13,7 @@ namespace LibraryProject.Domain.Entities
         public string Name { get; set; }
         public UserType UserType { get; set; }
 
-
+        protected User() { }
         public User(string name, UserType userType)
         {
             Id = Guid.NewGuid();

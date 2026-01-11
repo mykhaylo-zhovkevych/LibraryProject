@@ -22,6 +22,7 @@ namespace LibraryProject.Domain.Entities
         public int ShelfId { get; set; }
         public ItemType ItemType { get; set; }
 
+        protected Item() { }
         public Item(string name, ItemType itemType)
         {
             Id = Guid.NewGuid();
@@ -59,6 +60,7 @@ namespace LibraryProject.Domain.Entities
         public void ReserveItem(User user)
         {
             ReservedBy = user;
+            ReservedById = user.Id;
         }
 
         public void ReturnItem()
