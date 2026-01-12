@@ -13,10 +13,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
     {
         private readonly LibraryStorage _storage;
 
-        public RemAccountRepository(LibraryStorage storage)
-        {
-            _storage = storage;
-        }
+        public RemAccountRepository(LibraryStorage storage) => _storage = storage;
+
         public Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();

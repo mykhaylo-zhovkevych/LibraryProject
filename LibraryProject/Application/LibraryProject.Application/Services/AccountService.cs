@@ -2,6 +2,7 @@
 using LibraryProject.Application.Interfaces;
 using LibraryProject.Domain.Entities;
 using LibraryProject.Domain.Exceptions;
+using LibraryProject.Domain.Exceptions.Nonexistent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace LibraryProject.Application.Services
         }
 
 
-        public async Task<LoginSession> Login (Guid userId, string name, string password, CancellationToken ct)
+        public async Task<LoginSession> LoginAsync (Guid userId, string name, string password, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -61,7 +62,7 @@ namespace LibraryProject.Application.Services
             return new LoginSession(user.Id, user.UserType, account.Name);
         }
 
-        public async Task<Account> RegisterNewAccount(Guid userId, string userName, string password, string email, CancellationToken ct)
+        public async Task<Account> RegisterNewAccountAsync(Guid userId, string userName, string password, string email, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(userName) || userName.Length > 20)
             {
@@ -89,7 +90,7 @@ namespace LibraryProject.Application.Services
             return newAccount;
         }
 
-        public async Task<bool> DeleteAccount(int accountId, Guid userId, CancellationToken ct)
+        public async Task<bool> DeleteAccountAsync(int accountId, Guid userId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
             Account? interestedAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId, ct);
@@ -103,10 +104,9 @@ namespace LibraryProject.Application.Services
             {
                 return false;
             }
-
         }
 
-        public async Task<bool> SuspendAccount(int accountId, CancellationToken ct)
+        public async Task<bool> SuspendAccountAsync(int accountId, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
             Account? interestedAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId, ct);

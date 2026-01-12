@@ -3,6 +3,7 @@ using LibraryProject.Domain.Entities;
 using LibraryProject.Domain.Enum;
 using LibraryProject.Domain.Event;
 using LibraryProject.Domain.Exceptions;
+using LibraryProject.Domain.Exceptions.Nonexistent;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;

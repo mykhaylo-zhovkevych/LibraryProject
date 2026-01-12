@@ -29,7 +29,6 @@ Kunde
 - Ausleihhistorie einsehen (mit Erweiterungen)
 
 ---
-
 ## Use Cases
 
 ### Use Case 1: Buchverwaltung
@@ -38,12 +37,13 @@ Kunde
 
 **Ablauf:**
 1. Admin meldet sich an.
-2. Admin wählt „Buchverwaltung“.
-3. Admin kann:
+2. Admin geht zu "Verwaltung". 
+3. Admin wählt "Benutzer Verwaltung".
+4. Admin kann:
    - Buch hinzufügen → Formular ausfüllen → speichern
    - Buch bearbeiten → Buch auswählen → Änderungen speichern
    - Buch löschen → Buch auswählen → löschen
-4. System aktualisiert lokale Daten (In-Memory + optional persistent)
+4. System aktualisiert lokale Daten (In-Memory(File) + optional persistent)
 
 **Akzeptanzkriterien**
 1. Der Admin kann ein oder mehrere Bücher ins System einfügen.
@@ -56,8 +56,9 @@ Kunde
 
 **Ablauf:**
 1. Admin meldet sich an.
-2. Admin wählt "Benutzerverwaltung".
-3. Admin kann:
+2. Admin geht zu "Verwaltung". 
+3. Admin wählt "Benutzerverwaltung".
+4. Admin kann:
    - Kunde manuelle hinzufügen → Formular ausfüllen→ speichern
    - Kunde bearbeiten → Änderungen speichern
    - Kunde auswählen → löschen
@@ -74,12 +75,13 @@ Kunde
 
 **Ablauf:**
 1. Admin meldet sich an.
-2. Admin wählt "Richtlinien Verwaltung"
-3. Admin kann:
+2. Admin geht zu "Verwaltung". 
+3. Admin wählt "Richtlinien Verwaltung".
+4. Admin kann:
 	- Richtlinie manuelle hinzufügen → Formular ausfüllen → speichern 
 	- Richtlinie aktualisieren →  Änderungen speichern
 	- Richtlinie auswählen → löschen
-4. System aktualisiert lokale Daten
+5. System aktualisiert lokale Daten
 
 **Akzeptanzkriterien**
 5. Der Admin kann neue Policy ins System einfügen.
@@ -92,55 +94,102 @@ Kunde
 
 **Ablauf:**
 1. Admin meldet sich an.
-2. Admin wählt "Benutzerverwaltung".
-3. Admin kann:
-   - Kunde auswählen → Kunde Ausleihhistorie durchblättern
+2. Admin geht zu "Verwaltung". 
+3. Admin wählt "Benutzerverwaltung".
+4. Admin kann:
+   - Kunde auswählen → Kunde Ausleihhistorie durchblättern.
 
 **Akzeptanzkriterien**
 1. Der Admin kann die gesamte Ausleihhistorie eines spezifischen Kunden einsehen.
 
 
-### Use Case 5 Systemregistrierung
+### Use Case 5 Kunde Registrierung
 
-**Beschreibung** Als Kunde möchte ich selbständig neue Konto eröffnen können, damit ich bequem Bibliothek Infrastruktur nutzen kann.
+**Beschreibung** Als Kunde möchte eine Kunde Identität von Bibliothek haben, damit ich mich später einloggen kann.
 
 **Ablauf:**
-1. Kunde öffnet Programm
-2. Kunde gibt die Daten ein
+1. Kunde öffnet Programm.
+2. Kunde macht eine Registrierung .
+3. Kunde gibt die Daten ein.
 	- Name 
 	- Password
-	- einmalige authentifizierung ID
-3. Kunde bekommt eindeutige Konto ID
-4. System aktualisiert lokale Daten 
+	- Adresse
+	- Email
+4. Admin überprüft die Identität und bestätigt.
+5. System aktualisiert lokale Daten .
 
 **Akzeptanzkriterien**
-1. Der Kunde kann mit gegebenen authentifizierung ID sich in System einmelden.
+1. Der Kunde bekommt eine Bestätigung vom System (z.B. per Email).
 
-### Use Case 6 Buchverwaltung
+### Use Case 6 Kunde Login
 
-**Beschreibung** Als Kunde möchte ich Bücher ausleihen, reservieren und zurückgeben können, um die Bibliotheksinfrastruktur nutzen zu können.
+**Beschreibung** Als Kunde möchte ich mich selbständig anmelden, damit ich bequem Bibliothek Infrastruktur nutzen kann.
 
 **Ablauf:**
 1. Kunde meldet sich an.
-2. Kunde wählt "Meine Bibliothek"
-3. Kunde kann:
-   - Buch suchen → spezifische Buch auswählen → ausleihen
-   - Buch suchen → spezifische Buch auswählen → reservieren
-   - Buch suchen → Spezifische Buch auswählen → zurückgeben
-4. System aktualisiert lokale Daten
+2. Kunde gibt die Daten ein.
+	- Name 
+	- Password
+	- einmalige authentifizierung ID
+3. Verifizierung und Authentifizierung von Daten.
+4. Weiterleitung zu Startseite.
 
 **Akzeptanzkriterien**
-1. Der Kunde kann ein spezifisches Buch ausleihen und dabei alle Zeiteinschränkungen beachten.
-2. Der Kunde kann ein spezifisches Buch basierend auf individuellen Zeiteinschränkungen reservieren.
-3. Der Kunde kann ein spezifisches Buch zurückgeben.
+1. Der Kunde kann mit gegebenen authentifizierung ID sich im System einmelden.
 
-### Use Case 7 Systemverwaltung
+### Use Case 7 Artikeln Verwaltung: Zurückgabe  
+
+**Beschreibung** Als Kunde möchte ich bestimmte Artikeln zurückgeben können, um die Bibliotheksinfrastruktur nutzen zu können.
+
+**Ablauf:**
+1. Kunde meldet sich an.
+2. Kunde wählt "Ausgeliehen".
+3. Kunde kann:
+	- Spezifische Buch auswählen → zurückgeben
+4. System aktualisiert lokale Daten.
+
+**Akzeptanzkriterien**
+1. Der Kunde kann ein spezifisches Buch zurückgeben.
+
+
+### Use Case 7.1  Artikeln Verwaltung: Ausleihe 
+
+**Beschreibung** Als Kunde möchte ich bestimmte Artikeln ausleihen können, um die Bibliotheksinfrastruktur nutzen zu können.
+
+**Ablauf:**
+1. Kunde meldet sich an.
+2. Kunde wählt "Ausgeliehen".
+3. Kunde kann:
+	- Spezifische Buch auswählen → ausleihen
+4. System überprüft Kunde Bedienung.
+5. System aktualisiert lokale Daten.
+
+**Akzeptanzkriterien**
+1. Der Kunde kann ein spezifisches Buch ausleihen.
+
+
+### Use Case 7.2  Artikeln Verwaltung: Reservierung  
+
+**Beschreibung** Als Kunde möchte ich bestimmte Artikeln reservieren können, um die Bibliotheksinfrastruktur nutzen zu können.
+
+**Ablauf:**
+1. Kunde meldet sich an.
+2. Kunde wählt "Ausgeliehen".
+3. Kunde kann:
+	- Spezifische Buch auswählen → reservieren
+4. System überprüft Kunde Bedienung.
+5. System aktualisiert lokale Daten.
+
+**Akzeptanzkriterien**
+1. Der Kunde kann ein spezifisches Buch reservieren.
+
+### Use Case 8 Suchen Verwaltung
 
 **Beschreibung** Als Kunde möchte ich bequem durch alle Bücher suchen können, damit ich effizient interessante Artikel finde.
 
 **Ablauf:**
 1. Kunde meldet sich an.
-2. Kunde wählt "Meine Bibliothek".
+2. Kunde wählt "Katalog".
 3. Kunde kann:
    - Nach Genre suchen → spezifische Buch auswählen.
    - Nach Title suchen → spezifische Buch auswählen.
@@ -149,13 +198,13 @@ Kunde
 **Akzeptanzkriterien**
 1. Der Kunde kann Bücher anhand spezifischer Artikelinformationen z.B. Genre suchen.
 
-### Use Case 8 Kontoverwaltung
+### Use Case 9 Kontoverwaltung
 
-**Beschreibung** Als Kunde möchte ich ein Verwaltungspanel haben, damit ich mein Konto selbstständig löschen kann.
+**Beschreibung** Als Kunde möchte ich ein Verwaltungspanel haben, damit ich mein Konto selbstständig steuern kann.
 
 **Ablauf:**
 1. Kunde meldet sich an.
-2. Kunde wählt "Meine Konto".
+2. Kunde wählt "Profile".
 3. Kunde kann:
    - Die Konto löschen.
    - Die Konto Information aktualisieren.
@@ -165,13 +214,13 @@ Kunde
 1. Der Kunde kann sein eigenes Konto schliessen.
 2. Der Kunde kann seine Kundeninformationen aktualisieren.
 
-### Use Case 9 Kontoverwaltung
+### Use Case 10 Ausleihhistorie
 
 **Beschreibung** Als Kunde möchte ich meine Ausleihhistorie übersichtlich einsehen können, um zu wissen, wie viele Bücher ich aktuell ausgeliehen habe.
 
 **Ablauf:**
 1. Kunde meldet sich an.
-2. Kunde wählt "Meine Konto".
+2. Kunde wählt "Profile".
 3. Kunde kann:
    - Die ganze Ausleihhistorie einsehen.
    - Genre suchen → Ausleihhistorie einsehen.

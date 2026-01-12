@@ -15,10 +15,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         private readonly LibraryStorage _storage;
         private const int DefaultShelfId = 100;
 
-        public RemItemRepository(LibraryStorage storage)
-        {
-            _storage = storage;
-        }
+        public RemItemRepository(LibraryStorage storage) => _storage = storage;
+
 
         public Task<Item?> GetExistingItemAsync(string name, ItemType itemType, CancellationToken ct = default)
         {

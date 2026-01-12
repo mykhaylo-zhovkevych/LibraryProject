@@ -11,8 +11,11 @@ namespace LibraryProject.Domain.Entities
     {
         public Guid Id { get; init; }
         public string Name { get; set; }
+        public string Author { get; set; }
         public int Year { get; }
+        public string? Description { get; set; }
         public bool IsBorrowed { get; set; } = false;
+        public string? CoverImagePath { get; private set; }
 
         // EF-Friendly Fk instead of only nvavigation 
         public Guid? ReservedById { get; internal set; }
@@ -23,11 +26,20 @@ namespace LibraryProject.Domain.Entities
         public ItemType ItemType { get; set; }
 
         protected Item() { }
-        public Item(string name, ItemType itemType)
+        public Item(string name, ItemType itemType, string author, int year, string? description = null)
         {
             Id = Guid.NewGuid();
             Name = name;
             ItemType = itemType;
+            Author = author;
+            Year = year;
+            Description = description;
+
+        }
+
+        public void SetCoverImagePath(string? relativePath)
+        {
+            CoverImagePath = string.IsNullOrWhiteSpace(relativePath) ? null : relativePath;
         }
 
         public bool CheckBorrowPossible()

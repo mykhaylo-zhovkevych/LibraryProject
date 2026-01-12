@@ -13,10 +13,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
     {
         private readonly LibraryStorage _storage;
 
-        public RemBorrowingRepository(LibraryStorage storage)
-        {
-            _storage = storage;
-        }
+        public RemBorrowingRepository(LibraryStorage storage) => _storage = storage;
 
         public Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default) 
         {

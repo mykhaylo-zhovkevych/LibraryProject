@@ -2,6 +2,7 @@
 using LibraryProject.Domain.Entities;
 using LibraryProject.Domain.Enum;
 using LibraryProject.Domain.Exceptions;
+using LibraryProject.Domain.Exceptions.Nonexistent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,7 @@ namespace LibraryProject.Application.Services
             await _itemRepository.RemoveFromShelfAsync(item, ct);
         }
 
-        public async Task<Item> CreateItem(string name, ItemType itemType, CancellationToken ct)
+        public async Task<Item> CreateItem(string name, ItemType itemType, string author, int year, string? description,CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -40,7 +41,7 @@ namespace LibraryProject.Application.Services
             }
             _authorizationService.EnsureAdmin();
 
-            Item newItem = new Item(name, itemType);
+            Item newItem = new Item(name, itemType, author, year, description);
             await AddItemToShelf(newItem, ct);
             return newItem;
         }

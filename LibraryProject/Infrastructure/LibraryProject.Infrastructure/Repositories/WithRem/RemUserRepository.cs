@@ -13,11 +13,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
     public class RemUserRepository : IUserRepository
     {
         private readonly LibraryStorage _storage;
-
-        public RemUserRepository(LibraryStorage storage)
-        {
-            _storage = storage;
-        }
+        public RemUserRepository(LibraryStorage storage) => _storage = storage;
 
         public Task<User?> GetExistingUserAsync(string name, UserType userType, CancellationToken ct)
         {

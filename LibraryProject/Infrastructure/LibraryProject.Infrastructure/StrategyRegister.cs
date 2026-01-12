@@ -42,7 +42,6 @@ namespace LibraryProject.Infrastructure
 
                 return services;
             }
-            // 
             if (string.Equals(provider, "Rem",StringComparison.OrdinalIgnoreCase))
             {
                 services.AddSingleton<LibraryStorage>();

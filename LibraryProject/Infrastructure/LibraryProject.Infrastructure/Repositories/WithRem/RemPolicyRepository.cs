@@ -16,10 +16,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         private readonly LibraryStorage _storage;
         private (UserType, ItemType) _key;
 
-        public RemPolicyRepository(LibraryStorage storage)
-        {
-            _storage = storage;
-        }
+        public RemPolicyRepository(LibraryStorage storage) => _storage = storage;
 
         public Task<Policy?> GetPolicyAsync(UserType userType, ItemType itemType, CancellationToken ct = default)
         {
