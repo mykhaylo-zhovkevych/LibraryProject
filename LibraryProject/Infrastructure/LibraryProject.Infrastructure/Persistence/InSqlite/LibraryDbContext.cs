@@ -43,6 +43,8 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
             {
                 b.HasKey(x => x.ShelfId);
 
+                b.Ignore(x => x.Items);
+
                 // Map private field collection
                 b.HasMany<Item>("_items")
                                 .WithOne()
