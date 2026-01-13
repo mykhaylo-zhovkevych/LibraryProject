@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LibraryProject.Presentation.DesktopApp.TopBarView">
+
+  <Grid RowDefinitions="Auto,Auto">
+    <!-- Row 0 -->
+    <Border Grid.Row="0" Background="Black" Padding="8">
+      <!-- Some text / button -->
+    </Border>
+
+    <Border Grid.Row="1" Background="Black" Padding="8">
+      <Grid ColumnDefinitions="*,*,*,*">
+        <Border Grid.Column="0">
+  
+        </Border>
+
+        <Border Grid.Column="1">
+   
+        </Border>
+
+
+      </Grid>
+    </Border>
+  </Grid>
+
+</UserControl>

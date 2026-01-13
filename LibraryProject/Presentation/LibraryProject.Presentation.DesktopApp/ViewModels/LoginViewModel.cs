@@ -26,7 +26,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _currentUser = currentUser;
         }
 
-        // If i use the [ObservableProperties] does it mean i should not do validation in here? 
         [ObservableProperty] private string? _userId;
         [ObservableProperty] private string? _name;
         [ObservableProperty] private string? _password;
@@ -46,7 +45,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 ErrorMessage = "Invalid User ID format.";
                 return;
             }
-
+            
             try
             {
                 // TODO: figure out how to handle cancellation token here
@@ -75,11 +74,5 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             await _navigationService.NavigateTo<RegisterViewModel>();
         }
 
-
-        [RelayCommand]
-        public void Logout()
-        {
-            _currentUser.SignOut();
-        }
     }
 }

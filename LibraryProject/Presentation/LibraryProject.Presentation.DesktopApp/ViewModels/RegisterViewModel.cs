@@ -44,14 +44,13 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 return;
             }
 
-            // How add a pop up that it was create?
             try
             {
                 var result = await _accountService.RegisterAccountAsync(userGuidId, _name, _password, _email, default);
 
                 if (result != null)
                 {
-                    // animate the
+                    // animate the waiting time
                     await Task.Delay(3000);
                     await _navigationService.NavigateTo<LoginViewModel>();
                     return;
