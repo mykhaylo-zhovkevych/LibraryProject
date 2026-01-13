@@ -44,10 +44,10 @@ namespace LibraryProject.Application.Services
             {
                 throw new SecurityException("Invalid credentials.");
             }
-            if (!VarifyPassword(password, account.Password))
-            {
-                throw new SecurityException("Invalid credentials.");
-            }
+            //if (!VarifyPassword(password, account.Password))
+            //{
+            //    throw new SecurityException("Invalid credentials.");
+            //}
             if (account.IsSuspended)
             {
                 throw new SecurityException("Account is suspended.");
@@ -62,7 +62,7 @@ namespace LibraryProject.Application.Services
             return new LoginSession(user.Id, user.UserType, account.Name);
         }
 
-        public async Task<Account> RegisterNewAccountAsync(Guid userId, string userName, string password, string email, CancellationToken ct)
+        public async Task<Account> RegisterAccountAsync(Guid userId, string userName, string password, string email, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(userName) || userName.Length > 20)
             {
@@ -78,6 +78,15 @@ namespace LibraryProject.Application.Services
             if (user == null) {
                 throw new NonexistentUserException();
             }
+            
+            User? occuredUsed = await _userRepository.GetExistingUserByIdAsync(userId);
+
+            // Should one user have multiple accounts or not?
+            //if (occuredUsed != null)
+            //{
+            //    throw new SecurityException("One User cannnot have multiple accounts");
+            //}
+
             Account? account = await _accountRepository.GetAccountByUsernameAsync(userName);
             if (account != null) {
                 throw new AccountUsedException(account);
@@ -87,6 +96,7 @@ namespace LibraryProject.Application.Services
             Account newAccount = new Account (user, userName, hashedPassword, email);
 
             await _accountRepository.SaveAccountAsync(newAccount);
+
             return newAccount;
         }
 

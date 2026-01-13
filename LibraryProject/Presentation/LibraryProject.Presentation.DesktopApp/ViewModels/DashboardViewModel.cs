@@ -9,7 +9,9 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
     public partial class DashboardViewModel : ViewModelBase
     {
 
-
+        public DashboardViewModel()
+        {
+        }
 
     }
 }

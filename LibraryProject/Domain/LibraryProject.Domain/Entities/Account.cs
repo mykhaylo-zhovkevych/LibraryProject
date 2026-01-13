@@ -25,7 +25,7 @@ namespace LibraryProject.Domain.Entities
             Name = name;
             Password = password;
             Email = email;
-            IsSuspended = true;
+            IsSuspended = false;
         }
 
         public bool CanBeSuspended()

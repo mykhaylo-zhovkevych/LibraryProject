@@ -24,75 +24,49 @@ namespace LibraryProject.Presentation.DesktopApp
 {
     public partial class App : Avalonia.Application
     {
-        private ServiceProvider? _rootProvider;
-        private IServiceScope? _appScope;
 
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
         }
 
-        public override void OnFrameworkInitializationCompleted()
+        public override async void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 BindingPlugins.DataValidators.RemoveAt(0);
                 DisableAvaloniaDataAnnotationValidation();
 
-                // Load config file
+                // Configuration
                 var config = new ConfigurationBuilder()
                     .SetBasePath(AppContext.BaseDirectory)
-                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile("appsettings.json", optional: false)
                     .Build();
 
-                var services = new ServiceCollection();
+                // DI
+                var services = new ServiceCollection().AddApplicationServices(config);
 
-                // DbContext/Storage + Repos
-                services.AddSingleton<IConfiguration>(config);
-                services.AddInfrastructureServices(config);
+                var serviceProvider = services.BuildServiceProvider();
 
-                // Session context
-                services.AddSingleton<ICurrentUserContext, CurrentUserContext>();
-
-                // Application Services
-                services.AddScoped<IAuthorizationService, AuthorizationService>();
-                services.AddScoped<AccountService>();
-                services.AddScoped<UserService>();
-                services.AddScoped<ItemService>();
-                services.AddScoped<BorrowingService>();
-                services.AddScoped<PolicyService>();
-
-                services.AddSingleton<INavigationService, NavigationService>();
-
-                services.AddTransient<LoginViewModel>();
-                services.AddTransient<RegisterViewModel>();
-                services.AddSingleton<MainViewModel>();
-
-                services.AddSingleton<MainView>();
-
-                _rootProvider = services.BuildServiceProvider();
-
-                _appScope = _rootProvider.CreateScope();
-                var sp = _appScope.ServiceProvider;
-
-                try
+                // DB init in isolated scope
+                using (var scope = serviceProvider.CreateScope())
                 {
-                    // Throws ex if db init fails
-                    var db = sp.GetRequiredService<LibraryDbContext>();
-
-                    db.Database.EnsureCreated();
-                    // db.Database.Migrate();
-
-                    DbSeeder.SeedAsync(db).GetAwaiter().GetResult();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"DB init failed: {ex}");
+                    var db = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
+                    await db.Database.EnsureCreatedAsync();
+                    await DbSeeder.SeedAsync(db);
                 }
 
-                var mainWindow = sp.GetRequiredService<MainView>();
-                mainWindow.DataContext = sp.GetRequiredService<MainViewModel>();
-                desktop.MainWindow = mainWindow;
+                // UI (root scope)
+                var mainViewModel = serviceProvider.GetRequiredService<MainViewModel>();
+                var navigation = serviceProvider.GetRequiredService<INavigationService>();
+
+                // Is this good idead to set in here?
+                navigation.SetMainViewModel(mainViewModel);
+
+                desktop.MainWindow = new MainView
+                {
+                    DataContext = mainViewModel
+                };
             }
 
             base.OnFrameworkInitializationCompleted();

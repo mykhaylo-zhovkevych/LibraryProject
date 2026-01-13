@@ -10,5 +10,6 @@ namespace LibraryProject.Presentation.DesktopApp.Services
     public interface INavigationService
     {
         Task NavigateTo<T>() where T : ViewModelBase;
+        void SetMainViewModel(MainViewModel mainViewModel);
     }
 }

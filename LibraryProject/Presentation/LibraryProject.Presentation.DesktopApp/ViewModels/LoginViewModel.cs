@@ -1,9 +1,11 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using LibraryProject.Application.Interfaces;
 using LibraryProject.Application.Services;
 using LibraryProject.Presentation.DesktopApp.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -11,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Presentation.DesktopApp.ViewModels
 {
-    public partial class LoginViewModel : ViewModelBase
+    public partial class LoginViewModel : ViewModelBase 
     {
         private readonly INavigationService _navigationService;
         private readonly AccountService _accountService;
@@ -23,33 +25,61 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _accountService = accountService;
             _currentUser = currentUser;
         }
-        public LoginViewModel()
+
+        // If i use the [ObservableProperties] does it mean i should not do validation in here? 
+        [ObservableProperty] private string? _userId;
+        [ObservableProperty] private string? _name;
+        [ObservableProperty] private string? _password;
+
+        [ObservableProperty] private string? _errorMessage;
+
+
+        [RelayCommand]
+        public async Task TryToLoginAsync()
         {
-            // designer / previewer
-        }
+            ErrorMessage = null;
 
+            Guid userguidId;
 
-        public async Task Login(CancellationToken ct = default)
-        {
-            // Data validation
+            if (!Guid.TryParse(_userId, out userguidId))
+            {
+                ErrorMessage = "Invalid User ID format.";
+                return;
+            }
 
-            // Data setting
-            var session = await _accountService.LoginAsync(userId, name, password, ct);
+            try
+            {
+                // TODO: figure out how to handle cancellation token here
+                var session = await _accountService.LoginAsync(userguidId, _name, _password, default);
 
-            _currentUser.SignIn(session.UserId, session.UserType);
+                if (session != null)
+                {
+                    _currentUser.SignIn(session.UserId, session.UserType);
 
-            // Navigation
-        }
-
-        public void Logout()
-        {
-            _currentUser.SignOut();
+                    await _navigationService.NavigateTo<DashboardViewModel>();
+                }
+                else
+                {
+                    ErrorMessage = "Login failed. Please check your credentials.";
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = $"{ex.Message}";
+            }
         }
 
         [RelayCommand]
-        private async Task NavigateToRegister()
+        public async Task NavigateToRegister()
         {
             await _navigationService.NavigateTo<RegisterViewModel>();
+        }
+
+
+        [RelayCommand]
+        public void Logout()
+        {
+            _currentUser.SignOut();
         }
     }
 }

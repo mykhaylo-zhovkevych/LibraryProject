@@ -10,7 +10,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
         [ObservableProperty] private ViewModelBase _currentViewModel;
 
-        //public string Greeting { get; } = "Welcome to Avalonia!";
+        // 338c427c-fcc4-4ea0-91e8-62a86594fded
 
         public MainViewModel(INavigationService navigationService)
         {

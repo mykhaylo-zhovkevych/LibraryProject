@@ -22,9 +22,13 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             {
                 return;
             }
+            if (await db.Accounts.AnyAsync(ct))
+            {
+                return;
+            }
             User adminUser = new User("admin", UserType.Admin);
 
-            Account adminAccount = new Account(adminUser, "admin", "admin12345", "admin@local");
+            Account adminAccount = new Account(adminUser, "admin1", "admin12345", "admin@local");
 
             adminAccount.ReactivateAccount();
 
