@@ -2,15 +2,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:views="using:LibraryProject.Presentation.DesktopApp"
+             xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
+             xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="LibraryProject.Presentation.DesktopApp.DashboardView">
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+
+    <Design.DataContext>
+        <vm:MainViewModel/>
+    </Design.DataContext>
+
+
 <Grid RowDefinitions="Auto,*">
     <!-- Static -->
     <views:TopBarView Grid.Row="0" />
 
-    <!-- Dynamic Add Binding-->
-    <ContentControl Grid.Row="1"/>
+    <!-- Dynamic Add Binding, Content="{Binding }-->
+    <ContentControl Grid.Row="1" Content="{Binding CurrentPage}">
+        <!--<views:ProfileView/>-->
+    </ContentControl>
 					
 </Grid>
 

@@ -7,9 +7,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
     public partial class MainViewModel : ViewModelBase
     {
         private readonly INavigationService _navigationService;
-
         [ObservableProperty] private ViewModelBase _currentViewModel;
-
+    
         // 338c427c-fcc4-4ea0-91e8-62a86594fded
 
         public MainViewModel(INavigationService navigationService)
@@ -19,6 +18,5 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             navigationService.NavigateTo<LoginViewModel>();
         }
 
-        public MainViewModel() : this(null!) { }
     }
 }
