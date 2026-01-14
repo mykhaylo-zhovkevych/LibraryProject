@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LibraryProject.Application.Interfaces;
+using LibraryProject.Presentation.DesktopApp.Views;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,50 +14,50 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
     public partial class DashboardViewModel : ViewModelBase
     {
         private readonly ICurrentUserContext _currentUser;
-
-        // This property is not set for right now, because i am not sure if with the IdataTempaltes i need to use the private readonly INavigationService? so like how can i set the _currentViewModel for a sehll 2 because in the shell i use the navigation service and in the shell 2 i would wnat to use the IdataTempalte.
-        // [ObservableProperty] private ViewModelBase _currentViewModel;
+        private readonly IServiceProvider _serviceProvider;
 
         // ---
         [ObservableProperty] private ViewModelBase _currentPage;
 
-        private readonly ProfileViewModel _profilePage = new();
-        private readonly CatalogViewModel _catalogPage = new();
-        private readonly BorrowingViewModel _borrowingPage = new();
-        private readonly ManagementViewModel _managementPage = new();
+        //private readonly ProfileViewModel _profilePage = new();
+        //private readonly CatalogViewModel _catalogPage = new();
+        //private readonly BorrowingViewModel _borrowingPage = new();
+        //private readonly ManagementViewModel _managementPage = new();
         // ---
 
-
-        public DashboardViewModel(ICurrentUserContext currentUser)
+        // Does this code needs a factory pattern?
+        public DashboardViewModel(ICurrentUserContext currentUser, IServiceProvider serviceProvider)
         {
+            // _homePage = homePage
             _currentUser = currentUser;
-            CurrentPage = _catalogPage;
+            _serviceProvider = serviceProvider;
+            CurrentPage = _serviceProvider.GetRequiredService<CatalogViewModel>();
         }
 
 
         [RelayCommand]
         public void GoToCatalog()
         { 
-            CurrentPage = _catalogPage;
+            CurrentPage = _serviceProvider.GetRequiredService<CatalogViewModel>();
         }
 
         [RelayCommand]
         private void GoToBorrowing()
         {
-            CurrentPage = _borrowingPage;
+            CurrentPage = _serviceProvider.GetRequiredService<BorrowingViewModel>();
         }
 
 
         [RelayCommand]
         private void GoToProfile()
         {
-            CurrentPage = _profilePage;
+            CurrentPage = _serviceProvider.GetRequiredService<ProfileViewModel>();
         }
 
         [RelayCommand]
         private void GoToManagement()
         {
-            CurrentPage = _managementPage;
+            CurrentPage = _serviceProvider.GetRequiredService<ManagementViewModel>();
         }
 
         [RelayCommand]
