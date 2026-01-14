@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Presentation.DesktopApp.ViewModels
 {
-    internal class CatalogViewModel
+    public class CatalogViewModel : ViewModelBase
     {
     }
 }

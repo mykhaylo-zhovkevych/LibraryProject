@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Presentation.DesktopApp.ViewModels
 {
-    public class ManagementViewModel
+    public class ManagementViewModel : ViewModelBase
     {
+
     }
 }

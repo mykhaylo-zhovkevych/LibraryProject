@@ -68,6 +68,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             }
         }
 
+        // DashboardViewModel
+
         [RelayCommand]
         public async Task NavigateToRegister()
         {

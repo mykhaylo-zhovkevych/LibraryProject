@@ -41,6 +41,13 @@ namespace LibraryProject.Presentation.DesktopApp
             services.AddTransient<LoginViewModel>();
             services.AddTransient<RegisterViewModel>();
 
+            services.AddTransient<TopBarViewModel>();
+            services.AddTransient<ProfileViewModel>();
+            services.AddTransient<ManagementViewModel>();
+            services.AddTransient<CatalogViewModel>();
+            services.AddTransient<DashboardViewModel>();
+            services.AddTransient<BorrowingViewModel>();
+
             return services;
         }
     }
