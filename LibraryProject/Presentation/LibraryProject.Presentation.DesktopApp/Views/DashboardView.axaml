@@ -5,14 +5,13 @@
              xmlns:views="using:LibraryProject.Presentation.DesktopApp"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="LibraryProject.Presentation.DesktopApp.DashboardView">
-  
 <Grid RowDefinitions="Auto,*">
     <!-- Static -->
     <views:TopBarView Grid.Row="0" />
 
     <!-- Dynamic Add Binding-->
-    <ContentControl Grid.Row="1" />
+    <ContentControl Grid.Row="1"/>
+					
 </Grid>
-
 
 </UserControl>

@@ -21,11 +21,7 @@
          </Grid.RowDefinitions>-->
 
          <ContentControl Content="{Binding CurrentViewModel}" />
-  
                     
-
 	</Grid>
-	
-  
 
 </Window>
