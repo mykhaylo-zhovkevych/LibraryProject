@@ -2,11 +2,107 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewmodels="using:LibraryProject.Presentation.DesktopApp.ViewModels"
              xmlns:views="using:LibraryProject.Presentation.DesktopApp"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="LibraryProject.Presentation.DesktopApp.Views.CatalogView">
-  <Grid>
-	   <TextBlock Text="Catalog View" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="24"/>
-  </Grid>
+             x:DataType="viewmodels:CatalogViewModel"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.CatalogView"
+             >
 
+    <Design.DataContext>
+        <viewmodels:CatalogViewModel/>
+    </Design.DataContext>
+
+<UserControl.Resources>
+    <ResourceDictionary>
+       <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/CatalogStyles.axaml"/>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+</UserControl.Resources>
+
+<Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, *">
+     
+    <TextBlock Grid.Row="0" Text="Buchkatalog">
+      <TextBlock.Styles>
+        <StaticResource ResourceKey="PageTitle"/>
+      </TextBlock.Styles>
+    </TextBlock>
+      
+      <TextBlock Grid.Row="1" Text="Durchsuchen Sie unsere Sammlungen und leihen Sie Buecher aus "/>
+
+          <Grid Grid.Row="2" ColumnDefinitions="*, Auto, Auto" ColumnSpacing="8">
+              <TextBox Grid.Column="0" Watermark="Search books..." />
+
+              <ComboBox Grid.Column="1" Width="160" ItemsSource="{Binding FilterOptions}" SelectedItem="{Binding SelectedFilterOption}" />
+
+         </Grid>
+
+     <TextBlock Grid.Row="4" Text="Found Items "></TextBlock>
+
+    <Grid Grid.Row="5">
+		
+	<ScrollViewer>
+        <ItemsControl ItemsSource="{Binding AllItems}">
+			<ItemsControl.ItemsPanel>
+          <!-- WrapPanel -->
+          <ItemsPanelTemplate>
+            <WrapPanel Orientation="Horizontal"/>
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <!-- WrapPanel -->
+        <ItemsControl.ItemTemplate>
+
+          <DataTemplate>
+            <Border Margin="0,0,18,18">
+              <Grid RowDefinitions="Auto,Auto,*">
+                <!-- Cover -->
+                <Border Grid.Row="0" >
+                   <Panel>
+                      <Rectangle Height="300" Width="300" Fill="LightGray"/>
+                      <Image Margin="20" Height="200" Width="200" 
+                             Source="C:\Users\chmyzh1\source\repos\LibraryProject\LibraryProject\item-images\Die-Verwandlung.jpg"/>
+                   </Panel>
+                </Border>
+
+                <StackPanel Grid.Row="1" Margin="0,12,0,0">
+                  <TextBlock Text="Titel:"></TextBlock> 
+                  <TextBlock Text="Author:"></TextBlock>
+                  <Border >
+                    <TextBlock Text="Beschreibung:"></TextBlock>
+                  </Border>
+                </StackPanel>
+
+                <!-- Bottom meta row -->
+                <Grid Grid.Row="2" ColumnDefinitions="Auto,*,Auto" VerticalAlignment="Bottom">
+
+
+                  <!-- Year + availability (center) -->
+                  <StackPanel Grid.Column="0"
+                              Margin="12"
+                              VerticalAlignment="Center"
+                              Spacing="6">
+                    <TextBlock Text="1970"></TextBlock>
+         
+                    <TextBlock Text="2 von 2 verfügbar"></TextBlock>
+      
+                  </StackPanel>
+
+                  <Button Grid.Column="1"
+                          Content="Mehr"
+                          Padding="12"
+                          CornerRadius="10"
+                          HorizontalAlignment="Right"/>
+                </Grid>
+
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    
+    </ScrollViewer>
+
+    </Grid>
+</Grid>
 </UserControl>

@@ -12,9 +12,9 @@
     <Application.Styles>
         <FluentTheme />
 
-        <StyleInclude Source="Styles/AppDefaultStyles.axaml">
-			
-        </StyleInclude>
+        <StyleInclude Source="Styles/AppDefaultStyles.axaml" />
+
+        <StyleInclude Source="Styles/LoginStyles.axaml" />
 
     </Application.Styles>
 
@@ -23,8 +23,8 @@
 
   <Application.Resources>
 	  
-      <SolidColorBrush x:Key="PrimaryStartBackgroundColor">#ebf2ff</SolidColorBrush>
-        <SolidColorBrush x:Key="PrimaryBackgroundColor">#000000</SolidColorBrush>
+      <SolidColorBrush x:Key="PrimaryForegroundColor">#b0b0b0</SolidColorBrush>
+        <SolidColorBrush x:Key="PrimaryBackgroundColor">#ebf2ff</SolidColorBrush>
 
         <LinearGradientBrush x:Key="PrimaryBackgroundGradient" StartPoint="0%, 0%" EndPoint="100%, 0%"> 
             <GradientStop Offset="0" Color="#111214"></GradientStop>

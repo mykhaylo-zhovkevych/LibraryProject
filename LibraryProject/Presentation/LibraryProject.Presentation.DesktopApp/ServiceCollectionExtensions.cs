@@ -1,6 +1,8 @@
 ﻿using LibraryProject.Application.Interfaces;
 using LibraryProject.Application.Services;
 using LibraryProject.Infrastructure;
+using LibraryProject.Presentation.DesktopApp.Data;
+using LibraryProject.Presentation.DesktopApp.Factories;
 using LibraryProject.Presentation.DesktopApp.Services;
 using LibraryProject.Presentation.DesktopApp.ViewModels;
 using LibraryProject.Presentation.Shared.Auth;
@@ -16,7 +18,7 @@ namespace LibraryProject.Presentation.DesktopApp
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services,IConfiguration config)
+        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
         {
             // Infrastructure
             services.AddSingleton<IConfiguration>(config);
@@ -41,12 +43,23 @@ namespace LibraryProject.Presentation.DesktopApp
             services.AddTransient<LoginViewModel>();
             services.AddTransient<RegisterViewModel>();
 
-            services.AddTransient<TopBarViewModel>();
             services.AddTransient<ProfileViewModel>();
             services.AddTransient<ManagementViewModel>();
             services.AddTransient<CatalogViewModel>();
             services.AddTransient<DashboardViewModel>();
             services.AddTransient<BorrowingViewModel>();
+
+            // When a GetRequiredService is a called it will pull new instance based on the ApplicationPageNames. Curried function 
+            services.AddSingleton<Func<ApplicationPageNames, PageViewModel>>(x => name => name switch
+            {
+                ApplicationPageNames.Catalog => x.GetRequiredService<CatalogViewModel>(),
+                ApplicationPageNames.Borrowing => x.GetRequiredService<BorrowingViewModel>(),
+                ApplicationPageNames.Profile => x.GetRequiredService<ProfileViewModel>(),
+                ApplicationPageNames.Management => x.GetRequiredService<ManagementViewModel>(),
+                _ => throw new InvalidOperationException("The requested page does not exist.")
+            });
+
+            services.AddSingleton<PageFactory>();
 
             return services;
         }

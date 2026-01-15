@@ -1,6 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LibraryProject.Application.Interfaces;
+using LibraryProject.Presentation.DesktopApp.Data;
+using LibraryProject.Presentation.DesktopApp.Factories;
+using LibraryProject.Presentation.DesktopApp.Services;
+using LibraryProject.Presentation.DesktopApp.ViewModels;
 using LibraryProject.Presentation.DesktopApp.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -13,59 +17,63 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 {
     public partial class DashboardViewModel : ViewModelBase
     {
+        // DI
+        private PageFactory _pageFactory;
+        private readonly INavigationService _navigation;
         private readonly ICurrentUserContext _currentUser;
-        private readonly IServiceProvider _serviceProvider;
 
-        // ---
-        [ObservableProperty] private ViewModelBase _currentPage;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(CatalogPageIsActive))]
+        [NotifyPropertyChangedFor(nameof(BorrowingPageIsActive))]
+        [NotifyPropertyChangedFor(nameof(ProfilePageIsActive))]
+        [NotifyPropertyChangedFor(nameof(ManagementPageIsActive))]
+        private PageViewModel _currentPage;
 
-        // ---
-        [ObservableProperty] private ViewModelBase _currentPage;
-
-        private readonly ProfileViewModel _profilePage = new();
-        private readonly CatalogViewModel _catalogPage = new();
-        private readonly BorrowingViewModel _borrowingPage = new();
-        private readonly ManagementViewModel _managementPage = new();
-        // ---
-
-
-        public DashboardViewModel(ICurrentUserContext currentUser)
+        public DashboardViewModel(PageFactory pageFactory, INavigationService navigation, ICurrentUserContext currentUser)
         {
-            // _homePage = homePage
+            _pageFactory = pageFactory;
+            _navigation = navigation;
             _currentUser = currentUser;
-            CurrentPage = _catalogPage;
+            GoToCatalog();
         }
 
+        public bool CatalogPageIsActive => CurrentPage.PageName == ApplicationPageNames.Catalog;
+        public bool BorrowingPageIsActive => CurrentPage.PageName == ApplicationPageNames.Borrowing;
+        public bool ProfilePageIsActive => CurrentPage.PageName == ApplicationPageNames.Profile;
+        public bool ManagementPageIsActive => CurrentPage.PageName == ApplicationPageNames.Management;
 
+
+        // So like the same as injecting direct dependencies, but keeps the classes clean(not injecting each VM)
         [RelayCommand]
         public void GoToCatalog()
         { 
-            CurrentPage = _catalogPage;
+            // CurrentPage = _iserviceProvider.GetRequiredService<CatalogViewModel>();
+            CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageNames.Catalog);
         }
 
         [RelayCommand]
         private void GoToBorrowing()
         {
-            CurrentPage = _borrowingPage;
+            CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageNames.Borrowing);
         }
-
 
         [RelayCommand]
         private void GoToProfile()
         {
-            CurrentPage = _profilePage;
+            CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageNames.Profile);
         }
 
         [RelayCommand]
         private void GoToManagement()
         {
-            CurrentPage = _managementPage;
+            CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageNames.Management);
         }
 
         [RelayCommand]
         public void Logout()
         {
             _currentUser.SignOut();
+            _navigation.NavigateTo<LoginViewModel>();
         }
 
     }

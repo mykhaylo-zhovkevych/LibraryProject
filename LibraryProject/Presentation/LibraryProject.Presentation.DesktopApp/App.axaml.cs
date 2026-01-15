@@ -8,6 +8,7 @@ using LibraryProject.Application.Services;
 using LibraryProject.Infrastructure;
 using LibraryProject.Infrastructure.Persistence.InSqlite;
 using LibraryProject.Infrastructure.Repositories.WithSqlite;
+using LibraryProject.Presentation.DesktopApp.Factories;
 using LibraryProject.Presentation.DesktopApp.Services;
 using LibraryProject.Presentation.DesktopApp.ViewModels;
 using LibraryProject.Presentation.DesktopApp.Views;
@@ -60,7 +61,7 @@ namespace LibraryProject.Presentation.DesktopApp
                 var mainViewModel = serviceProvider.GetRequiredService<MainViewModel>();
                 var navigation = serviceProvider.GetRequiredService<INavigationService>();
 
-                // Is this good idead to set in here?
+                // Here hidden dependency on navigation service
                 navigation.SetMainViewModel(mainViewModel);
 
                 desktop.MainWindow = new MainView

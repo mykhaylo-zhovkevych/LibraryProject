@@ -5,5 +5,54 @@
              xmlns:views="using:LibraryProject.Presentation.DesktopApp"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="LibraryProject.Presentation.DesktopApp.Views.BorrowingView">
-  Welcome to Avalonia!
+
+    <Grid RowDefinitions="Auto Auto">
+
+        <!-- TOP -->
+        <StackPanel>
+            <TextBlock>Ausgeliehene Bücher</TextBlock>
+            <TextBlock>Sie haben 1 Buch ausgeliehen</TextBlock>
+        </StackPanel>
+
+        <!-- Column definition -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto * Auto" ColumnSpacing="16">
+            <Border />
+
+            <StackPanel Grid.Column="1" Spacing="8">
+                <TextBlock></TextBlock>
+                <TextBlock></TextBlock>
+
+                <StackPanel Orientation="Horizontal">
+                    <Border>
+                        <TextBlock>Name</TextBlock>
+                    </Border>
+
+                    <Border>
+                        <TextBlock>id: 338c427c-fcc4-4ea0-91e8-62a86594fded</TextBlock>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2" Orientation="Vertical" Spacing="8">
+                <Button Content="Erweitern" CornerRadius="8"/>
+                <Button Content="Zurueckgeben" CornerRadius="8"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Bottom -->
+        <Grid Grid.Row="1" ColumnDefinitions="* * *">
+            <StackPanel>
+                <TextBlock>Ausgeliehen am: 12.06.2024</TextBlock>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1">
+                <TextBlock>Rueckgabedatum: 12.07.2024</TextBlock>
+            </StackPanel>
+
+            <StackPanel Grid.Column="2">
+                <TextBlock>Status</TextBlock>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
 </UserControl>

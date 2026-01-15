@@ -5,4 +5,9 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
              x:Class="LibraryProject.Presentation.DesktopApp.Views.ManagementView">
+
+
+    <!-- -->
+
+
 </UserControl>

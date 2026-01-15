@@ -12,13 +12,25 @@
         <vm:RegisterViewModel/>
     </Design.DataContext>
 
+   <!-- Used onyl when I need binde sigle file-->
+   <!-- <UserControl.Resources>
+        <ResourceDictionary>
+           <ResourceDictionary.MergedDictionaries>
+            <ResourceInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/LoginStyles.axaml"/>
+          </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>-->
+
+   <UserControl.Styles>
+    <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/LoginStyles.axaml"/>
+  </UserControl.Styles>
 
     <Border 
     MaxWidth="400" 
     MaxHeight="600" 
     CornerRadius="8" 
     Padding="8" 
-    Background="#f5f5f5">
+    Background="{StaticResource PrimaryBackgroundColor}">
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <!-- Icon -->
@@ -34,19 +46,20 @@
 
             <!--User Id-->
 				<TextBlock Text="User Id" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" Background="#f3f3f5" Watermark="Benutzer Id" Padding="8" Text="{Binding UserId}"></TextBox>
+                <TextBox BorderThickness="0" Watermark="Benutzer Id" Padding="8" Text="{Binding UserId}" Classes="primary"/>
+     
             <!--Name-->
-           
                 <TextBlock Text="Name" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" Background="#f3f3f5" Watermark="Ihr vollständiger Name" Padding="8" Text="{Binding Name}"></TextBox>
+                <TextBox BorderThickness="0" Watermark="Ihr vollständiger Name" Padding="8" Text="{Binding Name}" Classes="primary"/>
 
             <!--Email-->
 				<TextBlock Text="Email" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" Background="#f3f3f5" Watermark="ihre.email@beispile.ch" Padding="8" Text="{Binding Email}"></TextBox>
-            <!--Password-->
+                <TextBox BorderThickness="0" Watermark="ihre.email@beispile.ch" Padding="8" Text="{Binding Email}"/>
+       
 
 				<TextBlock Text="Password" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" Background="#f3f3f5" PasswordChar="*" Watermark="Mindestens 8 Zeichnen" Padding="8" Text="{Binding Password}"></TextBox>
+                <TextBox BorderThickness="0" PasswordChar="*" Watermark="Mindestens 8 Zeichnen" Padding="8" Text="{Binding Password}" Classes="primary"/>
+
 
             <!--TODO: Think about a Password Confirmation Field-->
 
@@ -65,7 +78,8 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Center"
                     Padding="3"
-                    Margin="0,10,0,5"/>
+                    Margin="0,10,0,5"
+                    Classes="first"/>
 
            <!-- <ProgressBar Height="4" IsIndeterminate="True"></ProgressBar>-->
 
@@ -74,10 +88,10 @@
                     HorizontalAlignment="Stretch" 
                     HorizontalContentAlignment="Center"
                     Padding="3"
-                    Margin="0,5,0,5"/>
+                    Margin="0,5,0,5"
+                    Classes="secound"/>
 
         </StackPanel>		
     </Border>
     
-
 </UserControl>

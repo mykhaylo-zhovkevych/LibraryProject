@@ -42,7 +42,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
             if (!Guid.TryParse(_userId, out userguidId))
             {
-                ErrorMessage = "Invalid User ID format.";
+                ErrorMessage = "Login failed. Please check your ID.";
                 return;
             }
             

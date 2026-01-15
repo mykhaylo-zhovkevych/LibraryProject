@@ -5,5 +5,63 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
              x:Class="LibraryProject.Presentation.DesktopApp.Views.ProfileView">
-  Welcome to Avalonia!
+
+    <Grid RowDefinitions="Auto, Auto, *">
+
+        <Border>
+            <TextBlock>Benutzerprofile</TextBlock>
+        </Border>
+
+        <Border Grid.Row="1">
+            <TextBlock>Verwalten Sie Ihre persönlichen Informationen</TextBlock>
+        </Border>
+
+        <!--Two columns  -->
+        <Grid Grid.Row="2" ColumnDefinitions="*, Auto" ColumnSpacing="24">
+
+            <Grid Grid.Column="0" RowDefinitions="Auto, Auto">
+
+                <!--Image + Name + Buttons -->
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+                    <TextBlock Grid.Column="0" VerticalAlignment="Top">
+                        Image
+                    </TextBlock>
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Vertical"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Left"
+                                Spacing="8">
+                        <TextBlock>Name of the User</TextBlock>
+                        <TextBlock>UserType</TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Spacing="8">
+                        <Button Content="Bearbeiten" />
+                        <Button Content="Konto löschen" />
+                    </StackPanel>
+                </Grid>
+
+                <!--Email -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center">Email:</TextBlock>
+                    <TextBox Grid.Column="1" Watermark="User Data" />
+                </Grid>
+
+            </Grid>
+
+            <!-- Statistic-->
+            <Border Grid.Column="1">
+                <StackPanel Spacing="6">
+                    <TextBlock>Statistik:</TextBlock>
+                    <TextBlock>Ihre Bibliotheksaktivitäten:</TextBlock>
+                </StackPanel>
+            </Border>
+
+        </Grid>
+
+    </Grid>
 </UserControl>

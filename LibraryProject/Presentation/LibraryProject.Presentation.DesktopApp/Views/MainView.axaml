@@ -13,15 +13,9 @@
         <vm:MainViewModel/>
     </Design.DataContext>
 
-	<Grid Background="{DynamicResource PrimaryStartBackgroundColor}">
+	<Grid Background="{DynamicResource PrimaryForegroundColor}">
 	
-       <!-- <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
-         </Grid.RowDefinitions>-->
-
          <ContentControl Content="{Binding CurrentViewModel}" />
                     
 	</Grid>
-
 </Window>
