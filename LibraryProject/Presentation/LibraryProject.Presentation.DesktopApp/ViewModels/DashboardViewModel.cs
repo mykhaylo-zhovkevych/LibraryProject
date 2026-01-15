@@ -19,45 +19,47 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         // ---
         [ObservableProperty] private ViewModelBase _currentPage;
 
-        //private readonly ProfileViewModel _profilePage = new();
-        //private readonly CatalogViewModel _catalogPage = new();
-        //private readonly BorrowingViewModel _borrowingPage = new();
-        //private readonly ManagementViewModel _managementPage = new();
+        // ---
+        [ObservableProperty] private ViewModelBase _currentPage;
+
+        private readonly ProfileViewModel _profilePage = new();
+        private readonly CatalogViewModel _catalogPage = new();
+        private readonly BorrowingViewModel _borrowingPage = new();
+        private readonly ManagementViewModel _managementPage = new();
         // ---
 
-        // Does this code needs a factory pattern?
-        public DashboardViewModel(ICurrentUserContext currentUser, IServiceProvider serviceProvider)
+
+        public DashboardViewModel(ICurrentUserContext currentUser)
         {
             // _homePage = homePage
             _currentUser = currentUser;
-            _serviceProvider = serviceProvider;
-            CurrentPage = _serviceProvider.GetRequiredService<CatalogViewModel>();
+            CurrentPage = _catalogPage;
         }
 
 
         [RelayCommand]
         public void GoToCatalog()
         { 
-            CurrentPage = _serviceProvider.GetRequiredService<CatalogViewModel>();
+            CurrentPage = _catalogPage;
         }
 
         [RelayCommand]
         private void GoToBorrowing()
         {
-            CurrentPage = _serviceProvider.GetRequiredService<BorrowingViewModel>();
+            CurrentPage = _borrowingPage;
         }
 
 
         [RelayCommand]
         private void GoToProfile()
         {
-            CurrentPage = _serviceProvider.GetRequiredService<ProfileViewModel>();
+            CurrentPage = _profilePage;
         }
 
         [RelayCommand]
         private void GoToManagement()
         {
-            CurrentPage = _serviceProvider.GetRequiredService<ManagementViewModel>();
+            CurrentPage = _managementPage;
         }
 
         [RelayCommand]
