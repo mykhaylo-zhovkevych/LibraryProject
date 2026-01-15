@@ -7,7 +7,26 @@
              x:Class="LibraryProject.Presentation.DesktopApp.Views.ManagementView">
 
 
-    <!-- -->
+<Grid RowDefinitions="Auto,Auto,Auto,*">
+
+    <TextBlock Grid.Row="0" Text="Verwaltung"/>
+
+    <TextBlock Grid.Row="1" Text="Systemverwaltung und Übersicht"/>
+
+    <StackPanel Grid.Row="2" Orientation="Horizontal">
+
+      <Button Content="Uebersicht" Command="{Binding ShowOverviewCommand}" />
+
+      <Button Content="Buecher" Command="{Binding ShowBooksCommand}" />
+
+      <Button Content="Benutzer" Command="{Binding ShowUsersCommand}" />
+
+      <Button Content="Einstellungen" Command="{Binding ShowSettingsCommand}" />
+    </StackPanel>
+
+    <ContentControl Grid.Row="3" Content="{Binding CurrentSection}" />
+
+  </Grid>
 
 
 </UserControl>
