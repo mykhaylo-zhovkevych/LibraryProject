@@ -13,13 +13,9 @@
         <viewmodels:CatalogViewModel/>
     </Design.DataContext>
 
-<UserControl.Resources>
-    <ResourceDictionary>
-       <ResourceDictionary.MergedDictionaries>
-        <ResourceInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/CatalogStyles.axaml"/>
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-</UserControl.Resources>
+    <UserControl.Styles>
+    <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/CatalogStyles.axaml"/>
+  </UserControl.Styles>
 
 <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, *">
      
@@ -43,7 +39,7 @@
     <Grid Grid.Row="5">
 		
 	<ScrollViewer>
-        <ItemsControl ItemsSource="{Binding AllItems}">
+        <ItemsControl ItemsSource="{Binding Items}">
 			<ItemsControl.ItemsPanel>
           <!-- WrapPanel -->
           <ItemsPanelTemplate>
@@ -66,10 +62,10 @@
                 </Border>
 
                 <StackPanel Grid.Row="1" Margin="0,12,0,0">
-                  <TextBlock Text="Titel:"></TextBlock> 
-                  <TextBlock Text="Author:"></TextBlock>
+                  <TextBlock Text="{Binding Title}"></TextBlock> 
+                  <TextBlock Text="{Binding Author}"></TextBlock>
                   <Border >
-                    <TextBlock Text="Beschreibung:"></TextBlock>
+                    <TextBlock Text="{Binding Description}"></TextBlock>
                   </Border>
                 </StackPanel>
 
@@ -82,9 +78,9 @@
                               Margin="12"
                               VerticalAlignment="Center"
                               Spacing="6">
-                    <TextBlock Text="1970"></TextBlock>
+                    <TextBlock Text="{Binding Year}"></TextBlock>
          
-                    <TextBlock Text="2 von 2 verfügbar"></TextBlock>
+                    <TextBlock Text="{Binding AvailableCopies,}"></TextBlock>
       
                   </StackPanel>
 

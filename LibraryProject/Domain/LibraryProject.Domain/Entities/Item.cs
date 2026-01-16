@@ -24,9 +24,13 @@ namespace LibraryProject.Domain.Entities
         //EF-Friendly Fk to shefl (required for Shelves.Items persistence)
         public int ShelfId { get; set; }
         public ItemType ItemType { get; set; }
+        // Must be updated after removing or updating new copies of the same item
+        // Only the Application layer can interact with this property
+        // derived data
+        public int CirculationCount { get; set; }
 
         protected Item() { }
-        public Item(string name, ItemType itemType, string author, int year, string? description = null)
+        public Item(string name, ItemType itemType, string author, int year, string? description = null, int circulationCount = 0)
         {
             Id = Guid.NewGuid();
             Name = name;
@@ -34,7 +38,7 @@ namespace LibraryProject.Domain.Entities
             Author = author;
             Year = year;
             Description = description;
-
+            CirculationCount = circulationCount;
         }
 
         public void SetCoverImagePath(string? relativePath)

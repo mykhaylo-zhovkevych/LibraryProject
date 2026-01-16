@@ -8,6 +8,7 @@ namespace LibraryProject.Presentation.DesktopApp.Models
 {
     public class DisplayedItem
     {
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
         public string Description { get; set; }
@@ -16,8 +17,9 @@ namespace LibraryProject.Presentation.DesktopApp.Models
         public int AvailableCopies { get; set; }
         public int TotalCopies { get; set; }
 
-        public DisplayedItem(string title, string author, string description, int year, string type, int availableCopies, int totalCopies)
+        public DisplayedItem(Guid id, string title, string author, string description, int year, string type, int availableCopies, int totalCopies)
         {
+            Id = id;
             Title = title;
             Author = author;
             Description = description;

@@ -33,7 +33,7 @@ namespace LibraryProject.Application.Services
             await _itemRepository.RemoveFromShelfAsync(item, ct);
         }
 
-        public async Task<Item> CreateItem(string name, ItemType itemType, string author, int year, string? description,CancellationToken ct)
+        public async Task<Item> CreateItem(string name, ItemType itemType, string author, int year, string? description, int circulationCount, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -41,7 +41,7 @@ namespace LibraryProject.Application.Services
             }
             _authorizationService.EnsureAdmin();
 
-            Item newItem = new Item(name, itemType, author, year, description);
+            Item newItem = new Item(name, itemType, author, year, description, circulationCount);
             await AddItemToShelf(newItem, ct);
             return newItem;
         }

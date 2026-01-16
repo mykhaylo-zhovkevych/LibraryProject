@@ -12,7 +12,6 @@ namespace LibraryProject.Domain.Entities
         public string? PolicyName { get; private set; }
         public uint Extensions { get; set; }
         public decimal LoanFees { get; set; }
-        // Is this good idea to keep the name like this? 
         public uint LoanPeriodInDays { get; set; }
 
         public Policy()
