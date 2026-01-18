@@ -6,6 +6,11 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="LibraryProject.Presentation.DesktopApp.Views.BorrowingView">
 
+  <UserControl.Styles>
+    <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/BorrowingStyles.axaml"/>
+  </UserControl.Styles>
+
+
     <Grid RowDefinitions="Auto Auto">
 
         <!-- TOP -->

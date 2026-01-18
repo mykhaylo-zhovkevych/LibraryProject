@@ -16,75 +16,38 @@
     <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/LoginStyles.axaml"/>
   </UserControl.Styles>
 
-    <Border 
-    MaxWidth="400" 
-    MaxHeight="600" 
-    CornerRadius="8" 
-    Padding="8" 
-    Background="{StaticResource PrimaryBackgroundColor}">
-
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+<Grid>
+    <Border Classes="login-card" MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="8">
             <!-- Icon -->
-            
             <StackPanel Classes="Intro"> 
                 <TextBlock FontSize="24" Text="Bibliothek Verwaltung" HorizontalAlignment="Center"/>
                 <TextBlock Text="Willkommen zurueck" HorizontalAlignment="Center"></TextBlock>
             </StackPanel>
 
-                <Label Content="Anmeldung" Margin="0,10,0,0"/>
+                <Label Content="Anmeldung" />
                 <!--<Label FontFamily="{DynamicResource Phosphor}" Content="&#xe2c2;"/>-->
-                <Label Content="Melden Sie sich mit Ihren Zugangsdaten an" Margin="0,0,0,10" />
+                <Label Content="Melden Sie sich mit Ihren Zugangsdaten an" />
 
             <!--User Id-->
-				<TextBlock Text="User Id" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" Watermark="Benutzer Id" Padding="8" Text="{Binding UserId}" Classes="primary" >
-                    <!--<TextBox.Styles>
-                        <StaticResource ResourceKey="FocusedBox"/>
-                    </TextBox.Styles>-->
-                </TextBox>
+				<TextBlock Classes="field-label" Text="User Id" FontWeight="SemiBold" ></TextBlock>
+                <TextBox Classes="primary" Watermark="Benutzer Id" Text="{Binding UserId}" />
+                
             <!--Name-->
-           
-				<TextBlock Text="Name" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" Watermark="Ihr vollständiger Name" Padding="8" Text="{Binding Name}" Classes="primary">
-                    <!-- This used only for one type, may happen collusion with multiple usages-->
-                    <!--<TextBox.Styles>
-                        <StaticResource ResourceKey="FocusedBox"/>
-                    </TextBox.Styles>-->
-                </TextBox>
+				<TextBlock Classes="field-label" Text="Name" FontWeight="SemiBold" ></TextBlock>
+                <TextBox Classes="primary" Watermark="Ihr vollständiger Name" Text="{Binding Name}" />
+            
             <!--Password-->
-
-				<TextBlock Text="Password" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" PasswordChar="*" Watermark="Mindestens 8 Zeichnen" Padding="8" Text="{Binding Password}" Classes="primary">
-                    <!--<TextBox.Styles>
-                        <StaticResource ResourceKey="FocusedBox"/>
-                    </TextBox.Styles>-->
-                </TextBox>
+				<TextBlock Classes="field-label" Text="Password" FontWeight="SemiBold" ></TextBlock>
+                <TextBox Classes="primary" PasswordChar="*" Watermark="Mindestens 8 Zeichnen" Text="{Binding Password}" />
 
             <!--Errro Text Block-->
-            <StackPanel Margin="10">
-                <TextBlock Text="{Binding ErrorMessage}" FontSize="12" Foreground="Red" HorizontalAlignment="Center" />
-            </StackPanel>
+            <TextBlock Classes="error" Text="{Binding ErrorMessage}" />
 
-            <Button Content="Login"
-                    Command="{Binding TryToLoginAsync}"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Center"
-                    Padding="3"
-                    Margin="0,10,0,5"
-                    Classes="first"
-                    />
-
-           <!-- <ProgressBar Height="4" IsIndeterminate="True"></ProgressBar>-->
-            <Button Content="Neues Konto erstellen"
-                    Command="{Binding NavigateToRegister}"
-                    HorizontalAlignment="Stretch" 
-                    HorizontalContentAlignment="Center"
-                    Padding="3"
-                    Margin="0,5,0,5"
-                    Classes="secound"
-                    /> 
+            <Button Classes="first" Content="Login" Command="{Binding TryToLoginAsync}" />
+            <Button Classes="secound" Content="Neues Konto erstellen" Command="{Binding NavigateToRegister}" />
 
         </StackPanel>		
     </Border>
-
+</Grid>
 </UserControl>

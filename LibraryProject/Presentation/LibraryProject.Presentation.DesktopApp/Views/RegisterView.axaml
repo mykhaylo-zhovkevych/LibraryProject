@@ -12,27 +12,14 @@
         <vm:RegisterViewModel/>
     </Design.DataContext>
 
-   <!-- Used onyl when I need binde sigle file-->
-   <!-- <UserControl.Resources>
-        <ResourceDictionary>
-           <ResourceDictionary.MergedDictionaries>
-            <ResourceInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/LoginStyles.axaml"/>
-          </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>-->
-
    <UserControl.Styles>
     <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/LoginStyles.axaml"/>
   </UserControl.Styles>
 
-    <Border 
-    MaxWidth="400" 
-    MaxHeight="600" 
-    CornerRadius="8" 
-    Padding="8" 
-    Background="{StaticResource PrimaryBackgroundColor}">
+<Grid>
+    <Border Classes="login-card" MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
 
-        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Spacing="8">
             <!-- Icon -->
             
             <StackPanel Classes="Intro"> 
@@ -45,53 +32,35 @@
                 <Label Content="Melden Sie sich mit Ihren Zugangsdaten an" Margin="0,0,0,10" />
 
             <!--User Id-->
-				<TextBlock Text="User Id" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" Watermark="Benutzer Id" Padding="8" Text="{Binding UserId}" Classes="primary"/>
+				<TextBlock Classes="field-label" Text="User Id" FontWeight="SemiBold" ></TextBlock>
+                <TextBox Classes="primary" Watermark="Benutzer Id" Text="{Binding UserId}"/>
      
             <!--Name-->
-                <TextBlock Text="Name" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" Watermark="Ihr vollständiger Name" Padding="8" Text="{Binding Name}" Classes="primary"/>
+                <TextBlock Classes="field-label" Text="Name" FontWeight="SemiBold" ></TextBlock>
+                <TextBox Classes="primary" Watermark="Ihr vollständiger Name" Text="{Binding Name}" />
 
             <!--Email-->
-				<TextBlock Text="Email" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" Watermark="ihre.email@beispile.ch" Padding="8" Text="{Binding Email}"/>
+				<TextBlock Classes="field-label" Text="Email" FontWeight="SemiBold" ></TextBlock>
+                <TextBox Classes="primary" Watermark="ihre.email@beispile.ch" Text="{Binding Email}"/>
        
+            <!--Pasword-->
+				<TextBlock Classes="field-label" Text="Password" FontWeight="SemiBold" ></TextBlock>
+                <TextBox  Classes="primary" PasswordChar="*" Watermark="Mindestens 8 Zeichnen" Text="{Binding Password}" />
 
-				<TextBlock Text="Password" FontWeight="SemiBold" ></TextBlock>
-                <TextBox BorderThickness="0" PasswordChar="*" Watermark="Mindestens 8 Zeichnen" Padding="8" Text="{Binding Password}" Classes="primary"/>
 
-
-            <!--TODO: Think about a Password Confirmation Field-->
-
-            <!--Errro Text Block-->
-            <StackPanel Margin="10">
-                <TextBlock Text="{Binding ErrorMessage}" FontSize="12" Foreground="Red" HorizontalAlignment="Center" />
-            </StackPanel>
+            <TextBlock Classes="error" Text="{Binding ErrorMessage}" />
 
             <StackPanel>
 				<ProgressBar></ProgressBar>
             </StackPanel>
 
-            <!--TODO: Add on hover effect -->
-            <Button Content="Registrieren"
-                    Command="{Binding TryToRegisterCommand}"
-                    HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Center"
-                    Padding="3"
-                    Margin="0,10,0,5"
-                    Classes="first"/>
+            <Button Classes="first" Content="Registrieren" Command="{Binding TryToRegisterCommand}" />
 
-           <!-- <ProgressBar Height="4" IsIndeterminate="True"></ProgressBar>-->
+            <!-- <ProgressBar Height="4" IsIndeterminate="True"></ProgressBar>-->
 
-            <Button Content="Zurück zur Anmeldung"
-                    Command="{Binding NavigateToLogin}"
-                    HorizontalAlignment="Stretch" 
-                    HorizontalContentAlignment="Center"
-                    Padding="3"
-                    Margin="0,5,0,5"
-                    Classes="secound"/>
+            <Button Classes="secound" Content="Zurück zur Anmeldung" Command="{Binding NavigateToLogin}" />
 
         </StackPanel>		
     </Border>
-    
+</Grid>
 </UserControl>
