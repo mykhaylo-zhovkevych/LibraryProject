@@ -5,7 +5,7 @@
              xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
              mc:Ignorable="d" 
              MinWidth="300"
-             x:Class="LibraryProject.Presentation.DesktopApp.Dialog.ConfirmDialogViewModel"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.ConfirmDialogViewModel"
              x:DataType="vm:ConfirmDialogViewModel">
 
 
@@ -34,7 +34,7 @@
                     <!-- Buttons -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="20">
 						<Button Content="{Binding CancelText}" Command="{Binding ConfirmText}" Foreground="DarkRed"></Button>
-                        <Button Content="{Binding CancelText}" Command="{Binding ConfirmCommand}" Foreground="DarkGreen"></Button>
+                        <Button Content="{Binding ConfirmText}" Command="{Binding ConfirmCommand}" Foreground="DarkGreen"></Button>
                     </StackPanel>
 
                 </StackPanel>

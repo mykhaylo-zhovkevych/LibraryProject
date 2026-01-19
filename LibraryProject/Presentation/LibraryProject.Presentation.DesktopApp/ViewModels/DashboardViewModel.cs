@@ -29,7 +29,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [NotifyPropertyChangedFor(nameof(BorrowingPageIsActive))]
         [NotifyPropertyChangedFor(nameof(ProfilePageIsActive))]
         [NotifyPropertyChangedFor(nameof(ManagementPageIsActive))]
-
         private PageViewModel _currentPage;
 
         public DashboardViewModel(PageFactory pageFactory, INavigationService navigation, ICurrentUserContext currentUser)

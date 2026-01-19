@@ -21,7 +21,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
     public partial class CatalogViewModel : PageViewModel
     {
         private readonly ItemService _itemService;
-
+      
         public ObservableCollection<DisplayedItem> Items { get; set; } = new();
         
         public int TotalFoundItems => GetTotalFoundItems();
@@ -44,8 +44,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         public CatalogViewModel(ItemService itemService)
         {
             _itemService = itemService;
-            PageName = ApplicationPageNames.Catalog;
 
+            PageName = ApplicationPageNames.Catalog;
             SelectedFilterOption = FilterOptions[0];
             _ = LoadDataAsync();
         }
@@ -77,12 +77,12 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         }
 
         [RelayCommand]
-        private async Task OpenConfirmDialogAsync()
+        private async Task ShowItemDialogAsync(DisplayedItem item)
         {
             var dialog = new ConfirmDialogViewModel
             {
-                Title = "Bestätigung",
-                Message = "Möchten Sie diese Aktion wirklich durchführen?",
+                Title = "Ausleihen bestätigen",
+                Message = $"Möchten Sie „{item.Title}“ ausleihen?",
                 ConfirmText = "Ja",
                 CancelText = "Nein"
             };
@@ -92,10 +92,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
             await dialog.WaitDialogAsnyc();
 
-            if (dialog.Confirmed)
-            {
-                // Do something
-            }
+            CurrentDialog = null;
         }
 
 

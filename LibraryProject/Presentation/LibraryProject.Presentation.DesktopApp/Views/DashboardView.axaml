@@ -20,13 +20,16 @@
     <Grid Grid.Row="1">
       <ContentControl Content="{Binding CurrentPage}" />
 
-      <!-- Overlay only when dialog is open on the current page -->
-      <Grid IsVisible="{Binding CurrentPage.CurrentDialog.IsDialogOpen}">
-        <Border Background="Black" Opacity="0.5" />
-        <ContentControl Content="{Binding CurrentPage.CurrentDialog}"
+        <!-- Overlay only when dialog is open on the current page -->
+        <Grid DataContext="{Binding CurrentPage.CurrentDialog}"
+          IsVisible="{Binding IsDialogOpen, TargetNullValue=False, FallbackValue=False}">
+        <Border Background="Black" Opacity="0.5"/>
+        <ContentControl Content="{Binding }"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center" />
-      </Grid>
+                        VerticalAlignment="Center"/>
+    </Grid>
+
+
     </Grid>
   </Grid>
 </UserControl>

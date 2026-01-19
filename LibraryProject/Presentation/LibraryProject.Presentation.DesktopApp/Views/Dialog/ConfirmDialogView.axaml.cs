@@ -2,7 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace LibraryProject.Presentation.DesktopApp.Dialog;
+namespace LibraryProject.Presentation.DesktopApp.Views.Dialog;
 
 public partial class ConfirmDialogViewModel : UserControl
 {

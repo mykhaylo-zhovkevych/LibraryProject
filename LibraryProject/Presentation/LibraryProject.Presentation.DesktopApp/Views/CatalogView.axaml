@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewmodels="using:LibraryProject.Presentation.DesktopApp.ViewModels"
              xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
+             xmlns:models="using:LibraryProject.Presentation.DesktopApp.Models"
              mc:Ignorable="d"
              d:DesignWidth="1100" d:DesignHeight="700"
              x:DataType="viewmodels:CatalogViewModel"
-             x:Class="LibraryProject.Presentation.DesktopApp.Views.CatalogView">
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.CatalogView"
+             x:Name="Root">
 
   <Design.DataContext>
     <viewmodels:CatalogViewModel/>
@@ -44,7 +46,7 @@
         </Grid>
 
         <!-- Found count -->
-        <TextBlock Classes="found-text" Grid.Row="3" Text="{Binding TotalFoundItems}"  />
+        <TextBlock Grid.Row="3" Classes="found-text" Text="{Binding TotalFoundItems, StringFormat='Gefundene Artikeln: {0}'}"/>
 
         <!-- Cards -->
         <ItemsControl Grid.Row="4" ItemsSource="{Binding Items}">
@@ -96,21 +98,16 @@
                     <Button Grid.Column="1"
                             Content="Mehr"
                             Classes="details-button"
-                            HorizontalAlignment="Right"/>
+                            HorizontalAlignment="Right"
+                            Command="{Binding #Root.DataContext.ShowItemDialogCommand}"
+                            CommandParameter="{Binding}"/>
                   </Grid>
 
                 </Grid>
               </Border>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
-         </ItemsControl>
-
-        <!-- Dialog -->
-        <Grid Grid.Column="0">
-          <Border Background="Black" Opacity="0.5"></Border>
-
-        </Grid>
-        
+         </ItemsControl>        
     </Grid>
    </ScrollViewer>
  </Border>
