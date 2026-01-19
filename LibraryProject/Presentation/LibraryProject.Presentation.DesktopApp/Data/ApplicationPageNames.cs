@@ -12,6 +12,9 @@ namespace LibraryProject.Presentation.DesktopApp.Data
         Catalog,
         Borrowing,
         Profile,
-        Management
+        Management,
+        ManagementItems,
+        ManagementUsers,
+        ManagementPolicies
     }
 }

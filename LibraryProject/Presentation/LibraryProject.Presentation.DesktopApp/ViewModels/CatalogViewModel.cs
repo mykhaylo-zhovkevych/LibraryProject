@@ -1,9 +1,11 @@
 ﻿using Avalonia.Metadata;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using LibraryProject.Application.Interfaces;
 using LibraryProject.Application.Services;
 using LibraryProject.Domain.Entities;
 using LibraryProject.Presentation.DesktopApp.Data;
+using LibraryProject.Presentation.DesktopApp.ViewModels.Dialog;
 using LibraryProject.Presentation.DesktopApp.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LibraryProject.Presentation.DesktopApp.ViewModels
@@ -19,7 +22,9 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
     {
         private readonly ItemService _itemService;
 
-        public ObservableCollection<DisplayedItem> Items { get; } = new();
+        public ObservableCollection<DisplayedItem> Items { get; set; } = new();
+        
+        public int TotalFoundItems => GetTotalFoundItems();
         public ObservableCollection<string> FilterOptions { get; } = new()
         {
             "Alle",
@@ -34,16 +39,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [ObservableProperty]
         private string? _searchText;
 
-        partial void OnSearchTextChanged(string? value)
-        {
-            throw new NotImplementedException();
-        }
-
-        partial void OnSelectedFilterOptionChanged(string? value)
-        {
-            throw new NotImplementedException();
-        }
-
+        private CancellationTokenSource? _loadCts;
 
         public CatalogViewModel(ItemService itemService)
         {
@@ -51,12 +47,59 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             PageName = ApplicationPageNames.Catalog;
 
             SelectedFilterOption = FilterOptions[0];
-
-            LoadDataAsync();
-            AddFakeData();
+            _ = LoadDataAsync();
         }
 
-        private async Task LoadDataAsync()
+        partial void OnSearchTextChanged(string? value) => DebouncedReload();
+        partial void OnSelectedFilterOptionChanged(string? value) => DebouncedReload();
+
+        private void DebouncedReload()
+        {
+            _loadCts?.Cancel();
+            _loadCts?.Dispose();
+
+            _loadCts = new CancellationTokenSource();
+
+            var ct = _loadCts.Token;
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(1500, ct); // wait untill userd typed a bit 
+                    await LoadDataAsync();
+                }
+                catch (TaskCanceledException)
+                {
+                    // ignore
+                }
+            }, ct);
+        }
+
+        [RelayCommand]
+        private async Task OpenConfirmDialogAsync()
+        {
+            var dialog = new ConfirmDialogViewModel
+            {
+                Title = "Bestätigung",
+                Message = "Möchten Sie diese Aktion wirklich durchführen?",
+                ConfirmText = "Ja",
+                CancelText = "Nein"
+            };
+
+            CurrentDialog = dialog;
+            dialog.Show();
+
+            await dialog.WaitDialogAsnyc();
+
+            if (dialog.Confirmed)
+            {
+                // Do something
+            }
+        }
+
+
+        private async Task LoadDataAsync(CancellationToken ct = default)
         {
             (bool? isBorrowed, bool? isReserved) cases = SelectedFilterOption switch
             {
@@ -67,12 +110,14 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 _ => throw new NotImplementedException(),
             };
 
-            var selectedItems = await _itemService.SearchForDesiredItem(nameContains: SearchText, cases.isBorrowed, cases.isReserved);
+            var selectedItems = await _itemService.SearchForDesiredItem(nameContains: SearchText, isBorrowed: cases.isBorrowed, isReserved: cases.isReserved);
 
             Items.Clear();
             foreach (var i in selectedItems)
             {
+                ct.ThrowIfCancellationRequested();
                 Items.Add(await MapItemToDisplayedItem(i));
+                
             }
         }
 
@@ -85,45 +130,17 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 item.Description ?? string.Empty,
                 item.Year,
                 item.ItemType.ToString(),
-                availableCopies: await CalculateAvailableCopies(item),
-                totalCopies: await CalculateTotalCopies(item)
+                availableCopies: await CalculateAvailableCopiesAsync(item),
+                totalCopies: CalculateTotalCopies(item)
             );
         }
 
-        private void AddFakeData()
+        private int CalculateTotalCopies(Item item)
         {
-            Items.Add(new DisplayedItem(
-                Guid.NewGuid(),
-                "Die Verwandelung",
-                "Kafka",
-                "Lorem ipesuim wefwef",
-                1954,
-                "Genre",
-                5,
-                10
-            ));
+            return item.CirculationCount;
         }
 
-        private async Task<int> CalculateTotalCopies(Item item)
-        {
-            //
-            IEnumerable<Item> foundFirstItems = await _itemService.SearchForDesiredItem(nameContains: item.Name, yearSelected: item.Year, itemType: item.ItemType);
-
-            var allFoundItems = foundFirstItems.ToList();
-
-            if (allFoundItems.Count() == item.CirculationCount)
-            {
-                return allFoundItems.Count();
-            }
-            else if (allFoundItems.Count() > item.CirculationCount || allFoundItems.Count() < item.CirculationCount)
-            {
-                throw new ArgumentException();
-            }
-
-            else return 0;
-        }
-
-        private async Task<int> CalculateAvailableCopies(Item item)
+        private async Task<int> CalculateAvailableCopiesAsync(Item item)
         {
             IEnumerable<Item> foundFirstItems = await _itemService.SearchForDesiredItem(
                 nameContains: item.Name,
@@ -134,5 +151,11 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
             return allFoundItems.Count(i => i.IsBorrowed == false && i.IsReserved == false);
         }
+
+        private int GetTotalFoundItems()
+        {
+            return Items.Count();
+        }
+
     }
 }

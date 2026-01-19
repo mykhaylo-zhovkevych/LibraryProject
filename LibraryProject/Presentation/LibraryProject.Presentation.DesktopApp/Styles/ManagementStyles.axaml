@@ -1,4 +1,4 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
+<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
   <Style Selector="Border.page">
@@ -18,16 +18,7 @@
   </Style>
 
 
-  <Style Selector="Border.card">
-    <Setter Property="CornerRadius" Value="14"/>
-    <Setter Property="Padding" Value="16"/>
-    <Setter Property="BorderBrush" Value="#e5e7eb"/>
-    <Setter Property="BorderThickness" Value="1"/>
-    <Setter Property="BoxShadow" Value="0 10 25 #14000000"/>
-  </Style>
-
-
-  <Style Selector="Button.extend-button">
+  <Style Selector="Button.management">
     <Setter Property="Foreground" Value="#b3b3b3"/>
     <Setter Property="BorderBrush" Value="#d1d5db"/>
     <Setter Property="BorderThickness" Value="1"/>

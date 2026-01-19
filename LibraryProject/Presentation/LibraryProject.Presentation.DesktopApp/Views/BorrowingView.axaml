@@ -1,63 +1,96 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="using:LibraryProject.Presentation.DesktopApp"
+             xmlns:viewmodels="using:LibraryProject.Presentation.DesktopApp.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="viewmodels:BorrowingViewModel"
              x:Class="LibraryProject.Presentation.DesktopApp.Views.BorrowingView">
+
+  <Design.DataContext>
+    <viewmodels:BorrowingViewModel/>
+  </Design.DataContext>
 
   <UserControl.Styles>
     <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/BorrowingStyles.axaml"/>
   </UserControl.Styles>
 
 
-    <Grid RowDefinitions="Auto Auto">
+<Border Classes="page">
+    <Grid RowDefinitions="Auto,*">
 
-        <!-- TOP -->
-        <StackPanel>
-            <TextBlock>Ausgeliehene B�cher</TextBlock>
-            <TextBlock>Sie haben 1 Buch ausgeliehen</TextBlock>
-        </StackPanel>
+      <!-- Top -->
+      <StackPanel Grid.Row="0" Spacing="2">
+        <TextBlock Classes="title" Text="Ausgeliehene Bücher" />
 
-        <!-- Column definition -->
-        <Grid Grid.Row="0" ColumnDefinitions="Auto * Auto" ColumnSpacing="16">
-            <Border />
+        <TextBlock Classes="subtitle" Text="Sie haben 1 Buch ausgeliehen" />
+      </StackPanel>
 
-            <StackPanel Grid.Column="1" Spacing="8">
-                <TextBlock></TextBlock>
-                <TextBlock></TextBlock>
+      <!-- List -->
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+          <!-- ItemsSource="{Binding Borrowings}" -->
+        <ItemsControl >
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Orientation="Horizontal"
+                         ItemWidth="760"
+                         ItemHeight="260" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
 
-                <StackPanel Orientation="Horizontal">
-                    <Border>
-                        <TextBlock>Name</TextBlock>
-                    </Border>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
 
-                    <Border>
-                        <TextBlock>id: 338c427c-fcc4-4ea0-91e8-62a86594fded</TextBlock>
-                    </Border>
+                <Border Classes="card" Grid.Column="0">
+                  <StackPanel Spacing="10">
+
+                    <!--<TextBlock Text="{Binding Name, FallbackValue='Name: —'}" />
+                    <TextBlock Text="{Binding Id, FallbackValue='Id: —'}" />-->
+
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="16">
+                      <Border Classes="card" Grid.Column="0">
+                        <StackPanel>
+                         <!-- <TextBlock Text="{Binding BorrowedAt, StringFormat='Ausgeliehen am: {0:dd.MM.yyyy}', FallbackValue='Ausgeliehen am: —'}" />-->
+                        </StackPanel>
+                      </Border>
+
+                      <Border Classes="card" Grid.Column="1">
+                        <StackPanel>
+                    <!--      <TextBlock Text="{Binding DueAt, StringFormat='Rückgabedatum: {0:dd.MM.yyyy}', FallbackValue='Rückgabedatum: —'}" />-->
+                        </StackPanel>
+                      </Border>
+
+                      <Border Classes="card" Grid.Column="2">
+                        <StackPanel>
+                       <!--   <TextBlock Text="{Binding Status, StringFormat='Status: {0}', FallbackValue='Status: —'}" />-->
+                        </StackPanel>
+                      </Border>
+                    </Grid>
+
+                  </StackPanel>
+                </Border>
+
+                <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="8">
+                  <!--<Button Content="Erweitern"
+                          CornerRadius="8"
+                          Classes="delete-button"
+                          Command="{Binding DataContext.ExpandCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          CommandParameter="{Binding}" />-->
+
+                  <!--<Button Content="Zurückgeben"
+                          CornerRadius="8"
+                          Command="{Binding DataContext.ReturnCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                          CommandParameter="{Binding}" />-->
                 </StackPanel>
-            </StackPanel>
 
-            <StackPanel Grid.Column="2" Orientation="Vertical" Spacing="8">
-                <Button Content="Erweitern" CornerRadius="8"/>
-                <Button Content="Zurueckgeben" CornerRadius="8"/>
-            </StackPanel>
-        </Grid>
-
-        <!-- Bottom -->
-        <Grid Grid.Row="1" ColumnDefinitions="* * *">
-            <StackPanel>
-                <TextBlock>Ausgeliehen am: 12.06.2024</TextBlock>
-            </StackPanel>
-
-            <StackPanel Grid.Column="1">
-                <TextBlock>Rueckgabedatum: 12.07.2024</TextBlock>
-            </StackPanel>
-
-            <StackPanel Grid.Column="2">
-                <TextBlock>Status</TextBlock>
-            </StackPanel>
-        </Grid>
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
 
     </Grid>
+  </Border>
 </UserControl>

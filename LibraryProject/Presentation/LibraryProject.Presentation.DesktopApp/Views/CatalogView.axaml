@@ -1,8 +1,9 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+ï»¿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:viewmodels="using:LibraryProject.Presentation.DesktopApp.ViewModels"
+             xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
              mc:Ignorable="d"
              d:DesignWidth="1100" d:DesignHeight="700"
              x:DataType="viewmodels:CatalogViewModel"
@@ -25,7 +26,7 @@
         <TextBlock Grid.Row="0" Text="Buchkatalog" Classes="page-title"/>
 
         <!-- Subtitle -->
-        <TextBlock Grid.Row="1" Text="Durchsuchen Sie unsere Sammlung und leihen Sie Bücher aus." Classes="page-subtitle"/>
+        <TextBlock Grid.Row="1" Text="Durchsuchen Sie unsere Sammlung und leihen Sie BÃ¼cher aus." Classes="page-subtitle"/>
 
         <!-- Filters row -->
         <Grid Grid.Row="2"
@@ -43,7 +44,7 @@
         </Grid>
 
         <!-- Found count -->
-        <TextBlock Classes="found-text" Grid.Row="3" Text="Found Items: ..." />
+        <TextBlock Classes="found-text" Grid.Row="3" Text="{Binding TotalFoundItems}"  />
 
         <!-- Cards -->
         <ItemsControl Grid.Row="4" ItemsSource="{Binding Items}">
@@ -51,7 +52,7 @@
             <ItemsPanelTemplate>
               <WrapPanel Orientation="Horizontal"
                          ItemWidth="320"
-                         ItemHeight="340"/>
+                         ItemHeight="400"/>
             </ItemsPanelTemplate>
           </ItemsControl.ItemsPanel>
 
@@ -89,7 +90,7 @@
 
                     <StackPanel Grid.Column="0" Spacing="6">
                       <TextBlock Text="{Binding Year, StringFormat='Jahr: {0}'}" Classes="meta" />
-                      <TextBlock Text="{Binding AvailableCopies, StringFormat='Verfügbar: {0}'}" Classes="meta" />
+                      <TextBlock Text="{Binding AvailableCopies, StringFormat='VerfÃ¼gbar: {0}'}" Classes="meta" />
                     </StackPanel>
 
                     <Button Grid.Column="1"
@@ -102,9 +103,15 @@
               </Border>
             </DataTemplate>
           </ItemsControl.ItemTemplate>
-        </ItemsControl>
+         </ItemsControl>
 
-      </Grid>
-    </ScrollViewer>
-  </Border>
+        <!-- Dialog -->
+        <Grid Grid.Column="0">
+          <Border Background="Black" Opacity="0.5"></Border>
+
+        </Grid>
+        
+    </Grid>
+   </ScrollViewer>
+ </Border>
 </UserControl>

@@ -5,6 +5,7 @@ using LibraryProject.Presentation.DesktopApp.Data;
 using LibraryProject.Presentation.DesktopApp.Factories;
 using LibraryProject.Presentation.DesktopApp.Services;
 using LibraryProject.Presentation.DesktopApp.ViewModels;
+using LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels;
 using LibraryProject.Presentation.Shared.Auth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,6 +50,10 @@ namespace LibraryProject.Presentation.DesktopApp
             services.AddTransient<DashboardViewModel>();
             services.AddTransient<BorrowingViewModel>();
 
+            services.AddTransient<ItemsViewModel>();
+            services.AddTransient<UsersViewModel>();
+            services.AddTransient<PoliciesViewModel>();
+
             // When a GetRequiredService is a called it will pull new instance based on the ApplicationPageNames. Curried function 
             services.AddSingleton<Func<ApplicationPageNames, PageViewModel>>(x => name => name switch
             {
@@ -56,7 +61,10 @@ namespace LibraryProject.Presentation.DesktopApp
                 ApplicationPageNames.Borrowing => x.GetRequiredService<BorrowingViewModel>(),
                 ApplicationPageNames.Profile => x.GetRequiredService<ProfileViewModel>(),
                 ApplicationPageNames.Management => x.GetRequiredService<ManagementViewModel>(),
-                _ => throw new InvalidOperationException("The requested page does not exist.")
+                ApplicationPageNames.ManagementItems => x.GetRequiredService<ItemsViewModel>(),
+                ApplicationPageNames.ManagementUsers => x.GetRequiredService<UsersViewModel>(),
+                ApplicationPageNames.ManagementPolicies => x.GetRequiredService<PoliciesViewModel>(),
+                _ => throw new InvalidOperationException("The requested page does not exist."),
             });
 
             services.AddSingleton<PageFactory>();

@@ -1,32 +1,37 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
-             x:Class="LibraryProject.Presentation.DesktopApp.Views.ManagementView">
+             xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.ManagementView"
+             x:DataType="vm:ManagementViewModel">
 
 
-<Grid RowDefinitions="Auto,Auto,Auto,*">
+<UserControl.Styles>
+    <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/ManagementStyles.axaml"/>
+</UserControl.Styles>
 
-    <TextBlock Grid.Row="0" Text="Verwaltung"/>
+<Border Classes="page"> 
+    <Grid RowDefinitions="Auto,Auto,Auto,*">
 
-    <TextBlock Grid.Row="1" Text="Systemverwaltung und �bersicht"/>
+        <TextBlock Classes="title" Grid.Row="0" Text="Verwaltung"/>
+        <TextBlock Classes="subtitle" Grid.Row="1" Text="Systemverwaltung und Übersicht"/>
 
-    <!--<StackPanel Grid.Row="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
 
-      <Button Content="Uebersicht" Command="{Binding ShowOverviewCommand}" />
+          <!--<Button Content="Uebersicht" />-->
 
-      <Button Content="Buecher" Command="{Binding ShowBooksCommand}" />
+          <Button Classes="management" Content="Bücher" Command="{Binding GoToItemsViewCommand}" />
+          <Button Classes="management" Content="Benutzer" Command="{Binding GoToUsersViewCommand}" />
+          <Button Classes="management" Content="Einstellungen" Command="{Binding GoToPoliciesViewCommand}" />
 
-      <Button Content="Benutzer" Command="{Binding ShowUsersCommand}" />
+        </StackPanel>
 
-      <Button Content="Einstellungen" Command="{Binding ShowSettingsCommand}" />
-    </StackPanel>
+        <ContentControl Grid.Row="3" Content="{Binding CurrentPage}" />
 
-    <ContentControl Grid.Row="3" Content="{Binding CurrentSection}" />-->
-
-  </Grid>
-
+    </Grid>
+</Border>
 
 </UserControl>

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using LibraryProject.Presentation.DesktopApp.Data;
+using LibraryProject.Presentation.DesktopApp.ViewModels.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [ObservableProperty]
         private ApplicationPageNames _pageName;
 
+        [ObservableProperty]
+        private DialogViewModel? _currentDialog;
     }
 }

@@ -1,0 +1,118 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.SubViews.ItemsView">
+
+    <ScrollViewer>
+        <Border>
+		    <Grid RowDefinitions="Auto Auto Auto">
+			
+                <StackPanel Classes="Intro" Grid.Row="0"> 
+                    <TextBlock FontSize="16" Text="Buchverwaltung" HorizontalAlignment="Left"/>
+                    <TextBlock Text="Bücher hinzufügen, bearbeiten oder entfernen" HorizontalAlignment="Left"></TextBlock>
+                </StackPanel>
+
+            
+				
+                <Border Grid.Row="1" Padding="20" CornerRadius="10" BorderBrush="#e5e7eb" BorderThickness="2" Margin="10" >
+                    <Grid ColumnDefinitions="* *"
+                          RowDefinitions="Auto Auto Auto"
+                          ColumnSpacing="16"
+                          RowSpacing="12">
+
+
+                        <!-- Left Side-->
+                        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6" HorizontalAlignment="Stretch">
+                          <TextBlock FontWeight="SemiBold" Margin="0,0,0,10">Buch hinzufügen</TextBlock>
+                          <TextBlock TextWrapping="Wrap">Fügen Sie ein neues Buch zur Bibliothek hinzu</TextBlock>
+
+                          <TextBlock Classes="field-label" Text="Titel" FontWeight="SemiBold" />
+                          <TextBox Classes="primary" Watermark="Artikelname" />
+
+                          <TextBlock Classes="field-label" Text="Autor" FontWeight="SemiBold" />
+                          <TextBox Classes="primary" Watermark="Autorname" />
+                        </StackPanel>
+
+                        <!-- Right side -->
+                        <StackPanel Grid.Row="0" Grid.Column="1" Spacing="6" HorizontalAlignment="Stretch">
+
+                            
+                          <TextBlock Classes="field-label" Text="Year" FontWeight="SemiBold" />
+                          <TextBox Classes="primary"
+                                 Name="YearTextBox"
+                                 Watermark="z.B. 1943"
+                                 MaxLength="4"
+                                 TextInput="NumericTextBox_OnTextInput"/>
+
+                          <TextBlock Classes="field-label" Text="Anzahl Exemplare" FontWeight="SemiBold" />
+                          <TextBox Classes="primary"
+                                 Name="CopiesTextBox"
+                                 Watermark="z.B. 10"
+                                 TextInput="NumericTextBox_OnTextInput" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
+                          <TextBlock Classes="field-label" Text="Beschreibung" FontWeight="SemiBold" />
+                          <TextBox Classes="primary"
+                                   TextWrapping="Wrap"
+                                   AcceptsReturn="True"
+                                   MinHeight="70"
+                                   Watermark="Beschreibung von Artikel" />
+                        </StackPanel>
+
+                        <!-- Buttons last row-->
+                        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Spacing="10">
+                              <Button Classes="first" Content="Speichern" />
+                              <Button Classes="secound" Content="Abbrechen" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!--<StackPanel Grid.Row="3">
+						
+                            <Button Classes="first" Content="Login" />
+                            <Button Classes="secound" Content="Neues Konto erstellen"  />
+                        </StackPanel>-->
+
+                </Border>
+
+                <!-- Secound Element -->
+                <Border Grid.Row="1" Padding="20" CornerRadius="10" BorderBrush="#e5e7eb" BorderThickness="2" Margin="10" >
+                    <Grid ColumnDefinitions="* *"
+                          RowDefinitions="Auto Auto Auto"
+                          ColumnSpacing="16"
+                          RowSpacing="12">
+
+
+                        <!-- Left Side-->
+                        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6" HorizontalAlignment="Stretch">
+                          <TextBlock FontWeight="SemiBold" Margin="0,0,0,10">Buch hinzufügen</TextBlock>
+                          <TextBlock TextWrapping="Wrap">Fügen Sie ein neues Buch zur Bibliothek hinzu</TextBlock>
+
+                          <TextBlock Classes="field-label" Text="Titel" FontWeight="SemiBold" />
+                          <TextBox Classes="primary" Watermark="Artikelname" />
+
+                          <TextBlock Classes="field-label" Text="Autor" FontWeight="SemiBold" />
+                          <TextBox Classes="primary" Watermark="Autorname" />
+                        </StackPanel>
+
+                        <!-- Right side -->
+                        
+                    </Grid>
+
+                    <!--<StackPanel Grid.Row="3">
+						
+                            <Button Classes="first" Content="Login" />
+                            <Button Classes="secound" Content="Neues Konto erstellen"  />
+                        </StackPanel>-->
+
+                </Border>
+
+            </Grid>
+        </Border>
+    </ScrollViewer>
+</UserControl>

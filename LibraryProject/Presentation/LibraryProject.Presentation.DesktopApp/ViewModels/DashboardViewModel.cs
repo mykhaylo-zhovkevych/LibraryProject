@@ -1,10 +1,12 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Dialogs;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LibraryProject.Application.Interfaces;
 using LibraryProject.Presentation.DesktopApp.Data;
 using LibraryProject.Presentation.DesktopApp.Factories;
 using LibraryProject.Presentation.DesktopApp.Services;
 using LibraryProject.Presentation.DesktopApp.ViewModels;
+using LibraryProject.Presentation.DesktopApp.ViewModels.Dialog;
 using LibraryProject.Presentation.DesktopApp.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -27,6 +29,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [NotifyPropertyChangedFor(nameof(BorrowingPageIsActive))]
         [NotifyPropertyChangedFor(nameof(ProfilePageIsActive))]
         [NotifyPropertyChangedFor(nameof(ManagementPageIsActive))]
+
         private PageViewModel _currentPage;
 
         public DashboardViewModel(PageFactory pageFactory, INavigationService navigation, ICurrentUserContext currentUser)
