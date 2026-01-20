@@ -93,6 +93,7 @@
                     <StackPanel Grid.Column="0" Spacing="6">
                       <TextBlock Text="{Binding Year, StringFormat='Jahr: {0}'}" Classes="meta" />
                       <TextBlock Text="{Binding AvailableCopies, StringFormat='Verfügbar: {0}'}" Classes="meta" />
+                      <TextBlock Text="{Binding TotalCopies, StringFormat='Total verfügbar: {0}'}" Classes="meta" />
                     </StackPanel>
 
                     <Button Grid.Column="1"

@@ -1,7 +1,9 @@
-﻿using LibraryProject.Application.Services;
+﻿using LibraryProject.Application.Interfaces;
+using LibraryProject.Application.Services;
 using LibraryProject.Domain.Entities;
 using LibraryProject.Domain.Enum;
 using LibraryProject.Infrastructure.Persistence.InSqlite;
+using LibraryProject.Infrastructure.Persistence.InSqlite.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Threading;
 
@@ -33,6 +35,19 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                         ct);
                 }
 
+              if (!await db.PolicyEntries.AnyAsync(ct))
+            {
+                db.PolicyEntries.Add(new PolicyEntry
+                {
+                    UserType = UserType.Admin,
+                    ItemType = ItemType.Book,
+                    PolicyName = "Admin-Book (Test)",
+                    Extensions = 2,
+                    LoanFees = 0.25m,
+                    LoadPeriodInDays = 14
+                });
+            }
+
             if (!await db.Users.AnyAsync(ct) && !await db.Accounts.AnyAsync(ct))
             {
                 User adminUser = new User("admin", UserType.Admin);
@@ -56,14 +71,16 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             int circulationCount,
             CancellationToken ct = default)
         {
-   
-            for (int i = 0; i < circulationCount; i++)
-            {
-                ct.ThrowIfCancellationRequested();
 
-                Item item = new Item(name, itemType, author, year, description, circulationCount);
-                defaultShelf.AddItem(item);
-            }
+            ct.ThrowIfCancellationRequested();
+
+            Item item = new Item(name, itemType, author, year, description, circulationCount);
+            defaultShelf.AddItem(item);
+
+            //for (int i = 0; i < circulationCount; i++)
+            //{
+                
+            //}
         }
     }
 }

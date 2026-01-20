@@ -28,7 +28,9 @@ namespace LibraryProject.Domain.Entities
         public Borrowing(User user, Item item, Policy policy)
         {
             User = user;
+            UserId = user.Id;
             Item = item;
+            ItemId = item.Id;
             Policy = policy;
             LoanDate = DateTime.Today;
             DueDate = LoanDate.AddDays(policy.LoanPeriodInDays);

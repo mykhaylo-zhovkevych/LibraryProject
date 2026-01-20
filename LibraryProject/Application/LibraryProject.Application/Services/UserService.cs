@@ -61,5 +61,12 @@ namespace LibraryProject.Application.Services
             await _userRepository.RemoveUserAsync(interestedUser);
             return interestedUser;
         }
+
+        // Helper method might need different place
+        public async Task<User?> GetUserByIdAsync(Guid id, CancellationToken ct)
+        {
+            _authorizationService.EnsureAuthenticated();
+            return await _userRepository.GetExistingUserByIdAsync(id, ct);
+        }
     }
 }

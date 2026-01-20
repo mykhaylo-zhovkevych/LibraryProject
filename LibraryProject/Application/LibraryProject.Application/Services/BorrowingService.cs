@@ -33,10 +33,9 @@ namespace LibraryProject.Application.Services
             InformReserver?.Invoke(this, e);
         }
 
-        public async Task<bool> CreateBorrowedItem(User user, Item item, CancellationToken ct)
+        public async Task<bool> CreateBorrowedItemAsync(User user, Item item, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-
             if (!item.CheckBorrowPossible())
             {
                 throw new IsAlreadyBorrowedException(item);
@@ -45,14 +44,21 @@ namespace LibraryProject.Application.Services
             Policy activePolicy = await _policyRepository.GetPolicyAsync(user.UserType, item.ItemType, ct) ?? throw new NonexistentPolicyException();
             // uint allowedCredits = activePolicy.Extensions;
 
-            Borrowing newBorrowing = new Borrowing(user, item, activePolicy);
-
-            await _borrowedRepository.SaveBorrowingAsync(newBorrowing);
-            item.BorrowItem();
-            return true;
+            if (item.CirculationCount <= 0)
+            {
+                throw new ArgumentException("Item is outbooked.");
+            }
+            else
+            {
+                Borrowing newBorrowing = new Borrowing(user, item, activePolicy);
+                item.CirculationCount--;
+                await _borrowedRepository.SaveBorrowingAsync(newBorrowing);
+                item.BorrowItem();
+                return true;
+            }
         }
 
-        public async Task<bool> ReturnBorrowedItem(User user, Item item, CancellationToken ct)
+        public async Task<bool> ReturnBorrowedItemAsync(User user, Item item, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
             Borrowing? activeBorrowing = await _borrowedRepository.GetActiveBorrowingAsync(user.Id, item.Id, ct);
@@ -62,6 +68,7 @@ namespace LibraryProject.Application.Services
                 throw new ArgumentException($"No entries was found for this user {user.Name}");
             }
 
+            activeBorrowing.Item.CirculationCount++;
             activeBorrowing.Item.ReturnItem();
             activeBorrowing.ReturnBorrowing(activeBorrowing);
 
@@ -73,7 +80,7 @@ namespace LibraryProject.Application.Services
             return true;
         }
 
-        public async Task<bool> ExtendBorrowingPeriod(User user, Item item, CancellationToken ct)
+        public async Task<bool> ExtendBorrowingPeriodAsync(User user, Item item, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
             Borrowing? activeBorrowing = await _borrowedRepository.GetActiveBorrowingAsync(user.Id, item.Id, ct);

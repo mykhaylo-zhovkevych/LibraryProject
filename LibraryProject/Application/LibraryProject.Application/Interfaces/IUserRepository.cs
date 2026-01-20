@@ -14,6 +14,7 @@ namespace LibraryProject.Application.Interfaces
         Task RemoveUserAsync(User user, CancellationToken ct = default);
         Task<User?> GetExistingUserByIdAsync(Guid id, CancellationToken ct = default);
         Task<User?> GetExistingUserAsync(string name, UserType userType, CancellationToken ct = default);
+        Task<User?> GetUserByIdAsync(Guid id, CancellationToken ct);
 
     }
 }

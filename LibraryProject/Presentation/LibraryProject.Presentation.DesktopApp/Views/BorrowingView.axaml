@@ -7,7 +7,8 @@
              xmlns:viewmodels="using:LibraryProject.Presentation.DesktopApp.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="viewmodels:BorrowingViewModel"
-             x:Class="LibraryProject.Presentation.DesktopApp.Views.BorrowingView">
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.BorrowingView"
+             x:Name="Root">
 
   <Design.DataContext>
     <viewmodels:BorrowingViewModel/>
@@ -46,14 +47,9 @@
                 <Border Classes="card" Grid.Column="0">
                   <StackPanel Spacing="10">
                       
-                      <!-- Text="{Binding Id, FallbackValue='Id: —'}" -->
-
-                    <TextBlock Text="Text" />
-                    <TextBlock Text="Id" />
-
-                      <!--public DateTime LoanDate { get; private set; }
-                        public DateTime DueDate { get; private set; }
-                        public DateTime? ReturnDate { get; set; }-->
+                    <TextBlock Text="{Binding BorrowingItemName}"/> 
+                    <TextBlock Text="{Binding BorrowingItemAuthror}"/>
+                    <TextBlock Text="{Binding BorrowingItemType}"/>
 
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="16">
                       <Border Classes="card" Grid.Column="0">
@@ -70,7 +66,7 @@
 
                       <Border Classes="card" Grid.Column="2">
                         <StackPanel>
-                       <!--   <TextBlock Text="{Binding Status, StringFormat='Status: {0}', FallbackValue='Status: —'}" />-->
+                          <TextBlock Text="{Binding Status, StringFormat='Status: {0}', FallbackValue='Status: —'}" />
                         </StackPanel>
                       </Border>
                     </Grid>
@@ -79,16 +75,16 @@
                 </Border>
 
                 <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="8">
-                  <!--<Button Content="Erweitern"
+                  <Button Content="Erweitern"
                           CornerRadius="8"
                           Classes="delete-button"
-                          Command="{Binding DataContext.ExpandCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                          CommandParameter="{Binding}" />-->
+                          Command="{Binding #Root.DataContext.ExpandCommand}"
+                          CommandParameter="{Binding}" />
 
-                  <!--<Button Content="Zurückgeben"
+                  <Button Content="Zurückgeben"
                           CornerRadius="8"
-                          Command="{Binding DataContext.ReturnCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                          CommandParameter="{Binding}" />-->
+                          Command="{Binding #Root.DataContext.ReturnCommand}"
+                          CommandParameter="{Binding}" />
                 </StackPanel>
 
               </Grid>

@@ -15,15 +15,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         private readonly LibraryDbContext _db;
         public SqliteBorrowingRepository(LibraryDbContext db) => _db = db;
 
-        public async Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            return await _db.Borrowings
-                .AsNoTracking()
-                .Where(b => b.UserId == userId && !b.IsReturned)
-                .ToListAsync(ct);
-        }
-
         public async Task<Borrowing?> GetActiveBorrowingAsync(Guid userId, Guid itemId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
@@ -31,12 +22,23 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                 .FirstOrDefaultAsync(b => b.UserId == userId && b.ItemId == itemId && !b.IsReturned, ct);
         }
 
+        public async Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            return await _db.Borrowings
+                .AsNoTracking()
+                .Include(b => b.Item) // Was added cause of sql
+                .Where(b => b.UserId == userId && b.IsReturned == null)
+                .ToListAsync(ct);
+        }
+
         public async Task<List<Borrowing>> GetInactiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
             return await _db.Borrowings
                 .AsNoTracking()
-                .Where(b => b.UserId == userId && b.IsReturned)
+                .Include(b => b.Item)
+                .Where(b => b.UserId == userId && b.IsReturned != null)
                 .ToListAsync(ct);
         }
 
@@ -45,6 +47,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
             return await _db.Borrowings
                 .AsNoTracking()
+                .Include(b => b.Item)
                 .Where(b => b.UserId == userId)
                 .ToListAsync(ct);
         }
@@ -58,6 +61,13 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 
         public async Task SaveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
         {
+            // Makt the navigation entities as existing so EF won't Insert them
+            //_db.Attach(borrowing.User);
+            //_db.Attach(borrowing.Item);
+
+            _db.Entry(borrowing.User).State = EntityState.Unchanged;
+            _db.Entry(borrowing.Item).State = EntityState.Unchanged;
+
             ct.ThrowIfCancellationRequested();
             await _db.Borrowings.AddAsync(borrowing, ct);
             await _db.SaveChangesAsync(ct);

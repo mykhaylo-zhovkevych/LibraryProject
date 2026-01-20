@@ -44,5 +44,10 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             _storage.Users.Remove(user);
             return Task.CompletedTask;
         }
+
+        public Task<User?> GetUserByIdAsync(Guid id, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

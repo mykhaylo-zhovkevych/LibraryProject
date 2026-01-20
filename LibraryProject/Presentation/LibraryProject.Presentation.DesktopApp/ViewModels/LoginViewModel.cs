@@ -48,7 +48,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             
             try
             {
-                // TODO: figure out how to handle cancellation token here
                 var session = await _accountService.LoginAsync(userguidId, _name, _password, default);
 
                 if (session != null)
@@ -68,13 +67,10 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             }
         }
 
-        // DashboardViewModel
-
         [RelayCommand]
         public async Task NavigateToRegister()
         {
             await _navigationService.NavigateTo<RegisterViewModel>();
         }
-
     }
 }

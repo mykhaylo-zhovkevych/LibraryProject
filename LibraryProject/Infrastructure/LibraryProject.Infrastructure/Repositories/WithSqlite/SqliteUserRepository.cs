@@ -32,6 +32,14 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                 .FirstOrDefaultAsync(u => u.Id == id, ct);
         }
 
+        public Task<User?> GetUserByIdAsync(Guid id, CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+            return _db.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id, ct);
+        }
+
         public async Task RemoveUserAsync(User user, CancellationToken ct)
         {
             ct.ThrowIfCancellationRequested();

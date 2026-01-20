@@ -22,6 +22,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
     {
         private readonly ItemService _itemService;
         private readonly BorrowingService _borrowingService;
+        private readonly UserService _userService;
+        private readonly ICurrentUserContext _currentUserContext;
 
         public ObservableCollection<DisplayedItem> Items { get; set; } = new();
         
@@ -41,20 +43,36 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         private string? _searchText;
 
         private CancellationTokenSource? _loadCts;
+        private bool _suppressReload;
 
-        public CatalogViewModel(ItemService itemService, BorrowingService borrowingService)
+        public CatalogViewModel(ItemService itemService, 
+                                BorrowingService borrowingService, 
+                                UserService userService, 
+                                ICurrentUserContext currentUserContext)
         {
             _itemService = itemService;
             _borrowingService = borrowingService;
+            _userService = userService;
+            _currentUserContext = currentUserContext;
 
             PageName = ApplicationPageNames.Catalog;
+
+            _suppressReload = true;
             SelectedFilterOption = FilterOptions[0];
-            
+            _suppressReload = false;
+
             _ = LoadDataAsync();
         }
 
         partial void OnSearchTextChanged(string? value) => DebouncedReload();
-        partial void OnSelectedFilterOptionChanged(string? value) => DebouncedReload();
+
+        partial void OnSelectedFilterOptionChanged(string? value)
+        {
+            if (_suppressReload)
+                return;
+
+            DebouncedReload();
+        }
 
         private void DebouncedReload()
         {
@@ -69,12 +87,12 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             {
                 try
                 {
-                    await Task.Delay(1500, ct); // wait untill userd typed a bit 
+                    await Task.Delay(1500, ct);
                     await LoadDataAsync();
                 }
                 catch (TaskCanceledException)
                 {
-                    // ignore
+
                 }
             }, ct);
         }
@@ -82,7 +100,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [RelayCommand]
         private async Task ShowItemDialogAsync(DisplayedItem item)
         {
-            var dialog = new BorrowDialogViewModel()
+            BorrowDialogViewModel dialog = new BorrowDialogViewModel()
             {
                 Title = "Ausleihen bestätigen",
                 Message = $"Möchten Sie “{item.Title}“ ausleihen?",
@@ -96,18 +114,33 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
             if (await dialog.WaitConfirmationAsync())
             {
-                // Get first posible copy of the item 
+                try
+                {
+                    Guid userId = _currentUserContext.UserId.Value;
+                    User user = await _userService.GetUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Logged-in user not found.");
 
-                
+                    Item domainItem = (await _itemService.SearchForDesiredItem(customPredicate: x => x.Id == item.Id)).FirstOrDefault() 
+                        ?? throw new InvalidOperationException("Item not found.");
 
-                // Get the logged user
-                // Borrow
-                // exit
+                    await _borrowingService.CreateBorrowedItemAsync(user, domainItem, default);
+                }
+                catch (Exception ex)
+                {
+                    ErrorDialogViewModel errorDialog = new ErrorDialogViewModel()
+                    {
+                        Title = "Fehler",
+                        Message = $"Fehler: {ex.Message}",
+                        ConfirmText = "OK"
+                    };
+                    CurrentDialog = errorDialog;
+                    errorDialog.Show();
+
+                }
+                finally
+                {
+                    // CurrentDialog = null;
+                }
             }
-
-            // await dialog.WaitDialogAsnyc();
-
-            CurrentDialog = null;
         }
 
 
@@ -127,12 +160,11 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             Items.Clear();
             foreach (var i in selectedItems)
             {
-                if (i.Id == selectedItems.FirstOrDefault().Id)
-                {
-                    ct.ThrowIfCancellationRequested();
-                    Items.Add(await MapItemToDisplayedItem(i));
-                }   
+                ct.ThrowIfCancellationRequested();
+                Items.Add(await MapItemToDisplayedItem(i));
             }
+
+            OnPropertyChanged(nameof(TotalFoundItems));
         }
 
         private async Task<DisplayedItem> MapItemToDisplayedItem(Item item)
