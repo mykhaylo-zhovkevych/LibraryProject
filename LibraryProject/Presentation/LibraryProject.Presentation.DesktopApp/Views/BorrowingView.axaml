@@ -29,9 +29,8 @@
       </StackPanel>
 
       <!-- List -->
-      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-          <!-- ItemsSource="{Binding Borrowings}" -->
-        <ItemsControl >
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" >
+        <ItemsControl ItemsSource="{Binding Borrowings}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel Orientation="Horizontal"
@@ -46,20 +45,26 @@
 
                 <Border Classes="card" Grid.Column="0">
                   <StackPanel Spacing="10">
+                      
+                      <!-- Text="{Binding Id, FallbackValue='Id: —'}" -->
 
-                    <!--<TextBlock Text="{Binding Name, FallbackValue='Name: —'}" />
-                    <TextBlock Text="{Binding Id, FallbackValue='Id: —'}" />-->
+                    <TextBlock Text="Text" />
+                    <TextBlock Text="Id" />
+
+                      <!--public DateTime LoanDate { get; private set; }
+                        public DateTime DueDate { get; private set; }
+                        public DateTime? ReturnDate { get; set; }-->
 
                     <Grid ColumnDefinitions="*,*,*" ColumnSpacing="16">
                       <Border Classes="card" Grid.Column="0">
                         <StackPanel>
-                         <!-- <TextBlock Text="{Binding BorrowedAt, StringFormat='Ausgeliehen am: {0:dd.MM.yyyy}', FallbackValue='Ausgeliehen am: —'}" />-->
+                          <TextBlock Text="{Binding LoanDate, StringFormat='Ausgeliehen am: {0:dd.MM.yyyy}', FallbackValue='Ausgeliehen am: —'}" />
                         </StackPanel>
                       </Border>
 
                       <Border Classes="card" Grid.Column="1">
                         <StackPanel>
-                    <!--      <TextBlock Text="{Binding DueAt, StringFormat='Rückgabedatum: {0:dd.MM.yyyy}', FallbackValue='Rückgabedatum: —'}" />-->
+                          <TextBlock Text="{Binding DueDate, StringFormat='Rückgabedatum: {0:dd.MM.yyyy}', FallbackValue='Rückgabedatum: —'}" />
                         </StackPanel>
                       </Border>
 

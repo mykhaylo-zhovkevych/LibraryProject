@@ -3,13 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
-             mc:Ignorable="d"
-             MinWidth="300"
-             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.ConfirmDialogView"
-             x:DataType="vm:ConfirmDialogViewModel">
+             mc:Ignorable="d" 
+             d:DesignWidth="300"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.BorrowDialogView"
+             x:DataType="vm:BorrowDialogViewModel">
+             
 
   <Design.DataContext>
-    <vm:ConfirmDialogViewModel/>
+    <vm:BorrowDialogViewModel/>
   </Design.DataContext>
 
   <Border Background="#e5e7eb" CornerRadius="20" ClipToBounds="True" Margin="10" BorderThickness="1">

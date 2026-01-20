@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace LibraryProject.Presentation.DesktopApp.Views.Dialog;
 
-public partial class ConfirmDialogView : UserControl
+public partial class BorrowDialogView : UserControl
 {
-    public ConfirmDialogView()
+    public BorrowDialogView()
     {
         InitializeComponent();
     }

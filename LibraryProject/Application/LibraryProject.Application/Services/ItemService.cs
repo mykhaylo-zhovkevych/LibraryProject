@@ -22,7 +22,7 @@ namespace LibraryProject.Application.Services
             _authorizationService = authorizationService;
         }
 
-        public async Task RemoveItemAsync(Item item, CancellationToken ct)
+        public async Task RemoveItemByIdAsync(Item item, CancellationToken ct)
         {
             if (item == null)
             {
@@ -30,20 +30,54 @@ namespace LibraryProject.Application.Services
             }
             _authorizationService.EnsureAdmin();
 
-            await _itemRepository.RemoveFromShelfAsync(item, ct);
+            // Get the item by id
+            var existingItem = await _itemRepository.GetExistingItemAsync(item.Name, item.ItemType, ct);
+
+            if (existingItem == null || existingItem.Id != item.Id)
+            {
+                throw new NonexistentItemException();
+            }
+            else
+            {
+                await _itemRepository.RemoveFromShelfAsync(existingItem, ct);
+                existingItem.CirculationCount--;
+            }
         }
 
-        public async Task<Item> CreateItem(string name, ItemType itemType, string author, int year, string? description, int circulationCount, CancellationToken ct)
+
+        public async Task RemoveAllItemsAsync(Item item, CancellationToken ct)
+        {
+            if (item == null)
+            {
+                throw new NonexistentItemException();
+            }
+            _authorizationService.EnsureAdmin();
+
+            // Get all items with the same name and type
+            var itemsToRemove = await _itemRepository.GetAllItemsFromShelvesAsync(ct);
+            var itemsMatching = itemsToRemove.Where(i => i.Name == item.Name && i.ItemType == item.ItemType && i.Author == item.Author && i.Year == item.Year);
+            foreach (var it in itemsMatching)
+            {
+                await _itemRepository.RemoveFromShelfAsync(it, ct);
+            }
+        }
+
+        public async Task CreateItemWithAmount(string name, ItemType itemType, string author, int year, string? description, int circulationCount, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentException("Item name cannot be null or empty.");
             }
-            _authorizationService.EnsureAdmin();
+            // _authorizationService.EnsureAdmin();
 
-            Item newItem = new Item(name, itemType, author, year, description, circulationCount);
-            await AddItemToShelf(newItem, ct);
-            return newItem;
+            // Initialize all items
+            for (int i = 0; i < circulationCount; i++)
+            {
+                Item item = new Item(name, itemType, author, year, description, circulationCount);
+                await AddItemToShelf(item, ct);
+
+
+            }
         }
 
         public bool CreateReservedItem(User user, Item item)

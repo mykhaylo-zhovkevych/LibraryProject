@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
@@ -52,9 +52,11 @@ namespace LibraryProject.Presentation.DesktopApp
                 // DB init in isolated scope
                 using (var scope = serviceProvider.CreateScope())
                 {
+
+                    ItemService service = scope.ServiceProvider.GetRequiredService<ItemService>();
                     var db = scope.ServiceProvider.GetRequiredService<LibraryDbContext>();
                     await db.Database.EnsureCreatedAsync();
-                    await DbSeeder.SeedAsync(db);
+                    await DbSeeder.SeedAsync(db, service);
                 }
 
                 // UI (root scope)

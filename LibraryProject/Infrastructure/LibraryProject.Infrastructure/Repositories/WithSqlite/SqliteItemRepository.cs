@@ -42,6 +42,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             }
 
             shelf = new Shelf(DefaultShelfId);
+            // temp disabled
             await _db.Shelves.AddAsync(shelf, ct);
             await _db.SaveChangesAsync(ct);
             return shelf;
@@ -68,6 +69,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             Shelf shelf = await GetOrCreateDefaultShelfAsync(ct);
             shelf.AddItem(item);
 
+            //temp disabled
             await _db.SaveChangesAsync(ct);
         }
 

@@ -23,7 +23,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.Dialog
 
         public void Show()
         {
-
             if (closeTask.Task.IsCompleted)
                 closeTask = new TaskCompletionSource();
             

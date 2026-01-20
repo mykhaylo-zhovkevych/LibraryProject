@@ -21,7 +21,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
     public partial class CatalogViewModel : PageViewModel
     {
         private readonly ItemService _itemService;
-      
+        private readonly BorrowingService _borrowingService;
+
         public ObservableCollection<DisplayedItem> Items { get; set; } = new();
         
         public int TotalFoundItems => GetTotalFoundItems();
@@ -41,12 +42,14 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
         private CancellationTokenSource? _loadCts;
 
-        public CatalogViewModel(ItemService itemService)
+        public CatalogViewModel(ItemService itemService, BorrowingService borrowingService)
         {
             _itemService = itemService;
+            _borrowingService = borrowingService;
 
             PageName = ApplicationPageNames.Catalog;
             SelectedFilterOption = FilterOptions[0];
+            
             _ = LoadDataAsync();
         }
 
@@ -79,10 +82,10 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [RelayCommand]
         private async Task ShowItemDialogAsync(DisplayedItem item)
         {
-            var dialog = new ConfirmDialogViewModel
+            var dialog = new BorrowDialogViewModel()
             {
                 Title = "Ausleihen bestätigen",
-                Message = $"Möchten Sie „{item.Title}“ ausleihen?",
+                Message = $"Möchten Sie “{item.Title}“ ausleihen?",
                 ConfirmText = "Ja",
                 CancelText = "Nein"
             };
@@ -90,7 +93,19 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             CurrentDialog = dialog;
             dialog.Show();
 
-            await dialog.WaitDialogAsnyc();
+
+            if (await dialog.WaitConfirmationAsync())
+            {
+                // Get first posible copy of the item 
+
+                
+
+                // Get the logged user
+                // Borrow
+                // exit
+            }
+
+            // await dialog.WaitDialogAsnyc();
 
             CurrentDialog = null;
         }
@@ -112,9 +127,11 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             Items.Clear();
             foreach (var i in selectedItems)
             {
-                ct.ThrowIfCancellationRequested();
-                Items.Add(await MapItemToDisplayedItem(i));
-                
+                if (i.Id == selectedItems.FirstOrDefault().Id)
+                {
+                    ct.ThrowIfCancellationRequested();
+                    Items.Add(await MapItemToDisplayedItem(i));
+                }   
             }
         }
 

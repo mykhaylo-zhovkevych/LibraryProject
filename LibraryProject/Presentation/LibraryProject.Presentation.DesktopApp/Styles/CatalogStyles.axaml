@@ -1,4 +1,4 @@
-<Styles xmlns="https://github.com/avaloniaui"
+﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
   <!-- Page background -->
@@ -97,11 +97,17 @@
 
   <!-- Details button -->
   <Style Selector="Button.details-button">
-    <Setter Property="Background" Value="#111827"/>
-    <Setter Property="Foreground" Value="White"/>
+    <Setter Property="Background" Value="#969696"/>
+    <Setter Property="Foreground" Value="#e5e7eb"/>
     <Setter Property="CornerRadius" Value="12"/>
     <Setter Property="Padding" Value="12,8"/>
     <Setter Property="BorderThickness" Value="0"/>
   </Style>
+
+
+    <Style Selector="Button.details-Button:pointerover">
+		<Setter Property="Background" Value="#d7d7d7"/>
+    </Style>
+
 
 </Styles>
