@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:views="using:LibraryProject.Presentation.DesktopApp"
+             xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
              xmlns:viewmodels="using:LibraryProject.Presentation.DesktopApp.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:DataType="viewmodels:BorrowingViewModel"
@@ -25,8 +25,8 @@
       <!-- Top -->
       <StackPanel Grid.Row="0" Spacing="2">
         <TextBlock Classes="title" Text="Ausgeliehene Bücher" />
+        <TextBlock Classes="subtitle" Text="{Binding BorrowingsSubtitle}" />
 
-        <TextBlock Classes="subtitle" Text="Sie haben 1 Buch ausgeliehen" />
       </StackPanel>
 
       <!-- List -->
@@ -45,7 +45,7 @@
               <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
 
                 <Border Classes="card" Grid.Column="0">
-                  <StackPanel Spacing="10">
+                  <StackPanel Spacing="10" >
                       
                     <TextBlock Text="{Binding BorrowingItemName}"/> 
                     <TextBlock Text="{Binding BorrowingItemAuthror}"/>

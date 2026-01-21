@@ -30,6 +30,16 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _ = LoadDataAsync();
         }
 
+        public int TotalActiveBorrowings => Borrowings.Count(b => b.Status == "On Loan");
+
+        public string BorrowingsSubtitle => $"Sie haben insgesamt {TotalActiveBorrowings} aktive Ausleihe(n).";
+
+        // For design-time data
+        //public BorrowingViewModel()
+        //{
+
+        //}
+
         private async Task LoadDataAsync(CancellationToken ct = default)
         {
             var userId = _currentUserContext.UserId.Value;
@@ -41,6 +51,9 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 ct.ThrowIfCancellationRequested();
                 Borrowings.Add(MapBorrowingToDisplayedBorrowing(b));
             }
+
+            OnPropertyChanged(nameof(TotalActiveBorrowings));
+            OnPropertyChanged(nameof(BorrowingsSubtitle));
         }
 
 

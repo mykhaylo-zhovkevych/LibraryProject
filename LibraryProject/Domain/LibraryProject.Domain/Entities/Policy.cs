@@ -10,9 +10,9 @@ namespace LibraryProject.Domain.Entities
     {
         public Guid Id { get; private set; }
         public string? PolicyName { get; private set; }
-        public uint Extensions { get; private set; }
-        public decimal LoanFees { get; private set; }
-        public uint LoanPeriodInDays { get; private set; }
+        public uint Extensions { get; set; }
+        public decimal LoanFees { get; set; }
+        public uint LoanPeriodInDays { get; set; }
 
         public Policy()
         {
