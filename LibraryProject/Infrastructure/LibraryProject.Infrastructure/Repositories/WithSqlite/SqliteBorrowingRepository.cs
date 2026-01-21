@@ -65,12 +65,14 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 
         public async Task SaveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
         {
-            // Makt the navigation entities as existing so EF won't Insert them
-            _db.Attach(borrowing.User);
-            _db.Attach(borrowing.ItemCopy);
+        // Makt the navigation entities as existing so EF won't Insert them
+        //_db.Attach(borrowing.User);
+        //_db.Attach(borrowing.ItemCopy);
 
-            //_db.Entry(borrowing.User).State = EntityState.Unchanged;
-            //_db.Entry(borrowing.Item).State = EntityState.Unchanged;
+            // Dont save the navigation properties if there is fk 
+
+            _db.Entry(borrowing).Reference(b => b.User).CurrentValue = null;
+            _db.Entry(borrowing).Reference(b => b.ItemCopy).CurrentValue = null;
 
             ct.ThrowIfCancellationRequested();
             await _db.Borrowings.AddAsync(borrowing, ct);

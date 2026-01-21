@@ -86,7 +86,7 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
             {
                 b.HasKey(x => x.AccountId);
 
-                b.HasIndex(x => x.Name).IsUnique();
+                b.HasIndex(x => x.AccountName).IsUnique();
 
                 b.HasOne<User>()
                     .WithMany()

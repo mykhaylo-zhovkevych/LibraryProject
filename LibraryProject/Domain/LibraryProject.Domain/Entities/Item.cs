@@ -9,24 +9,18 @@ namespace LibraryProject.Domain.Entities
 {
     public class Item
     {
-        public Guid Id { get; init; }
-        public string Name { get; set; }
-        public string Author { get; set; }
-        public int Year { get; }
-        public string? Description { get; set; }
-        //public bool IsBorrowed { get; set; } = false;
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string Author { get; private set; }
+        public int Year { get; private set; }
+        public string? Description { get; private set; }
         public string? CoverImagePath { get; private set; }
 
-        // EF-Friendly Fk instead of only nvavigation 
-        //public Guid? ReservedById { get; internal set; }
-        //public User? ReservedBy { get; internal set; }
-        //public bool IsReserved => ReservedBy is not null;
-        //EF-Friendly Fk to shefl (required for Shelves.Items persistence)
-        public int ShelfId { get; set; }
-        public ItemType ItemType { get; set; }
+        public int ShelfId { get; internal set; }
+        public ItemType ItemType { get; private set; }
         public int CirculationCount { get; set; }
 
-        public List<ItemCopy> Copies { get; set; } = new();
+        public List<ItemCopy> Copies { get; private set; } = new();
 
         protected Item() { }
         public Item(string name, ItemType itemType, string author, int year, string? description = null, int circulationCount = 0)

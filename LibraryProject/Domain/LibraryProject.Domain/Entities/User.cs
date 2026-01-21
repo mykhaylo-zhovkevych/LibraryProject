@@ -9,9 +9,9 @@ namespace LibraryProject.Domain.Entities
 {
     public class User
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public UserType UserType { get; set; }
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public UserType UserType { get; private set; }
 
         protected User() { }
         public User(string name, UserType userType)

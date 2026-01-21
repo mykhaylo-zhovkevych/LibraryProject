@@ -8,16 +8,16 @@ namespace LibraryProject.Presentation.DesktopApp.Models
 {
     public class DisplayedItem
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Author { get; set; }
-        public string Description { get; set; }
-        public int Year { get; set; }
-        public string Type { get; set; }
-        public int AvailableCopies { get; set; }
-        public int TotalCopies { get; set; }
+        public Guid Id { get; }
+        public string Title { get; }
+        public string Author { get; }
+        public string Description { get; }
+        public int Year { get; }
+        public string Type { get; }
+        public int AvailableCopies { get; }
 
-        public DisplayedItem(Guid id, string title, string author, string description, int year, string type, int availableCopies, int totalCopies)
+
+        public DisplayedItem(Guid id, string title, string author, string description, int year, string type, int availableCopies)
         {
             Id = id;
             Title = title;
@@ -26,8 +26,6 @@ namespace LibraryProject.Presentation.DesktopApp.Models
             Year = year;
             Type = type;
             AvailableCopies = availableCopies;
-            TotalCopies = totalCopies;
         }
-
     }
 }

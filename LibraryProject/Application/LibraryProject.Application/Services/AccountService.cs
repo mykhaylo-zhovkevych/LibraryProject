@@ -59,7 +59,7 @@ namespace LibraryProject.Application.Services
                 throw new SecurityException("Invalid credentials.");
             }
 
-            return new LoginSession(user.Id, user.UserType, account.Name);
+            return new LoginSession(user.Id, user.UserType, account.AccountName);
         }
 
         public async Task<Account> RegisterAccountAsync(Guid userId, string userName, string password, string email, CancellationToken ct)

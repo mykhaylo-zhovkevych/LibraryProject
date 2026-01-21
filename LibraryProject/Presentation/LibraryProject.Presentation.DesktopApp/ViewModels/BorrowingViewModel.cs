@@ -57,7 +57,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
                 await _borrowingService.ExtendBorrowingPeriodAsync(
                     currentUser,
-                    borrowing.ItemCopy.ItemId,
+                    borrowing.ItemCopy.Id,
                     ct);
 
                 await LoadDataAsync(ct);
@@ -82,7 +82,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
                 await _borrowingService.ReturnBorrowedItemAsync(
                     currentUser,
-                    borrowing.ItemCopy.ItemId,
+                    borrowing.ItemCopy.Id,
                     ct);
 
                 Borrowings.Remove(db);

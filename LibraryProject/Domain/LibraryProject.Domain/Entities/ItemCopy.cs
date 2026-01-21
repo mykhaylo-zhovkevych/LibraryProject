@@ -11,14 +11,13 @@ namespace LibraryProject.Domain.Entities
 
         public Guid Id { get; init; } = Guid.NewGuid();
 
-        public Guid ItemId { get; set; }
-        public Item Item { get; set; } = null!;
+        public Guid ItemId { get; private set; }
+        public Item Item { get; private set; } = null!;
 
-        public bool IsBorrowed { get; set; }
-        public Guid? ReservedById { get; set; }
-        public User? ReservedBy { get; set; }
-
+        public bool IsBorrowed { get; internal set;}
         public bool IsReserved => ReservedById != null;
+        public Guid? ReservedById { get; private set; }
+        public User? ReservedBy { get; private set; }
 
         public bool CheckBorrowPossible()
         {

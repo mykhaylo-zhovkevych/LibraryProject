@@ -140,10 +140,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                     errorDialog.Show();
 
                 }
-                finally
-                {
-                    // CurrentDialog = null;
-                }
             }
         }
 
@@ -165,13 +161,13 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             foreach (var i in selectedItems)
             {
                 ct.ThrowIfCancellationRequested();
-                Items.Add(await MapItemToDisplayedItem(i));
+                Items.Add(MapItemToDisplayedItem(i));
             }
 
             OnPropertyChanged(nameof(TotalFoundItems));
         }
 
-        private async Task<DisplayedItem> MapItemToDisplayedItem(Item item)
+        private DisplayedItem MapItemToDisplayedItem(Item item)
         {
             return new DisplayedItem(
                 item.Id,
@@ -180,36 +176,14 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 item.Description ?? string.Empty,
                 item.Year,
                 item.ItemType.ToString(),
-                availableCopies: await CalculateAvailableCopiesAsync(item),
-                totalCopies: CalculateTotalCopies(item)
+                availableCopies: CalculateAvailableCopiesAsync(item)
             );
         }
 
-        private int CalculateTotalCopies(Item item) => item.CirculationCount;
+        private int CalculateAvailableCopiesAsync(Item item) => item.CirculationCount;
 
 
-        private async Task<int> CalculateAvailableCopiesAsync(Item item)
-        {
-            var items = await _itemService.SearchForDesiredItem(
-                nameContains: item.Name,
-                yearSelected: item.Year,
-                itemType: item.ItemType,
-                customPredicate: i => i.Author == item.Author);
-
-            Item? domainItem = items.FirstOrDefault();
-            if (domainItem == null || domainItem.Copies == null)
-            {
-                return 0;
-            }
-                
-            return domainItem.Copies.Count(c => !c.IsBorrowed && c.ReservedById == null);
-        }
-
-
-        private int GetTotalFoundItems()
-        {
-            return Items.Count();
-        }
+        private int GetTotalFoundItems() => Items.Count();
 
     }
 }

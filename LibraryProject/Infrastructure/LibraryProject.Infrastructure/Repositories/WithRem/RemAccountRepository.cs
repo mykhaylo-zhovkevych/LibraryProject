@@ -18,7 +18,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         public Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            return Task.FromResult(_storage.Accounts.FirstOrDefault(u => u.Name == userName));
+            return Task.FromResult(_storage.Accounts.FirstOrDefault(u => u.AccountName == userName));
 
         }
 

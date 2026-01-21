@@ -12,15 +12,15 @@ namespace LibraryProject.Domain.Entities
         public Guid BorrowingId { get; private set; }
 
         public Guid UserId { get; private set; }
-        public User User { get; init; }
+        public User User { get; private set; }
 
-        public Guid ItemCopyId { get; set; }
-        public ItemCopy ItemCopy { get; set; }
+        public Guid ItemCopyId { get; private set; }
+        public ItemCopy ItemCopy { get; private set; }
 
-        public Policy Policy { get; }
+        public Policy Policy { get; private set; }
         public DateTime LoanDate { get; private set; }
         public DateTime DueDate { get; private set; }
-        public DateTime? ReturnDate { get; set; }
+        public DateTime? ReturnDate { get; private set; }
         public bool IsReturned => ReturnDate.HasValue;
 
         public uint RemainingExtensionCredits { get; private set; }

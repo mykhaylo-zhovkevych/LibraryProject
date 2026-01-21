@@ -11,9 +11,9 @@ namespace LibraryProject.Domain.Entities
     {
         public int AccountId { get; private set; }
         public Guid UserId { get; private set; }
-        public string Name { get; private set; }
+        public string AccountName { get; private set; }
         public string Password { get; private set; }
-        public string? Email { get; private set; } = string.Empty;
+        public string? Email { get; private set; }
         public bool IsSuspended { get; private set; } = false;
 
         protected Account() { }
@@ -22,7 +22,7 @@ namespace LibraryProject.Domain.Entities
         {
             AccountId = new Random().Next(1, int.MaxValue);
             UserId = userId.Id;
-            Name = name;
+            AccountName = name;
             Password = password;
             Email = email;
             IsSuspended = false;

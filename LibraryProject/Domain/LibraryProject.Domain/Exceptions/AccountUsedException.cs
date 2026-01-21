@@ -9,6 +9,6 @@ namespace LibraryProject.Domain.Exceptions
 {
     public class AccountUsedException : Exception
     {
-        public AccountUsedException(Account account) : base($"Apology, but {account.Name} is allready used.") { }
+        public AccountUsedException(Account account) : base($"Apology, but {account.AccountName} is allready used.") { }
     }
 }

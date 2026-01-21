@@ -20,7 +20,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
             return await _db.Accounts
                 .AsNoTracking()
-                .FirstOrDefaultAsync(a => a.Name == userName, ct);
+                .FirstOrDefaultAsync(a => a.AccountName == userName, ct);
         }
 
         public async Task<Account?> GetAccountByAccountIdAsync(int accountId, CancellationToken ct = default)
