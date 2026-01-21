@@ -54,6 +54,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 
             return await _db.Items
                 .AsNoTracking()
+                .Include(i => i.Copies)
                 .ToListAsync(ct);
         }
         public async Task RemoveFromShelfAsync(Item item, CancellationToken ct = default)
@@ -73,5 +74,23 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             await _db.SaveChangesAsync(ct);
         }
 
+        public async Task<ItemCopy?> GetFirstFreeCopyAsync(Guid itemId, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            return await _db.ItemCopies
+                .Include(c => c.Item)
+                .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == null, ct);
+        }
+
+        public async Task UpdateCopyAsync(ItemCopy copy, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            _db.ItemCopies.Attach(copy);
+            _db.Entry(copy).State = EntityState.Modified;
+
+            await _db.SaveChangesAsync(ct);
+        }
     }
 }

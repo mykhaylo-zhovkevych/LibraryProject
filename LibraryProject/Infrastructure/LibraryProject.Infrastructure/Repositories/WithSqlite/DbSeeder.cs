@@ -15,8 +15,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 
         public static async Task SeedAsync(LibraryDbContext db, ItemService service, CancellationToken ct = default)
         {
-            //await db.Database.EnsureDeletedAsync(ct);
-            //await db.Database.EnsureCreatedAsync(ct);
+            await db.Database.EnsureDeletedAsync(ct);
+            await db.Database.EnsureCreatedAsync(ct);
 
             // Seed Shelf first (required for Item.ShelfId FK)
             Shelf defaultShelf = new Shelf(DefaultShelfId);
@@ -33,6 +33,11 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                         "Die Verwandlung ist eine im Jahr 1912 entstandene Erzählung von Franz Kafka. Die Geschichte handelt von Gregor Samsa, dessen plötzliche Verwandlung in ein „Ungeziefer“ die Kommunikation seines sozialen Umfelds mit ihm immer mehr hemmt, bis er von seiner Familie für untragbar gehalten wird und schließlich zugrunde geht. ",
                         5,
                         ct);
+                }
+
+                if (db.ItemCopies == null)
+                {
+
                 }
 
               if (!await db.PolicyEntries.AnyAsync(ct))
@@ -62,25 +67,25 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         }
 
         public static void CreateItemWithAmountTest(
-            Shelf defaultShelf,
-            string name,
-            ItemType itemType,
-            string author,
-            int year,
-            string? description,
-            int circulationCount,
-            CancellationToken ct = default)
+        Shelf defaultShelf,
+        string name,
+        ItemType itemType,
+        string author,
+        int year,
+        string? description,
+        int circulationCount,
+        CancellationToken ct = default)
         {
-
             ct.ThrowIfCancellationRequested();
 
-            Item item = new Item(name, itemType, author, year, description, circulationCount);
+            var item = new Item(name, itemType, author, year, description, circulationCount);
             defaultShelf.AddItem(item);
 
-            //for (int i = 0; i < circulationCount; i++)
-            //{
-                
-            //}
+            for (int i = 1; i <= circulationCount; i++)
+            {
+                item.Copies.Add(new ItemCopy{});
+            }
         }
+
     }
 }

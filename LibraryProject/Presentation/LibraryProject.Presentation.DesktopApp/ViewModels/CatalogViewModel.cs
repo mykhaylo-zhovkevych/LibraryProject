@@ -119,10 +119,14 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                     Guid userId = _currentUserContext.UserId.Value;
                     User user = await _userService.GetUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Logged-in user not found.");
 
-                    Item domainItem = (await _itemService.SearchForDesiredItem(customPredicate: x => x.Id == item.Id)).FirstOrDefault() 
-                        ?? throw new InvalidOperationException("Item not found.");
+                    // Get genric item 
+                    Item domainItem = (await _itemService.SearchForDesiredItem(nameContains: item.Title, yearSelected: item.Year, itemType: null, customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Item not found.");
+
+                    // Find copies
+                    ItemCopy freeCopy = domainItem.Copies.FirstOrDefault(c => !c.IsBorrowed && c.ReservedById == null) ?? throw new InvalidOperationException("No copies of the item found.");
 
                     await _borrowingService.CreateBorrowedItemAsync(user, domainItem, default);
+
                 }
                 catch (Exception ex)
                 {
@@ -150,7 +154,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             {
                 "Alle" => (null, null),
                 "Verfuegbar" => (false, false),
-                "Reserviert" => (false, true),
+                "Reserviert" => (null, true),
                 "Ausgeliehen" => (true, null),
                 _ => throw new NotImplementedException(),
             };
@@ -181,22 +185,26 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             );
         }
 
-        private int CalculateTotalCopies(Item item)
-        {
-            return item.CirculationCount;
-        }
+        private int CalculateTotalCopies(Item item) => item.CirculationCount;
+
 
         private async Task<int> CalculateAvailableCopiesAsync(Item item)
         {
-            IEnumerable<Item> foundFirstItems = await _itemService.SearchForDesiredItem(
+            var items = await _itemService.SearchForDesiredItem(
                 nameContains: item.Name,
                 yearSelected: item.Year,
-                itemType: item.ItemType);
+                itemType: item.ItemType,
+                customPredicate: i => i.Author == item.Author);
 
-            List<Item> allFoundItems = foundFirstItems.ToList();
-
-            return allFoundItems.Count(i => i.IsBorrowed == false && i.IsReserved == false);
+            Item? domainItem = items.FirstOrDefault();
+            if (domainItem == null || domainItem.Copies == null)
+            {
+                return 0;
+            }
+                
+            return domainItem.Copies.Count(c => !c.IsBorrowed && c.ReservedById == null);
         }
+
 
         private int GetTotalFoundItems()
         {

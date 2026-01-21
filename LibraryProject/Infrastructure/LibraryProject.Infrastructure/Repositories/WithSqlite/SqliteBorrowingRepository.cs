@@ -15,39 +15,43 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         private readonly LibraryDbContext _db;
         public SqliteBorrowingRepository(LibraryDbContext db) => _db = db;
 
-        public async Task<Borrowing?> GetActiveBorrowingAsync(Guid userId, Guid itemId, CancellationToken ct = default)
+        public Task<int> CountActiveBorrowingsForItemAsync(Guid itemId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            return await _db.Borrowings
-                .FirstOrDefaultAsync(b => b.UserId == userId && b.ItemId == itemId && !b.IsReturned, ct);
+            return _db.Borrowings.CountAsync(b => b.ItemCopy.ItemId == itemId && b.ReturnDate == null, ct);
         }
 
-        public async Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
+        public Task<Borrowing?> GetActiveBorrowingByCopyAsync(Guid userId, Guid itemCopyId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            return await _db.Borrowings
-                .AsNoTracking()
-                .Include(b => b.Item) // Was added cause of sql
-                .Where(b => b.UserId == userId && b.IsReturned == null)
+            return _db.Borrowings
+                .Include(b => b.ItemCopy).ThenInclude(c => c.Item)
+                .FirstOrDefaultAsync(b => b.UserId == userId && b.ItemCopyId == itemCopyId && b.ReturnDate == null, ct);
+        }
+
+        public Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            return _db.Borrowings.AsNoTracking()
+                .Include(b => b.ItemCopy).ThenInclude(c => c.Item)
+                .Where(b => b.UserId == userId && b.ReturnDate == null)
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Borrowing>> GetInactiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
+        public Task<List<Borrowing>> GetInactiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            return await _db.Borrowings
-                .AsNoTracking()
-                .Include(b => b.Item)
-                .Where(b => b.UserId == userId && b.IsReturned != null)
+            return _db.Borrowings.AsNoTracking()
+                .Include(b => b.ItemCopy).ThenInclude(c => c.Item)
+                .Where(b => b.UserId == userId && b.ReturnDate != null)
                 .ToListAsync(ct);
         }
 
-        public async Task<List<Borrowing>> GetAllBorrowingsAsync(Guid userId, CancellationToken ct = default)
+        public Task<List<Borrowing>> GetAllBorrowingsAsync(Guid userId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            return await _db.Borrowings
-                .AsNoTracking()
-                .Include(b => b.Item)
+            return _db.Borrowings.AsNoTracking()
+                .Include(b => b.ItemCopy).ThenInclude(c => c.Item)
                 .Where(b => b.UserId == userId)
                 .ToListAsync(ct);
         }
@@ -62,14 +66,21 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         public async Task SaveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
         {
             // Makt the navigation entities as existing so EF won't Insert them
-            //_db.Attach(borrowing.User);
-            //_db.Attach(borrowing.Item);
+            _db.Attach(borrowing.User);
+            _db.Attach(borrowing.ItemCopy);
 
-            _db.Entry(borrowing.User).State = EntityState.Unchanged;
-            _db.Entry(borrowing.Item).State = EntityState.Unchanged;
+            //_db.Entry(borrowing.User).State = EntityState.Unchanged;
+            //_db.Entry(borrowing.Item).State = EntityState.Unchanged;
 
             ct.ThrowIfCancellationRequested();
             await _db.Borrowings.AddAsync(borrowing, ct);
+            await _db.SaveChangesAsync(ct);
+        }
+
+        public async Task UpdateBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            _db.Borrowings.Update(borrowing);
             await _db.SaveChangesAsync(ct);
         }
     }

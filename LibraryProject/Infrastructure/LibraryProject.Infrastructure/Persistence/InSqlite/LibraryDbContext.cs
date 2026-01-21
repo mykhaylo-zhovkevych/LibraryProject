@@ -21,6 +21,7 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
 
         // Persis items even tought not exposed to EF
         public DbSet<Item> Items => Set<Item>();
+        public DbSet<ItemCopy> ItemCopies => Set<ItemCopy>();
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -58,12 +59,22 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
             {
                 b.HasKey(x => x.Id);
 
-                // ReservedBy is reference to User
+                b.HasMany(i => i.Copies)
+                    .WithOne(c => c.Item)
+                    .HasForeignKey(c => c.ItemId)
+                    .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<ItemCopy>(b =>
+            {
+                b.HasKey(x => x.Id);
+
                 b.HasOne(x => x.ReservedBy)
                     .WithMany()
-                    .HasForeignKey(nameof(Item.ReservedById))
+                    .HasForeignKey(x => x.ReservedById)
                     .OnDelete(DeleteBehavior.SetNull);
             });
+
 
             modelBuilder.Entity<User>(b =>
             {
@@ -92,9 +103,9 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                b.HasOne(x => x.Item)
+                b.HasOne(x => x.ItemCopy)
                     .WithMany()
-                    .HasForeignKey(x => x.ItemId)
+                    .HasForeignKey(x => x.ItemCopyId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 

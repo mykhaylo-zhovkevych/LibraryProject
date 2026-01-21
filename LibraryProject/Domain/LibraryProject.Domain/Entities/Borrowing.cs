@@ -14,8 +14,9 @@ namespace LibraryProject.Domain.Entities
         public Guid UserId { get; private set; }
         public User User { get; init; }
 
-        public Guid ItemId { get; private set; }
-        public Item Item { get; init; }
+        public Guid ItemCopyId { get; set; }
+        public ItemCopy ItemCopy { get; set; }
+
         public Policy Policy { get; }
         public DateTime LoanDate { get; private set; }
         public DateTime DueDate { get; private set; }
@@ -25,12 +26,12 @@ namespace LibraryProject.Domain.Entities
         public uint RemainingExtensionCredits { get; private set; }
 
         protected Borrowing() { }
-        public Borrowing(User user, Item item, Policy policy)
+        public Borrowing(User user, ItemCopy copy, Policy policy)
         {
             User = user;
             UserId = user.Id;
-            Item = item;
-            ItemId = item.Id;
+            ItemCopy = copy;
+            ItemCopyId = copy.Id;
             Policy = policy;
             LoanDate = DateTime.Today;
             DueDate = LoanDate.AddDays(policy.LoanPeriodInDays);
@@ -40,10 +41,12 @@ namespace LibraryProject.Domain.Entities
 
         public bool Extend()
         {
-            if (Item.IsReserved)
+            if (ItemCopy.IsReserved)
             {
-                throw new ItemUsedByException(Item);
+                // throw new ItemUsedByException();
             }
+
+            if (IsReturned) return false;
 
             if (RemainingExtensionCredits == 0)
             {
@@ -59,15 +62,8 @@ namespace LibraryProject.Domain.Entities
         public void ReturnBorrowing(Borrowing borrowing)
         {
             borrowing.ReturnDate = DateTime.Now;
-            borrowing.Item.IsBorrowed = false;
+            borrowing.ItemCopy.IsBorrowed = false;
 
-        }
-
-        public override string ToString()
-        {
-            return $"User: {User.Name}, Item: {Item.Name}, LoanDate: {LoanDate}" +
-                $", DueDate: {DueDate}, Returned Date: {ReturnDate}" +
-                $", Returned: {IsReturned}";
         }
     }
 }

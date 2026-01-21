@@ -18,14 +18,16 @@ namespace LibraryProject.Application.Services
         private readonly IBorrowingsRepository _borrowedRepository;
         private readonly IPolicyRepository _policyRepository;
         private readonly IAuthorizationService _authorizationService;
+        private readonly IItemRepository _itemRepository;
 
         public event EventHandler<ItemEventArgs>? InformReserver;
 
-        public BorrowingService(IBorrowingsRepository borrowedfRepository, IPolicyRepository policyRepository, IAuthorizationService authorizationService)
+        public BorrowingService(IBorrowingsRepository borrowedfRepository, IPolicyRepository policyRepository, IAuthorizationService authorizationService, IItemRepository itemRepository)
         {
             _borrowedRepository = borrowedfRepository;
             _policyRepository = policyRepository;
             _authorizationService = authorizationService;
+            _itemRepository = itemRepository;
         }
 
         private void OnInformReserver(ItemEventArgs e)
@@ -36,61 +38,66 @@ namespace LibraryProject.Application.Services
         public async Task<bool> CreateBorrowedItemAsync(User user, Item item, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-            if (!item.CheckBorrowPossible())
-            {
-                throw new IsAlreadyBorrowedException(item);
-            }
+            //if (!item.CheckBorrowPossible())
+            //{
+            //    throw new IsAlreadyBorrowedException(item);
+            //}
 
             Policy activePolicy = await _policyRepository.GetPolicyAsync(user.UserType, item.ItemType, ct) ?? throw new NonexistentPolicyException();
-            // uint allowedCredits = activePolicy.Extensions;
 
-            if (item.CirculationCount <= 0)
-            {
-                throw new ArgumentException("Item is outbooked.");
-            }
-            else
-            {
-                Borrowing newBorrowing = new Borrowing(user, item, activePolicy);
-                item.CirculationCount--;
-                await _borrowedRepository.SaveBorrowingAsync(newBorrowing);
-                item.BorrowItem();
-                return true;
-            }
+            ItemCopy freeCopy = await _itemRepository.GetFirstFreeCopyAsync(item.Id, ct) ?? throw new ArgumentException("Error.");
+
+            //if (item.CirculationCount <= 0)
+            //{
+            //    throw new ArgumentException("Item is outbooked.");
+            //}
+            //else
+            //{
+                
+            //}
+            freeCopy.BorrowItem();
+            item.CirculationCount--;
+            await _itemRepository.UpdateCopyAsync(freeCopy, ct);
+
+            var borrowing = new Borrowing(user, freeCopy, activePolicy);
+            await _borrowedRepository.SaveBorrowingAsync(borrowing, ct);
+
+            return true;
+
         }
-
-        public async Task<bool> ReturnBorrowedItemAsync(User user, Item item, CancellationToken ct)
+         
+        // Wichtig Guid 
+        public async Task<bool> ReturnBorrowedItemAsync(User user, Guid itemCopyId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-            Borrowing? activeBorrowing = await _borrowedRepository.GetActiveBorrowingAsync(user.Id, item.Id, ct);
 
-            if (activeBorrowing == null)
-            {
-                throw new ArgumentException($"No entries was found for this user {user.Name}");
-            }
+            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No entries was found for this user {user.Name}");
 
-            activeBorrowing.Item.CirculationCount++;
-            activeBorrowing.Item.ReturnItem();
+            activeBorrowing.ItemCopy.Item.CirculationCount++;
+            activeBorrowing.ItemCopy.ReturnItem();
             activeBorrowing.ReturnBorrowing(activeBorrowing);
 
-            if (activeBorrowing.Item.IsReserved)
+            await _itemRepository.UpdateCopyAsync(activeBorrowing.ItemCopy, ct);
+            await _borrowedRepository.UpdateBorrowingAsync(activeBorrowing, ct);
+
+            if (activeBorrowing.ItemCopy.IsReserved && activeBorrowing.ItemCopy.ReservedBy != null)
             {
-                OnInformReserver(new ItemEventArgs($"The {activeBorrowing.Item.Name} is now available", activeBorrowing.Item, item.ReservedBy));
+                OnInformReserver(new ItemEventArgs($"The {activeBorrowing.ItemCopy.Item.Name} is now available",activeBorrowing.ItemCopy.Item, activeBorrowing.ItemCopy.ReservedBy));
             }
 
             return true;
         }
 
-        public async Task<bool> ExtendBorrowingPeriodAsync(User user, Item item, CancellationToken ct)
+        // 
+        public async Task<bool> ExtendBorrowingPeriodAsync(User user, Guid itemCopyId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-            Borrowing? activeBorrowing = await _borrowedRepository.GetActiveBorrowingAsync(user.Id, item.Id, ct);
+       
+            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No entries was found for this user {user.Name}");
 
-            if (activeBorrowing == null)
-            {
-                throw new ArgumentException($"No entries was found for this user {user.Name}");
-            }
-
-            return activeBorrowing.Extend();
+            bool ok = activeBorrowing.Extend();
+            await _borrowedRepository.UpdateBorrowingAsync(activeBorrowing, ct);
+            return ok;
         }
 
         public async Task<List<Borrowing>> SearchAllBorrowingsByUserId(Guid userId, CancellationToken ct)
@@ -113,5 +120,7 @@ namespace LibraryProject.Application.Services
             List<Borrowing> borrowings = await _borrowedRepository.GetInactiveBorrowingsAsync(userId, ct);
             return borrowings;
         }
+
+        public Task<int> CountActiveBorrowingsForItemAsync(Guid itemId, CancellationToken ct) => _borrowedRepository.CountActiveBorrowingsForItemAsync(itemId, ct);
     }
 }

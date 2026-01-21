@@ -25,15 +25,15 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             return Task.FromResult(quary);
         }
 
-        public Task<Borrowing?> GetActiveBorrowingAsync(Guid userId, Guid itemId, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            Borrowing? quary = _storage.Borrowings
-                .FirstOrDefault(b => b.User.Id == userId && 
-                b.Item.Id == itemId && !b.IsReturned);
+        //public Task<Borrowing?> GetActiveBorrowingAsync(Guid userId, Guid itemId, CancellationToken ct = default)
+        //{
+        //    ct.ThrowIfCancellationRequested();
+        //    Borrowing? quary = _storage.Borrowings
+        //        .FirstOrDefault(b => b.User.Id == userId && 
+        //        b.Item.Id == itemId && !b.IsReturned);
             
-            return Task.FromResult(quary);
-        }
+        //    return Task.FromResult(quary);
+        //}
 
         public Task<List<Borrowing>> GetInactiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
         {
@@ -79,6 +79,21 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             ct.ThrowIfCancellationRequested();
             _storage.Borrowings.Add(borrowing);
             return Task.CompletedTask;
+        }
+
+        public Task UpdateBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Borrowing?> GetActiveBorrowingByCopyAsync(Guid userId, Guid itemCopyId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> CountActiveBorrowingsForItemAsync(Guid itemId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }

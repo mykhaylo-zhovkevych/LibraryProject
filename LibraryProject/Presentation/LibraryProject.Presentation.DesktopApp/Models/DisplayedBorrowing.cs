@@ -11,6 +11,9 @@ namespace LibraryProject.Presentation.DesktopApp.Models
 {
     public class DisplayedBorrowing
     {
+        public Guid BorrowingId { get; }
+
+        public Guid ItemCopyId { get; }
         public string BorrowingItemName { get; set; }
         public string BorrowingItemAuthror { get; set; }
         public string BorrowingItemType { get; set; }
@@ -19,8 +22,10 @@ namespace LibraryProject.Presentation.DesktopApp.Models
         public string Status { get; set; }
 
 
-        public DisplayedBorrowing(string borrowingItemName, string BorrowingItemAuthor, string borrowingItemType, DateTime loanDate, DateTime dueDate, string status)
+        public DisplayedBorrowing(Guid borrowingId, Guid itemCopyId, string borrowingItemName, string BorrowingItemAuthor, string borrowingItemType, DateTime loanDate, DateTime dueDate, string status)
         {
+            BorrowingId = borrowingId;
+            ItemCopyId = itemCopyId;
             BorrowingItemName = borrowingItemName;
             BorrowingItemAuthror = BorrowingItemAuthor;
             BorrowingItemType = borrowingItemType;
@@ -28,6 +33,5 @@ namespace LibraryProject.Presentation.DesktopApp.Models
             DueDate = dueDate;
             Status = status;
         }
-
     }
 }

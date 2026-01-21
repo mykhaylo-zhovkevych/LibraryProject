@@ -49,37 +49,44 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         {
             try
             {
-                var ct = CancellationToken.None;
-
+                CancellationToken ct = CancellationToken.None;
                 Guid userId = _currentUserContext.UserId.Value;
-                User currentUser = await _userService.GetUserByIdAsync(userId, ct);
 
-                Item currentBorrowingItem = (await _borrowingService.SearchForActiveBorrowingsByUserId(userId, ct))
-                    .FirstOrDefault(b => b.Item.Name == db.BorrowingItemName && b.LoanDate == db.LoanDate).Item;
+                Borrowing borrowing = (await _borrowingService.SearchForActiveBorrowingsByUserId(userId, ct)).First(b => b.BorrowingId == db.BorrowingId);
+                User currentUser = await _userService.GetUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("User not found");
 
-                await _borrowingService.ExtendBorrowingPeriodAsync(currentUser, currentBorrowingItem, ct);
+                await _borrowingService.ExtendBorrowingPeriodAsync(
+                    currentUser,
+                    borrowing.ItemCopy.ItemId,
+                    ct);
+
                 await LoadDataAsync(ct);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while extending the borrowing period: {ex.Message}");
+                Console.WriteLine($"Extend error: {ex.Message}");
             }
         }
+
 
         [RelayCommand]
         private async Task Return(DisplayedBorrowing db)
         {
             try
             {
-                var ct = CancellationToken.None;
-
+                CancellationToken ct = CancellationToken.None;
                 Guid userId = _currentUserContext.UserId.Value;
-                User currentUser = await _userService.GetUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("User not found.");
 
-                Item currentBorrowingItem = (await _borrowingService.SearchForActiveBorrowingsByUserId(userId, ct))
-                    .FirstOrDefault(b => b.Item.Name == db.BorrowingItemName && b.LoanDate == db.LoanDate).Item;
+                Borrowing borrowing = (await _borrowingService.SearchForActiveBorrowingsByUserId(userId, ct)).First(b => b.BorrowingId == db.BorrowingId);
+                User currentUser = await _userService.GetUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("User not found");
 
-                await _borrowingService.ReturnBorrowedItemAsync(currentUser, currentBorrowingItem, ct);
+                await _borrowingService.ReturnBorrowedItemAsync(
+                    currentUser,
+                    borrowing.ItemCopy.ItemId,
+                    ct);
+
+                Borrowings.Remove(db);
+
                 await LoadDataAsync(ct);
             }
             catch (Exception ex)
@@ -89,16 +96,19 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         }
 
 
-        private DisplayedBorrowing MapBorrowingToDisplayedBorrowing(Borrowing borrowing)
+        private DisplayedBorrowing MapBorrowingToDisplayedBorrowing(Borrowing b)
         {
+            Item item = b.ItemCopy.Item;
             return new DisplayedBorrowing(
-                    borrowing.Item.Name,
-                    borrowing.Item.Author,
-                    borrowing.Item.ItemType.ToString(),
-                    borrowing.LoanDate,
-                    borrowing.DueDate,
-                    borrowing.IsReturned ? "Returned" : "On Loan"
-                    );
+                b.BorrowingId,
+                b.ItemCopyId,
+                item.Name,
+                item.Author,
+                item.ItemType.ToString(),
+                b.LoanDate,
+                b.DueDate,
+                b.IsReturned ? "Returned" : "On Loan"
+            );
 
         }
     }

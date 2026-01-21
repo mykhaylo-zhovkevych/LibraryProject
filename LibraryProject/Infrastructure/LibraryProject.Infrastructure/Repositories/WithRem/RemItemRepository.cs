@@ -73,5 +73,15 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         }
 
         private void AddShelf(Shelf shelf) => _storage.Shelves.Add(shelf);
+
+        public Task UpdateCopyAsync(ItemCopy copy, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ItemCopy?> GetFirstFreeCopyAsync(Guid itemId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
