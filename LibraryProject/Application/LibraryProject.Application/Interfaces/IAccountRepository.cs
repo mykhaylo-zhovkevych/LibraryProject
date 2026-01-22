@@ -11,7 +11,10 @@ namespace LibraryProject.Application.Interfaces
     {
         Task SaveAccountAsync(Account account, CancellationToken ct = default);
         Task DeleteAccountAsync(Account account, CancellationToken ct = default);
+        Task UpdateAccountAsync(Account account, CancellationToken ct = default);
         Task<Account?> GetAccountByAccountIdAsync(int accountId, CancellationToken ct = default);
         Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default);
+
+        Task<Account?> GetAccountByUserIdAsync(Guid userId, CancellationToken ct = default);
     }
 }

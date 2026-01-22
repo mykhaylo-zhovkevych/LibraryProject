@@ -1,22 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LibraryProject.Application.Interfaces;
-using LibraryProject.Application.Services;
-using LibraryProject.Domain.Entities;
-using LibraryProject.Domain.Exceptions;
-using LibraryProject.Domain.Exceptions.Nonexistent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace LibraryProject.Presentation.DesktopApp.ViewModels.Dialog
 {
-    public partial class BorrowDialogViewModel : DialogViewModel
+    public partial class ReserveDialogViewModel : DialogViewModel
     {
-
         [ObservableProperty] private string _title = "";
         [ObservableProperty] private string _message = "";
         [ObservableProperty] private string _confirmText = "";
@@ -44,7 +37,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.Dialog
 
         public async Task<bool> WaitConfirmationAsync()
         {
-            if (!Confirmed) 
+            if (!Confirmed)
                 await WaitDialogAsnyc();
             return Confirmed;
         }

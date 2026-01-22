@@ -29,7 +29,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                 return null; 
             }
 
-            // Mapping
             return new Policy(
                 policyName: entry.PolicyName ?? "",
                 extensions: entry.Extensions,

@@ -23,7 +23,7 @@ namespace LibraryProject.Application.Services
             _authorizationService = authorizationService;
         }
 
-        public async Task<bool> AddPolicy(UserType userType, ItemType itemType, Policy policy, CancellationToken ct)
+        public async Task AddPolicy(UserType userType, ItemType itemType, Policy policy, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
             Policy? foundPolicy = await _policyRepository.GetPolicyAsync(userType, itemType, ct);
@@ -34,7 +34,6 @@ namespace LibraryProject.Application.Services
             }
 
             await _policyRepository.SavePolicyAsync(userType, itemType, policy, ct);
-            return true;
         }
 
         public async Task<Policy> UpdatePolicyValues(UserType userType, ItemType itemType, uint extensions, decimal loanFees, uint loanPeriodDays, CancellationToken ct)
@@ -54,7 +53,7 @@ namespace LibraryProject.Application.Services
             return foundPolicy;
         }
 
-        public async Task<bool> RemovePolicy(UserType userType, ItemType itemType, CancellationToken ct)
+        public async Task RemovePolicy(UserType userType, ItemType itemType, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
             Policy? foundPolicy = await _policyRepository.GetPolicyAsync(userType, itemType, ct);
@@ -65,7 +64,6 @@ namespace LibraryProject.Application.Services
             }
 
             await _policyRepository.RemovePolicyAsync(userType, itemType);
-            return true;
         }
     }
 }

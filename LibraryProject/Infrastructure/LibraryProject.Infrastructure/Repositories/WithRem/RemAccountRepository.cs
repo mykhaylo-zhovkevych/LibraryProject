@@ -41,5 +41,15 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             _storage.Accounts.Add(account);
             return Task.CompletedTask;
         }
+
+        public Task UpdateAccountAsync(Account account, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Account?> GetAccountByUserIdAsync(Guid userId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

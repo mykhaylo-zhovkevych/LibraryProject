@@ -31,7 +31,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                 .FirstOrDefaultAsync(a => a.AccountId == accountId, ct);
         }
 
-
         public async Task DeleteAccountAsync(Account account, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
@@ -43,6 +42,20 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
             await _db.Accounts.AddAsync(account, ct);
             await _db.SaveChangesAsync(ct);
+        }
+
+        public Task UpdateAccountAsync(Account account, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            _db.Accounts.Update(account);
+            return _db.SaveChangesAsync(ct);
+        }
+
+        public Task<Account?> GetAccountByUserIdAsync(Guid userId, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            return _db.Accounts.FirstOrDefaultAsync(a => a.UserId == userId, ct);
+
         }
     }
 }

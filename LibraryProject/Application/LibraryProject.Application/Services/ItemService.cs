@@ -22,45 +22,6 @@ namespace LibraryProject.Application.Services
             _authorizationService = authorizationService;
         }
 
-        public async Task RemoveItemByIdAsync(Item item, CancellationToken ct)
-        {
-            if (item == null)
-            {
-                throw new NonexistentItemException();
-            }
-            _authorizationService.EnsureAdmin();
-
-            // Get the item by id
-            var existingItem = await _itemRepository.GetExistingItemAsync(item.Name, item.ItemType, ct);
-
-            if (existingItem == null || existingItem.Id != item.Id)
-            {
-                throw new NonexistentItemException();
-            }
-            else
-            {
-                await _itemRepository.RemoveFromShelfAsync(existingItem, ct);
-                existingItem.CirculationCount--;
-            }
-        }
-
-
-        public async Task RemoveAllItemsAsync(Item item, CancellationToken ct)
-        {
-            if (item == null)
-            {
-                throw new NonexistentItemException();
-            }
-            _authorizationService.EnsureAdmin();
-
-            var itemsToRemove = await _itemRepository.GetAllItemsFromShelvesAsync(ct);
-            var itemsMatching = itemsToRemove.Where(i => i.Name == item.Name && i.ItemType == item.ItemType && i.Author == item.Author && i.Year == item.Year);
-            foreach (var it in itemsMatching)
-            {
-                await _itemRepository.RemoveFromShelfAsync(it, ct);
-            }
-        }
-
         public async Task CreateItemWithAmount(string name, ItemType itemType, string author, int year, string? description, int circulationCount, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -70,56 +31,106 @@ namespace LibraryProject.Application.Services
 
             if (circulationCount <= 0)
             {
-                throw new ArgumentException("circulationCount must be > 0.");
+                throw new ArgumentException("circulationCount must be less than 0.");
             }
 
-            // _authorizationService.EnsureAdmin();
+            _authorizationService.EnsureAdmin();
 
             Item item = new Item(name, itemType, author, year, description, circulationCount);
 
             for (int i = 1; i <= circulationCount; i++)
             {
-                item.Copies.Add(new ItemCopy { });
+                item.Copies.Add(new ItemCopy {});
             }
 
             await AddItemToShelf(item, ct);
         }
 
-        public async Task<bool> CreateReservedItem(User user, Item item, CancellationToken ct)
+        public async Task CreateReservedItemAsync(User user, Item item, CancellationToken ct)
         {
-            //if (!item.CheckReservePossible())
-            //{
-            //    throw new ItemUsedByException(item);
-            //}
-
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (item == null) throw new NonexistentItemException();
 
-            ItemCopy copyToReserve = item.Copies.FirstOrDefault(c => c.IsBorrowed && c.ReservedById == null);
+            ItemCopy? copyToReserve = item.Copies.FirstOrDefault(c => !c.IsBorrowed && c.ReservedById == null);
             if (copyToReserve == null)
             {
                 throw new ArgumentException($"No copy can be reserved for {item.Name}.");
             }
 
+            if (!copyToReserve.CheckReservePossible())
+            {
+                throw new ItemUsedByException(item);
+            }
+
             copyToReserve.ReserveItem(user);
             await _itemRepository.UpdateCopyAsync(copyToReserve, ct);
-            return true;
-
         }
 
-        public async Task<bool> CancelReservation(User user, Item item)
-        {
-            //if (item.ReservedBy != user)
-            //{
-            //    throw new ArgumentException($"{user.Name} has no reservation for {item.Name}");
-            //}
 
+        public async Task RemoveItemAsync(Item item, CancellationToken ct)
+        {
+            if (item == null)
+            {
+                throw new NonexistentItemException();
+            }
+            _authorizationService.EnsureAdmin();
+
+            IEnumerable<Item> itemsToRemove = await _itemRepository.GetAllItemsAsync(ct);
+            IEnumerable<Item> itemsMatching = itemsToRemove.Where(i => i.Name == item.Name &&
+                                                                  i.ItemType == item.ItemType &&
+                                                                  i.Author == item.Author &&
+                                                                  i.Year == item.Year);
+
+            Item foundItem = itemsMatching.FirstOrDefault() ?? throw new NonexistentItemException();
+
+            await _itemRepository.RemoveItemAsync(foundItem, ct);
+            foundItem.CirculationCount--;
+        }
+
+        public async Task RemoveItemCopiesByIdAsync(Item item, int count, CancellationToken ct)
+        {
+            if (item == null)
+            {
+                throw new NonexistentItemException();
+            }
+            _authorizationService.EnsureAdmin();
+
+            IEnumerable<Item> itemsToRemove = await _itemRepository.GetAllItemsAsync(ct);
+            IEnumerable<Item> itemsMatching = itemsToRemove.Where(i => i.Name == item.Name &&
+                                                                  i.ItemType == item.ItemType &&
+                                                                  i.Author == item.Author &&
+                                                                  i.Year == item.Year);
+
+            Item? foundItem = itemsMatching.FirstOrDefault() ?? throw new NonexistentItemException();
+
+            if (count <= 0 || count > foundItem.Copies.Count)
+            {
+                throw new ArgumentException("Invalid copies value.");
+            }
+            else if (count == foundItem.Copies.Count)
+            {
+                foreach (var i in foundItem.Copies)
+                {
+                    foundItem.Copies.Remove(i);
+                }
+            }
+            else             
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    foundItem.Copies.Remove(foundItem.Copies.Last());
+                }
+            }
+        }
+
+        public async Task CancelReservation(User user, Item item)
+        {
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (item == null) throw new NonexistentItemException();
 
             _authorizationService.EnsureAuthenticated();
 
-            var reservedCopy = item.Copies.FirstOrDefault(c => c.ReservedById == user.Id);
+            ItemCopy reservedCopy = item.Copies.FirstOrDefault(c => c.ReservedById == user.Id);
             if (reservedCopy == null)
             {
                 throw new ArgumentException($"{user.Name} has no reservation for {item.Name}");
@@ -128,10 +139,9 @@ namespace LibraryProject.Application.Services
             reservedCopy.ReturnItem();
             await _itemRepository.UpdateCopyAsync(reservedCopy);
 
-            return true;
         }
 
-        public bool ChangeItemName(Item item, string newName)
+        public void ChangeItemName(Item item, string newName)
         {
             if (item == null)
             {
@@ -144,7 +154,7 @@ namespace LibraryProject.Application.Services
             _authorizationService.EnsureAdmin();
 
             item.UpdateItemName(newName);
-            return true;   
+            
         }
 
         public async Task<IEnumerable<Item>> SearchForDesiredItem(
@@ -156,7 +166,7 @@ namespace LibraryProject.Application.Services
             Func<Item, bool>? customPredicate = null
             )
         {
-            IEnumerable<Item> items = await _itemRepository.GetAllItemsFromShelvesAsync();
+            IEnumerable<Item> items = await _itemRepository.GetAllItemsAsync();
 
             string term = nameContains?.Trim();
 
@@ -178,11 +188,6 @@ namespace LibraryProject.Application.Services
                     
             }
 
-            if (yearSelected.HasValue)
-            {
-                items = items.Where(i => i.Year == yearSelected.Value);
-            }
-
             if (isReserved.HasValue)
             {
                 if (isReserved.Value)
@@ -193,6 +198,11 @@ namespace LibraryProject.Application.Services
                 {
                     items = items.Where(i => i.Copies.Any(c => c.ReservedById == null));
                 }
+            }
+
+            if (yearSelected.HasValue)
+            {
+                items = items.Where(i => i.Year == yearSelected.Value);
             }
 
             if (itemType != null)

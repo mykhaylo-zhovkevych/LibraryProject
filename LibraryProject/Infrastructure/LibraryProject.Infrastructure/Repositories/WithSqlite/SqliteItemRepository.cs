@@ -42,13 +42,12 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             }
 
             shelf = new Shelf(DefaultShelfId);
-            // temp disabled
             await _db.Shelves.AddAsync(shelf, ct);
             await _db.SaveChangesAsync(ct);
             return shelf;
         }
 
-        public async Task<IEnumerable<Item>> GetAllItemsFromShelvesAsync(CancellationToken ct = default)
+        public async Task<IEnumerable<Item>> GetAllItemsAsync(CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
 
@@ -57,7 +56,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                 .Include(i => i.Copies)
                 .ToListAsync(ct);
         }
-        public async Task RemoveFromShelfAsync(Item item, CancellationToken ct = default)
+        public async Task RemoveItemAsync(Item item, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
             _db.Items.Remove(item);
@@ -70,7 +69,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             Shelf shelf = await GetOrCreateDefaultShelfAsync(ct);
             shelf.AddItem(item);
 
-            //temp disabled
             await _db.SaveChangesAsync(ct);
         }
 
@@ -86,6 +84,10 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         public async Task UpdateCopyAsync(ItemCopy copy, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
+
+            // TODO: issue with the reservationa and borrowing return again reservation , because the item attaches aggain
+            _db.Entry(copy).Reference(c => c.Item).CurrentValue = null;
+            _db.Entry(copy).Reference(c => c.ReservedBy).CurrentValue = null;
 
             _db.ItemCopies.Attach(copy);
             _db.Entry(copy).State = EntityState.Modified;

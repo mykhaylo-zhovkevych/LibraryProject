@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LibraryProject.Domain.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,14 +19,19 @@ namespace LibraryProject.Domain.Entities
 
         protected Account() { }
 
-        public Account(User userId, string name, string password, string? email = null)
+        public Account(User userId, string accountname, string password, string? email = null)
         {
             AccountId = new Random().Next(1, int.MaxValue);
             UserId = userId.Id;
-            AccountName = name;
+            AccountName = accountname;
             Password = password;
             Email = email;
             IsSuspended = false;
+        }
+
+        public void ChangeEmail(string selectedEmail)
+        {
+            Email = selectedEmail;
         }
 
         public bool CanBeSuspended()
@@ -45,8 +51,5 @@ namespace LibraryProject.Domain.Entities
         {
             IsSuspended = true;
         }
-
-
-
     }   
 }

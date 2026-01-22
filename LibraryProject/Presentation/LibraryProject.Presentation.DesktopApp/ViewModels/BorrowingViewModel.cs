@@ -30,9 +30,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _ = LoadDataAsync();
         }
 
-        public int TotalActiveBorrowings => Borrowings.Count(b => b.Status == "On Loan");
-
         public string BorrowingsSubtitle => $"Sie haben insgesamt {TotalActiveBorrowings} aktive Ausleihe(n).";
+        private int TotalActiveBorrowings => Borrowings.Count(b => b.Status == "Ausgeliehen");
 
         // For design-time data
         //public BorrowingViewModel()
@@ -66,7 +65,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 Guid userId = _currentUserContext.UserId.Value;
 
                 Borrowing borrowing = (await _borrowingService.SearchForActiveBorrowingsByUserId(userId, ct)).First(b => b.BorrowingId == db.BorrowingId);
-                User currentUser = await _userService.GetUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("User not found");
+                User currentUser = await _userService.ReceiveUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("User not found");
 
                 await _borrowingService.ExtendBorrowingPeriodAsync(
                     currentUser,
@@ -91,7 +90,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 Guid userId = _currentUserContext.UserId.Value;
 
                 Borrowing borrowing = (await _borrowingService.SearchForActiveBorrowingsByUserId(userId, ct)).First(b => b.BorrowingId == db.BorrowingId);
-                User currentUser = await _userService.GetUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("User not found");
+                User currentUser = await _userService.ReceiveUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("User not found");
 
                 await _borrowingService.ReturnBorrowedItemAsync(
                     currentUser,
@@ -120,7 +119,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 item.ItemType.ToString(),
                 b.LoanDate,
                 b.DueDate,
-                b.IsReturned ? "Returned" : "On Loan"
+                b.IsReturned ? "Retourniert" : "Ausgeliehen"
             );
 
         }

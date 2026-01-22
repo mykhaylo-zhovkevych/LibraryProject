@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,20 +19,22 @@ namespace LibraryProject.Application.Services
         private readonly IAccountRepository _accountRepository;
         private readonly IUserRepository _userRepository;
         private readonly IAuthorizationService _authorizationService;
+        private readonly ICurrentUserContext _currentUserContext;
 
-        public AccountService(IAccountRepository accountRepository, IAuthorizationService authorizationService, IUserRepository userRepository)
+        public AccountService(IAccountRepository accountRepository, IAuthorizationService authorizationService, IUserRepository userRepository, ICurrentUserContext currentUserContext)
         {
             _accountRepository = accountRepository;
             _authorizationService = authorizationService;
             _userRepository = userRepository;
+            _currentUserContext = currentUserContext;
         }
 
 
-        public async Task<LoginSession> LoginAsync (Guid userId, string name, string password, CancellationToken ct)
+        public async Task<LoginSession> LoginAsync (Guid userId, string accountName, string password, CancellationToken ct)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(accountName))
             {
-                throw new ArgumentException("Username is required.", nameof(name));
+                throw new ArgumentException("Username is required.", nameof(accountName));
             }
 
             if (string.IsNullOrWhiteSpace(password))
@@ -39,7 +42,7 @@ namespace LibraryProject.Application.Services
                 throw new ArgumentException("Password is required.", nameof(password));
             }
 
-            Account? account = await _accountRepository.GetAccountByUsernameAsync(name, ct);
+            Account? account = await _accountRepository.GetAccountByUsernameAsync(accountName, ct);
             if(account == null || account.UserId != userId)
             {
                 throw new SecurityException("Invalid credentials.");
@@ -59,12 +62,13 @@ namespace LibraryProject.Application.Services
                 throw new SecurityException("Invalid credentials.");
             }
 
+            
             return new LoginSession(user.Id, user.UserType, account.AccountName);
         }
 
-        public async Task<Account> RegisterAccountAsync(Guid userId, string userName, string password, string email, CancellationToken ct)
+        public async Task<Account> RegisterAccountAsync(Guid userId, string accountName, string password, string email, CancellationToken ct)
         {
-            if (string.IsNullOrWhiteSpace(userName) || userName.Length > 20)
+            if (string.IsNullOrWhiteSpace(accountName) || accountName.Length > 20)
             {
                 throw new ArgumentException("Username is required and must be less than 20 characters.");
             }
@@ -87,49 +91,67 @@ namespace LibraryProject.Application.Services
             //    throw new SecurityException("One User cannnot have multiple accounts");
             //}
 
-            Account? account = await _accountRepository.GetAccountByUsernameAsync(userName);
+            Account? account = await _accountRepository.GetAccountByUsernameAsync(accountName);
             if (account != null) {
                 throw new AccountUsedException(account);
             }
 
             string hashedPassword = HashPassword(password);
-            Account newAccount = new Account (user, userName, hashedPassword, email);
+            Account newAccount = new Account(user, accountName, hashedPassword, email);
 
             await _accountRepository.SaveAccountAsync(newAccount);
 
             return newAccount;
         }
 
-        public async Task<bool> DeleteAccountAsync(int accountId, Guid userId, CancellationToken ct)
+        public async Task DeleteAccountAsync(int accountId, Guid userId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-            Account? interestedAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId, ct);
+            Account? interestedAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId, ct) ?? throw new NonexistingAccountException();
 
-            if (interestedAccount != null && interestedAccount.UserId == userId)
+            if (interestedAccount.UserId != userId)
             {
-                await _accountRepository.DeleteAccountAsync(interestedAccount, ct);
-                return true;
+                throw new SecurityException($"{interestedAccount.AccountName} has invalid data.");
             }
-            else 
+
+            await _accountRepository.DeleteAccountAsync(interestedAccount, ct);
+        }
+
+        public async Task<Account?> ReceiveAccountByUserIdAsync(Guid userId, CancellationToken ct)
+        {
+            _authorizationService.EnsureAuthenticated();
+            return await _accountRepository.GetAccountByUserIdAsync(userId, ct);
+        }
+
+        public async Task SuspendAccountAsync(int accountId, CancellationToken ct)
+        {
+            _authorizationService.EnsureAdmin();
+            Account? interestedAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId, ct) ?? throw new NonexistingAccountException();
+
+
+            if (interestedAccount.CanBeSuspended())
             {
-                return false;
+                interestedAccount.DeactivateAccount();
+                await _accountRepository.UpdateAccountAsync(interestedAccount, ct);
+            }
+            else
+            {
+                throw new InvalidOperationException();
             }
         }
 
-        public async Task<bool> SuspendAccountAsync(int accountId, CancellationToken ct)
-        {
-            _authorizationService.EnsureAdmin();
-            Account? interestedAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId, ct);
 
-            if (interestedAccount != null && interestedAccount.CanBeSuspended() )
+        public async Task UpdateEmailAsync(string newEmail, CancellationToken ct = default)
+        {
+            _authorizationService.EnsureAuthenticated();
+            Account? account = await _accountRepository.GetAccountByUserIdAsync(_currentUserContext.UserId.Value, ct);
+            if (account is null)
             {
-                interestedAccount.DeactivateAccount();
-                return true;
+                throw new ArgumentNullException(nameof(account));
             }
-            else 
-            {
-                return false;
-            }
+                
+            account.ChangeEmail(newEmail);
+            await _accountRepository.UpdateAccountAsync(account, ct);
         }
 
 

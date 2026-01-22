@@ -48,7 +48,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             return Task.FromResult(shelf);
         }
 
-        public Task<IEnumerable<Item>> GetAllItemsFromShelvesAsync(CancellationToken ct = default)
+        public Task<IEnumerable<Item>> GetAllItemsAsync(CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
             IEnumerable<Item> query = _storage.Shelves.SelectMany(s => s.Items);
@@ -62,7 +62,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             shelf.AddItem(item);
         }
 
-        public Task RemoveFromShelfAsync(Item item, CancellationToken ct = default)
+        public Task RemoveItemAsync(Item item, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
             foreach (var shelf in _storage.Shelves)

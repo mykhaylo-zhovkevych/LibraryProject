@@ -2,114 +2,103 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels"
+             xmlns:model="clr-namespace:LibraryProject.Presentation.DesktopApp.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="LibraryProject.Presentation.DesktopApp.Views.SubViews.ItemsView">
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.SubViews.ItemsView"
+             x:DataType="vm:ItemsViewModel">
+
+    <UserControl.Styles>
+        <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/SubStyles/ItemsStyles.axaml"/>
+    </UserControl.Styles>
 
     <ScrollViewer>
         <Border>
-		    <Grid RowDefinitions="Auto Auto Auto">
-			
-                <StackPanel Classes="Intro" Grid.Row="0"> 
-                    <TextBlock FontSize="16" Text="Buchverwaltung" HorizontalAlignment="Left"/>
-                    <TextBlock Text="Bücher hinzufügen, bearbeiten oder entfernen" HorizontalAlignment="Left"></TextBlock>
+            <Grid RowDefinitions="Auto Auto Auto Auto">
+
+                <!-- First Section-->
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Buchverwaltung" Classes="title"/>
+                    <TextBlock Text="Bücher hinzufügen, bearbeiten oder entfernen" Classes="subtitle"/>
                 </StackPanel>
 
-            
-				
-                <Border Grid.Row="1" Padding="20" CornerRadius="10" BorderBrush="#e5e7eb" BorderThickness="2" Margin="10" >
+                <!-- Second Section-->
+                <Border Grid.Row="1" Classes="card" >
                     <Grid ColumnDefinitions="* *"
                           RowDefinitions="Auto Auto Auto"
                           ColumnSpacing="16"
                           RowSpacing="12">
 
-
                         <!-- Left Side-->
                         <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6" HorizontalAlignment="Stretch">
-                          <TextBlock FontWeight="SemiBold" Margin="0,0,0,10">Buch hinzufügen</TextBlock>
-                          <TextBlock TextWrapping="Wrap">Fügen Sie ein neues Buch zur Bibliothek hinzu</TextBlock>
+                            <TextBlock FontWeight="SemiBold" Margin="0,0,0,10">Buch hinzufügen</TextBlock>
+                            <TextBlock TextWrapping="Wrap">Fügen Sie ein neues Buch zur Bibliothek hinzu</TextBlock>
 
-                          <TextBlock Classes="field-label" Text="Titel" FontWeight="SemiBold" />
-                          <TextBox Classes="primary" Watermark="Artikelname" />
+                            <TextBlock Classes="field-label" Text="Titel" FontWeight="SemiBold" />
+                            <TextBox Classes="primary" Watermark="Artikelname" />
 
-                          <TextBlock Classes="field-label" Text="Autor" FontWeight="SemiBold" />
-                          <TextBox Classes="primary" Watermark="Autorname" />
+                            <TextBlock Classes="field-label" Text="Autor" FontWeight="SemiBold" />
+                            <TextBox Classes="primary" Watermark="Autorname" />
                         </StackPanel>
 
                         <!-- Right side -->
                         <StackPanel Grid.Row="0" Grid.Column="1" Spacing="6" HorizontalAlignment="Stretch">
+                            <TextBlock Classes="field-label" Text="Year" FontWeight="SemiBold" />
+                            <TextBox Classes="primary"
+                                     Name="YearTextBox"
+                                     Watermark="z.B. 1943"
+                                     MaxLength="4"
+                                     TextInput="NumericTextBox_OnTextInput"/>
 
-                            
-                          <TextBlock Classes="field-label" Text="Year" FontWeight="SemiBold" />
-                          <TextBox Classes="primary"
-                                 Name="YearTextBox"
-                                 Watermark="z.B. 1943"
-                                 MaxLength="4"
-                                 TextInput="NumericTextBox_OnTextInput"/>
-
-                          <TextBlock Classes="field-label" Text="Anzahl Exemplare" FontWeight="SemiBold" />
-                          <TextBox Classes="primary"
-                                 Name="CopiesTextBox"
-                                 Watermark="z.B. 10"
-                                 TextInput="NumericTextBox_OnTextInput" />
+                            <TextBlock Classes="field-label" Text="Anzahl Exemplare" FontWeight="SemiBold" />
+                            <TextBox Classes="primary"
+                                     Name="CopiesTextBox"
+                                     Watermark="z.B. 10"
+                                     TextInput="NumericTextBox_OnTextInput" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
-                          <TextBlock Classes="field-label" Text="Beschreibung" FontWeight="SemiBold" />
-                          <TextBox Classes="primary"
-                                   TextWrapping="Wrap"
-                                   AcceptsReturn="True"
-                                   MinHeight="70"
-                                   Watermark="Beschreibung von Artikel" />
+                            <TextBlock Classes="field-label" Text="Beschreibung" FontWeight="SemiBold" />
+                            <TextBox Classes="primary"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     MinHeight="70"
+                                     Watermark="Beschreibung von Artikel" />
                         </StackPanel>
 
                         <!-- Buttons last row-->
                         <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Right"
-                                Spacing="10">
-                              <Button Classes="first" Content="Speichern" />
-                              <Button Classes="secound" Content="Abbrechen" />
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    Spacing="10">
+                            <Button Classes="first" Content="Speichern" />
+                            <Button Classes="secound" Content="Abbrechen" />
                         </StackPanel>
                     </Grid>
-
-                    <!--<StackPanel Grid.Row="3">
-						
-                            <Button Classes="first" Content="Login" />
-                            <Button Classes="secound" Content="Neues Konto erstellen"  />
-                        </StackPanel>-->
-
                 </Border>
 
-                <!-- Secound Element -->
-                <Border Grid.Row="1" Padding="20" CornerRadius="10" BorderBrush="#e5e7eb" BorderThickness="2" Margin="10" >
-                    <Grid ColumnDefinitions="* *"
-                          RowDefinitions="Auto Auto Auto"
-                          ColumnSpacing="16"
-                          RowSpacing="12">
-
-
-                        <!-- Left Side-->
-                        <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6" HorizontalAlignment="Stretch">
-                          <TextBlock FontWeight="SemiBold" Margin="0,0,0,10">Buch hinzufügen</TextBlock>
-                          <TextBlock TextWrapping="Wrap">Fügen Sie ein neues Buch zur Bibliothek hinzu</TextBlock>
-
-                          <TextBlock Classes="field-label" Text="Titel" FontWeight="SemiBold" />
-                          <TextBox Classes="primary" Watermark="Artikelname" />
-
-                          <TextBlock Classes="field-label" Text="Autor" FontWeight="SemiBold" />
-                          <TextBox Classes="primary" Watermark="Autorname" />
+                <!-- Third Section-->
+                <Border Grid.Row="2" Classes="card">
+                    <Grid RowDefinitions="Auto,*" RowSpacing="8">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                            <Button Content="Aktualisieren" Command="{Binding ReloadCommand}" />
                         </StackPanel>
 
-                        <!-- Right side -->
-                        
+                        <ListBox Grid.Row="1" ItemsSource="{Binding Items}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="model:DisplayedItem">
+                                    <Grid ColumnDefinitions="2*,2*,Auto,Auto,Auto" ColumnSpacing="12">
+                                        <TextBlock Grid.Column="0" Text="{Binding Title}" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Author}" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Year}" />
+                                        <TextBlock Grid.Column="3" Text="{Binding Type}" />
+                                        <TextBlock Grid.Column="4" Text="{Binding AvailableCopies}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
                     </Grid>
-
-                    <!--<StackPanel Grid.Row="3">
-						
-                            <Button Classes="first" Content="Login" />
-                            <Button Classes="secound" Content="Neues Konto erstellen"  />
-                        </StackPanel>-->
-
                 </Border>
 
             </Grid>

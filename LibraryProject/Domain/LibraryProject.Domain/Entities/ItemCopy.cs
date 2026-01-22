@@ -32,7 +32,7 @@ namespace LibraryProject.Domain.Entities
 
         public bool CheckReservePossible()
         {
-            if (!IsBorrowed)
+            if (IsBorrowed)
                 return false;
 
             if (IsReserved)
@@ -55,8 +55,8 @@ namespace LibraryProject.Domain.Entities
         public void ReturnItem()
         {
             ReservedBy = null;
+            ReservedById = null;
+
         }
-
-
     }
 }

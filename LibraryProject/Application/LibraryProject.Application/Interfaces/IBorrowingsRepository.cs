@@ -11,7 +11,6 @@ namespace LibraryProject.Application.Interfaces
     {
         Task SaveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default);
         Task RemoveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default);
-        //(Item?, User?) GetPossibleBorrowing(Guid userId, Guid itemId);
         Task UpdateBorrowingAsync(Borrowing borrowing, CancellationToken ct = default);
 
         Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default);

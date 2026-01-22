@@ -35,35 +35,34 @@ namespace LibraryProject.Application.Services
             return newUser;
         }
 
-        public async Task<User> UpdateUserProfile(Guid id, UserType newType)
-        {
-            _authorizationService.EnsureAuthenticated();
-            User? interestedUser = await _userRepository.GetExistingUserByIdAsync(id);
+        //public async Task<User> UpdateUserProfile(Guid id, UserType newType)
+        //{
+        //    User? interestedUser = await _userRepository.GetExistingUserByIdAsync(id);
 
-            if (interestedUser == null)
-            {
-                throw new NonexistentUserException();
-            }
+        //    if (interestedUser == null)
+        //    {
+        //        throw new NonexistentUserException();
+        //    }
+        //    _authorizationService.EnsureAuthenticated();
 
-            interestedUser.ChangeUserProfile(newType);
-            return interestedUser;
-        }
+        //    interestedUser.ChangeUserProfile(newType);
+        //    return interestedUser;
+        //}
 
         public async Task<User> DeleteExistingUser(Guid id)
         {
-            _authorizationService.EnsureAdmin();
             User? interestedUser = await _userRepository.GetExistingUserByIdAsync(id);
             if (interestedUser == null)
             {
                 throw new NonexistentUserException();
             }
+            _authorizationService.EnsureAdmin();
 
             await _userRepository.RemoveUserAsync(interestedUser);
             return interestedUser;
         }
 
-        // Helper method might need different place
-        public async Task<User?> GetUserByIdAsync(Guid id, CancellationToken ct)
+        public async Task<User?> ReceiveUserByIdAsync(Guid id, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
             return await _userRepository.GetExistingUserByIdAsync(id, ct);

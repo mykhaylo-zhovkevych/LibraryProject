@@ -25,16 +25,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             return Task.FromResult(quary);
         }
 
-        //public Task<Borrowing?> GetActiveBorrowingAsync(Guid userId, Guid itemId, CancellationToken ct = default)
-        //{
-        //    ct.ThrowIfCancellationRequested();
-        //    Borrowing? quary = _storage.Borrowings
-        //        .FirstOrDefault(b => b.User.Id == userId && 
-        //        b.Item.Id == itemId && !b.IsReturned);
-            
-        //    return Task.FromResult(quary);
-        //}
-
         public Task<List<Borrowing>> GetInactiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
@@ -54,18 +44,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
 
             return Task.FromResult(quary);
         }
-
-        //public (Item?, User?) GetPossibleBorrowing(Guid userId, Guid itemId)
-        //{
-        //    var user = _storage.Users
-        //        .FirstOrDefault(u => u.Id == userId);
-
-        //    var item = _storage.Shelves
-        //        .SelectMany(s => s.Items)
-        //        .FirstOrDefault(i => i.Id == itemId);
-
-        //    return (item, user);
-        //}
 
         public Task RemoveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
         {

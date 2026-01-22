@@ -18,22 +18,23 @@
 ## Benutzergruppen & Rollen
 
 Admin
-- Bücher hinzufügen, bearbeiten, löschen
-- Benutzer verwalten (registrieren, löschen)
+- Artikeln hinzufügen, bearbeiten, löschen
+- Benutzer verwalten (registrieren, sperren, reaktivieren)
 - Ausleihhistorie überwachen
 
 Kunde
-- Bücher ausleihen, zurückgeben, reservieren
-- Bücher suchen (mit Erweiterungen)
+- Artikeln ausleihen, zurückgeben, reservieren
+- Artikel suchen (mit Erweiterungen)
 - Eigenes Konto verwalten (Konto schliessen)
 - Ausleihhistorie einsehen (mit Erweiterungen)
 
 ---
+
 ## Use Cases
 
-### Use Case 1: Buchverwaltung
+### Use Case 1: Artikelverwaltung
 
-**Beschreibung:** Als Admin möchte ich neue Bücher hinzufügen sowie bestehende Bücher bearbeiten oder löschen, damit die Infrastruktur der Bibliothek einwandfrei ist.
+**Beschreibung:** Als Admin möchte ich neue Artikeln hinzufügen sowie bestehende Artikeln bearbeiten oder löschen, damit die Infrastruktur der Bibliothek einwandfrei ist.
 
 **Ablauf:**
 1. Admin meldet sich an.
@@ -43,7 +44,7 @@ Kunde
    - Buch hinzufügen → Formular ausfüllen → speichern
    - Buch bearbeiten → Buch auswählen → Änderungen speichern
    - Buch löschen → Buch auswählen → löschen
-4. System aktualisiert lokale Daten (In-Memory(File) + optional persistent)
+1. System aktualisiert lokale Daten
 
 **Akzeptanzkriterien**
 1. Der Admin kann ein oder mehrere Bücher ins System einfügen.
@@ -52,7 +53,7 @@ Kunde
 
 ### Use Case 2: Benutzerverwaltung
 
-**Beschreibung:** Als Admin möchte ich Kundenkonten und Kunde verwalten können, um in Sonderfällen bestimmte Aktionen durchzuführen, z.B. sperren.
+**Beschreibung:** Als Admin möchte ich Kunde verwalten können, um in Sonderfällen bestimmte Aktionen durchzuführen, z.B. sperren.
 
 **Ablauf:**
 1. Admin meldet sich an.
@@ -62,7 +63,6 @@ Kunde
    - Kunde manuelle hinzufügen → Formular ausfüllen→ speichern
    - Kunde bearbeiten → Änderungen speichern
    - Kunde auswählen → löschen
-4. System aktualisiert lokale Daten
 
 **Akzeptanzkriterien**
 1. Der Admin kann bestehende Kunden aus dem System löschen.
@@ -81,7 +81,6 @@ Kunde
 	- Richtlinie manuelle hinzufügen → Formular ausfüllen → speichern 
 	- Richtlinie aktualisieren →  Änderungen speichern
 	- Richtlinie auswählen → löschen
-5. System aktualisiert lokale Daten
 
 **Akzeptanzkriterien**
 5. Der Admin kann neue Policy ins System einfügen.
@@ -105,18 +104,17 @@ Kunde
 
 ### Use Case 5 Kunde Registrierung
 
-**Beschreibung** Als Kunde möchte eine Kunde Identität von Bibliothek haben, damit ich mich später einloggen kann.
+**Beschreibung** Als Kunde möchte eine meine Identität von Bibliothek haben, damit ich mich später einloggen kann.
 
 **Ablauf:**
 1. Kunde öffnet Programm.
-2. Kunde macht eine Registrierung .
+2. Kunde macht eine Registrierung
 3. Kunde gibt die Daten ein.
 	- Name 
 	- Password
 	- Adresse
 	- Email
 4. Admin überprüft die Identität und bestätigt.
-5. System aktualisiert lokale Daten .
 
 **Akzeptanzkriterien**
 1. Der Kunde bekommt eine Bestätigung vom System (z.B. per Email).
@@ -146,7 +144,6 @@ Kunde
 2. Kunde wählt "Ausgeliehen".
 3. Kunde kann:
 	- Spezifische Buch auswählen → zurückgeben
-4. System aktualisiert lokale Daten.
 
 **Akzeptanzkriterien**
 1. Der Kunde kann ein spezifisches Buch zurückgeben.
@@ -161,8 +158,6 @@ Kunde
 2. Kunde wählt "Ausgeliehen".
 3. Kunde kann:
 	- Spezifische Buch auswählen → ausleihen
-4. System überprüft Kunde Bedienung.
-5. System aktualisiert lokale Daten.
 
 **Akzeptanzkriterien**
 1. Der Kunde kann ein spezifisches Buch ausleihen.
@@ -177,8 +172,6 @@ Kunde
 2. Kunde wählt "Ausgeliehen".
 3. Kunde kann:
 	- Spezifische Buch auswählen → reservieren
-4. System überprüft Kunde Bedienung.
-5. System aktualisiert lokale Daten.
 
 **Akzeptanzkriterien**
 1. Der Kunde kann ein spezifisches Buch reservieren.
@@ -208,7 +201,6 @@ Kunde
 3. Kunde kann:
    - Die Konto löschen.
    - Die Konto Information aktualisieren.
-4. System aktualisiert lokale Daten.
 
 **Akzeptanzkriterien**
 1. Der Kunde kann sein eigenes Konto schliessen.
@@ -231,17 +223,61 @@ Kunde
 2. Der Kunde kann die aktive und inaktive Ausleihhistorie auswählen.
 3. Der Kunde kann spezifische Artikel aus der Ausleihhistorie entfernen (optional).
 
+### Use Case 11 Artikeln Verwaltung:  Einfügung mit bestimmte Menge
+ **Beschreibung** Als Admin möchte ich eine neu Artikel mit bestimmte Anzahl einfügen können, damit ich die gewünschte Anzahl von Artikeln ins System speichern kann.
+
+**Ablauf:**
+1. Admin meldet sich an.
+2. Admin wählt "Verwaltung".
+3. Admin kann 
+	1. Die gewünschte Menge von Artikeln eingeben.
+	2. Wenn keine Menge eingegeben wurden. System macht Eins als Default Menge.
+
+**Akzeptanzkriterien**
+1. Der Admin kann gewünschte Menge von Artikeln speichern. 
+
+
+### Use Case 11.1 Artikeln Verwaltung:  Artikeln Löschung mit bestimmte Menge
+**Beschreibung** Als Admin möchte ich die bestehende Artikel Exemplaren löschen, damit alle restlichen Exemplare intakt bleiben können.    
+
+**Ablauf:**
+1. Admin meldet sich an.
+2. Admin wählt "Verwaltung".
+3. Admin kann 
+	1. Die gewünschte Menge von Artikeln eingeben.
+	2. Wenn keine Menge eingegeben wurden. System macht Eins als Default Menge.
+
+**Akzeptanzkriterien**
+5. Die Artikeln werden basierend auf die gewünschte Menge gelöscht. 
+
+
+### Use Case 12 Artikeln Verwaltung: Alle Artikeln Löschung während jemand als Ausgeliehen oder Reserviert hat
+
+**Beschreibung:** Als Admin möchte ich alle Artikeln löschen lassen, aber wenn jemand diese Artikeln in Besitzung hat, sei es als "Reserviert" oder "Ausgeliehen"  dann lassen es frei, damit keine weitere Vorgehen nachgenommen werden müssen.
+
+**Ablauf:**
+1. Admin meldet sich an.
+2. Admin wählt "Verwaltung".
+3. Admin kann 
+	1. Die gewünschte Menge von Artikeln eingeben.
+	2. Wenn keine Menge eingegeben wurden. System wirft eine Ausnahme.
+	3. Wenn jemand die gelöschte Artikeln in Besitzt hat, soll die Person benachrichtigt werden.
+
+**Akzeptanzkriterien**
+1. Der Kunde kann die Artikel nicht an die Bibliothek zurückgeben
+
+
 ---
 
 ## Arbeitsplan und Arbeitspakete mit Aufwandsschätzungen
 
-| Datum                   | Zeit | Arbeitspaket                        | Erwartete Aufgabe                           | Erledigte Aufgabe |
-| ----------------------- | ---- | ----------------------------------- | ------------------------------------------- | ----------------- |
-| 05.01.2026 / 06.01.2026 |      | Vorbereitung und Konzept erstellung | Das fertig Konzept                          |                   |
-| 07.01.2026 / 09.01.2026 |      | Projektinitialisierung              | Die Core Projekt und allfällige Remastering |                   |
-| 12.01.2026 / 16.01.2026 |      | Desktop App Implementierung         |                                             |                   |
-| 19.01.2026 / 23.01.2026 |      | Web App Implementierung             |                                             |                   |
-| 26.01.2026 / 30.01.2026 |      | Refactoring                         |                                             |                   |
+| Datum                   | Zeit | Arbeitspaket                        | Erwartete Aufgabe                           | Erledigte Aufgabe                                         |
+| ----------------------- | ---- | ----------------------------------- | ------------------------------------------- | --------------------------------------------------------- |
+| 05.01.2026 / 06.01.2026 |      | Vorbereitung und Konzept erstellung | Das fertig Konzept                          | Das Konzept wurden während Projekt Ausführung nachgefasst |
+| 07.01.2026 / 09.01.2026 |      | Projektinitialisierung              | Die Core Projekt und allfällige Remastering | Ähnlich wie in Arbeitspaket 1 aber in geringem Masse      |
+| 12.01.2026 / 23.01.2026 |      | Desktop App Implementierung         | Das minimalistisch UI                       | Ja                                                        |
+| 23.01.2026 / 26.01.2026 |      | Web App Implementierung             | Das minimalistisch UI und RWD               |                                                           |
+| 28.01.2026 / 30.01.2026 |      | Refactoring + UnitTesting           | Dorrekte Ergebnisse                         |                                                           |
 
 ---
 ## Architekturkonzept
@@ -279,12 +315,14 @@ Dies ermöglicht eine bessere Testbarkeit, Wartbarkeit und Erweiterbarkeit der A
 Ich habe diese Architektur ausgewählt, weil das passt für die kleine bis mitlernen Projekten die eine gemeinsamen Geschäftslogik haben müssen und die Trennung zwischen Sichten ermöglichen flexiblem Erwartbarkeit ohne die Kernlogik zu verändern müssen.
 
 ---
-## Datenkonzept
+## Datenkonzept und High Level Design
 
-![[Pasted diagram.png]]
+## UX Design Prototype
+### Desktop Interface für Administration 
 
-**Wie und Wo werden die Daten gespeichert?**
-Die Daten werden an zwei Orten gespeichert. Die erste Implementierung erfolgt REM und die zweite erfolgt mit SQLite.
+https://drift-shed-51908381.figma.site
+
+### Web Interface für die Kunde
 
 
 

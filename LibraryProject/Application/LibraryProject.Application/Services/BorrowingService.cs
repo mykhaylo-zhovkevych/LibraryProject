@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LibraryProject.Application.Services
 {
@@ -47,23 +48,22 @@ namespace LibraryProject.Application.Services
             }
 
             freeCopy.BorrowItem();
-            // item.CirculationCount--;
             freeCopy.Item.CirculationCount--;
             await _itemRepository.UpdateCopyAsync(freeCopy, ct);
 
-            var borrowing = new Borrowing(user, freeCopy, activePolicy);
+            Borrowing borrowing = new Borrowing(user, freeCopy, activePolicy);
             await _borrowedRepository.SaveBorrowingAsync(borrowing, ct);
 
         }
          
-        // change to Item
+
         public async Task ReturnBorrowedItemAsync(User user, Guid itemCopyId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No entries was found for this user {user.Name}");
+            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No active entry was found for: {user.Name}");
 
             activeBorrowing.ItemCopy.ReturnItem();
-            activeBorrowing.ItemCopy.Item.CirculationCount++;
+            //activeBorrowing.ItemCopy.Item.CirculationCount++;
             activeBorrowing.ReturnBorrowing(activeBorrowing);
 
             await _itemRepository.UpdateCopyAsync(activeBorrowing.ItemCopy, ct);
@@ -75,11 +75,11 @@ namespace LibraryProject.Application.Services
             }
 
         }
-        // 
+       
         public async Task ExtendBorrowingPeriodAsync(User user, Guid itemCopyId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No entries was found for this user {user.Name}");
+            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No active entry was found for: {user.Name}");
 
             activeBorrowing.Extend();
             await _borrowedRepository.UpdateBorrowingAsync(activeBorrowing, ct);

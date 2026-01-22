@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -22,26 +22,20 @@
         <!-- Left container -->
         <TextBlock Grid.Column="0" Text="Bibliothek Verwaltung">
             <TextBlock.Styles>
-                <StaticResource ResourceKey="PageTitle"/>
+                    <StaticResource ResourceKey="PageTitle"/>
             </TextBlock.Styles>
         </TextBlock>
-
-         <TextBlock Text="Angemeldet als: ">
-            <TextBlock.Styles>
-                <StaticResource ResourceKey="ValidatedName"/>
-            </TextBlock.Styles>
-         </TextBlock>
 
         <!-- Right buttons -->
         <StackPanel Grid.Column="1">
             <StackPanel.Styles>
-                <StaticResource ResourceKey="CloseButtonContainer"/>
+                    <StaticResource ResourceKey="CloseButtonContainer"/>
             </StackPanel.Styles>
 
           <Button Command="{Binding LogoutCommand}">
-          <Button.Styles>
-                <StaticResource ResourceKey="CloseButton"/>
-            </Button.Styles>
+              <Button.Styles>
+                    <StaticResource ResourceKey="CloseButton"/>
+              </Button.Styles>
           </Button> 
           
         </StackPanel>
@@ -51,14 +45,12 @@
     <!-- Divider line -->
     <Border Grid.Row="1" Height="2" Background="#404040" />
 
-      <!--<Setter Property="CornerRadius" Value="10"/>-->
-
     <Border Grid.Row="2" Background="#969696" Padding="8">
       <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Left">
-        <Button Command="{Binding GoToCatalogCommand}" CornerRadius="10" Padding="12" >Katalog</Button>
-        <Button Command="{Binding GoToBorrowingCommand}" CornerRadius="10" Padding="12" >Ausgeliehen</Button>
-        <Button Command="{Binding GoToProfileCommand}" CornerRadius="10" Padding="12" >Profil</Button>
-        <Button Command="{Binding GoToManagementCommand}" CornerRadius="10" Padding="12" >Verwaltung</Button>
+        <Button Command="{Binding GoToCatalogCommand}" CornerRadius="10" Padding="6" >Katalog</Button>
+        <Button Command="{Binding GoToBorrowingCommand}" CornerRadius="10" Padding="6" >Ausgeliehen</Button>
+        <Button Command="{Binding GoToProfileCommand}" CornerRadius="10" Padding="6" >Profil</Button>
+        <Button Command="{Binding GoToManagementCommand}" CornerRadius="10" Padding="6" >Verwaltung</Button>
       </StackPanel>
     </Border>
   </Grid>

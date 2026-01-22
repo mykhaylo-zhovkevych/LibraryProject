@@ -20,10 +20,5 @@ namespace LibraryProject.Domain.Entities
             Name = name;
             UserType = userType;
         }
-
-        public void ChangeUserProfile(UserType selectedUserType)
-        {
-            UserType = selectedUserType;
-        }
     }
 }

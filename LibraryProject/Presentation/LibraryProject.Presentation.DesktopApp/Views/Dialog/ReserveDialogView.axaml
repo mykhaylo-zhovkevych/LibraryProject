@@ -3,16 +3,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignWidth="300"
-             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.BorrowDialogView"
-             x:DataType="vm:BorrowDialogViewModel">
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.ReserveDialogView"
+             x:DataType="vm:ReserveDialogViewModel">
 
-  <Design.DataContext>
-    <vm:BorrowDialogViewModel/>
-  </Design.DataContext>
+    <Design.DataContext>
+        <vm:ReserveDialogViewModel/>
+    </Design.DataContext>
 
-  <Border Background="#e5e7eb" CornerRadius="20" ClipToBounds="True" Margin="10" BorderThickness="1">
+<Border Background="#e5e7eb" CornerRadius="20" ClipToBounds="True" Margin="10" BorderThickness="1">
     <StackPanel>
       <Border Background="#969696" CornerRadius="20 0">
         <TextBlock Text="{Binding Title}" Padding="10" Foreground="White" FontSize="20" HorizontalAlignment="Center" />

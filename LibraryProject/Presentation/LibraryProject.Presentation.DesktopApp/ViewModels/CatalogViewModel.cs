@@ -64,6 +64,11 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _ = LoadDataAsync();
         }
 
+        //public CatalogViewModel ()
+        //{
+        //    Items.Add(new DisplayedItem(Guid.NewGuid(), "Die Verwandlung", "Franz Kafka", "Die Verwandlung ist eine im Jahr 1912 entstandene Erzählung von Franz Kafka. Die Geschichte handelt von Gregor Samsa, dessen plötzliche Verwandlung in ein „Ungeziefer“ die Kommunikation seines sozialen Umfelds mit ihm immer mehr hemmt, bis er von seiner Familie für untragbar gehalten wird und schließlich zugrunde geht. ", 1975, "Buch", 3));
+        //}
+
         partial void OnSearchTextChanged(string? value) => DebouncedReload();
 
         partial void OnSelectedFilterOptionChanged(string? value)
@@ -98,7 +103,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         }
 
         [RelayCommand]
-        private async Task ShowItemDialogAsync(DisplayedItem item)
+        private async Task ShowBorrowItemDialog(DisplayedItem item)
         {
             BorrowDialogViewModel dialog = new BorrowDialogViewModel()
             {
@@ -117,15 +122,62 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 try
                 {
                     Guid userId = _currentUserContext.UserId.Value;
-                    User user = await _userService.GetUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Logged-in user not found.");
+                    User currentUser = await _userService.ReceiveUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Logged-in user not found.");
 
-                    // Get genric item 
-                    Item domainItem = (await _itemService.SearchForDesiredItem(nameContains: item.Title, yearSelected: item.Year, itemType: null, customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Item not found.");
-
-                    // Find copies
+                    Item domainItem = (await _itemService.SearchForDesiredItem(nameContains: item.Title, 
+                        yearSelected: item.Year, 
+                        itemType: null, 
+                        customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Item not found.");
                     ItemCopy freeCopy = domainItem.Copies.FirstOrDefault(c => !c.IsBorrowed && c.ReservedById == null) ?? throw new InvalidOperationException("No copies of the item found.");
 
-                    await _borrowingService.CreateBorrowedItemAsync(user, domainItem, default);
+                    await _borrowingService.CreateBorrowedItemAsync(currentUser, domainItem, default);
+
+                }
+                catch (Exception ex)
+                {
+                    ErrorDialogViewModel errorDialog = new ErrorDialogViewModel()
+                    {
+                        Title = "Fehler",
+                        Message = $"Fehler: {ex.Message}",
+                        ConfirmText = "OK"
+                    };
+                    CurrentDialog = errorDialog;
+                    errorDialog.Show();
+
+                }
+            }
+        }
+
+
+        [RelayCommand]
+        private async Task ShowReserveItemDialog(DisplayedItem item)
+        {
+            ReserveDialogViewModel dialog = new ReserveDialogViewModel()
+            {
+                Title = "Reservation bestätigen",
+                Message = $"Möchten Sie “{item.Title}“ reservieren?",
+                ConfirmText = "Ja",
+                CancelText = "Nein"
+            };
+
+            CurrentDialog = dialog;
+            dialog.Show();
+
+
+            if (await dialog.WaitConfirmationAsync())
+            {
+                try
+                {
+                    Guid userId = _currentUserContext.UserId.Value;
+                    User currentUser = await _userService.ReceiveUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Logged-in user not found.");
+
+                    Item domainItem = (await _itemService.SearchForDesiredItem(nameContains: item.Title,
+                        yearSelected: item.Year,
+                        itemType: null,
+                        customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Item not found.");
+                    ItemCopy freeCopy = domainItem.Copies.FirstOrDefault(c => !c.IsBorrowed && c.ReservedById == null) ?? throw new InvalidOperationException("No copies of the item found.");
+
+                    await _itemService.CreateReservedItemAsync(currentUser, domainItem, default);
 
                 }
                 catch (Exception ex)
