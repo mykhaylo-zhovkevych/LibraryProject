@@ -49,8 +49,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <Compile Update="Views\Dialog\ConfirmDialogView.axaml.cs">
-      <DependentUpon>ConfirmDialogView.axaml</DependentUpon>
+    <Compile Update="Views\Dialog\BorrowItemDialogView.axaml.cs">
+      <DependentUpon>BorrowItemDialogView.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MainView.axaml.cs">
       <DependentUpon>MainView.axaml</DependentUpon>

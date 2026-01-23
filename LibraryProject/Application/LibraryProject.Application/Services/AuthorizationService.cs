@@ -21,7 +21,7 @@ namespace LibraryProject.Application.Services
 
         public void EnsureAuthenticated()
         {
-            if (!_currentUser.IsAuthenticated)
+            if (!_currentUser.IsAuthorised)
             {
                 throw new SecurityException("User is not authenticated.");
             }

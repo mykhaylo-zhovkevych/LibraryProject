@@ -12,7 +12,7 @@ namespace LibraryProject.Presentation.Shared.Auth
     {
         public Guid? UserId { get; private set; }
         public UserType? UserType { get; private set; }
-        public bool IsAuthenticated => UserId != null;
+        public bool IsAuthorised => UserId != null;
 
         public void SignIn(Guid userId, UserType userType)
         {

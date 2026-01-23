@@ -84,9 +84,10 @@ namespace LibraryProject.Application.Services
                                                                   i.Year == item.Year);
 
             Item foundItem = itemsMatching.FirstOrDefault() ?? throw new NonexistentItemException();
-
+            
+            // await _itemRepository.UpdateCirculationCountAsync(foundItem.Id, -1, ct);
             await _itemRepository.RemoveItemAsync(foundItem, ct);
-            foundItem.CirculationCount--;
+            // foundItem.CirculationCount--;
         }
 
         public async Task RemoveItemCopiesByIdAsync(Item item, int count, CancellationToken ct)

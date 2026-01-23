@@ -19,7 +19,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return await _db.Accounts
-                .AsNoTracking()
+                //.AsNoTracking()
                 .FirstOrDefaultAsync(a => a.AccountName == userName, ct);
         }
 
@@ -27,7 +27,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return await _db.Accounts
-                .AsNoTracking()
+                //.AsNoTracking()
                 .FirstOrDefaultAsync(a => a.AccountId == accountId, ct);
         }
 

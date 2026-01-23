@@ -22,20 +22,26 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return await _db.Items
-                .AsNoTracking()
+                //.AsNoTracking()
                 .FirstOrDefaultAsync(i => i.Name == name && i.ItemType == itemType, ct);
         }
 
         public async Task<Shelf?> GetShelfByIdAsync(int id, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            return await _db.Shelves.FirstOrDefaultAsync(s => s.ShelfId == id, ct);
+            return await _db
+                .Shelves
+                //.AsNoTracking()
+                .FirstOrDefaultAsync(s => s.ShelfId == id, ct);
         }
 
         public async Task<Shelf> GetOrCreateDefaultShelfAsync(CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            Shelf? shelf = await _db.Shelves.FirstOrDefaultAsync(s => s.ShelfId == DefaultShelfId, ct);
+            Shelf? shelf = await _db
+                .Shelves
+                //.AsNoTracking()
+                .FirstOrDefaultAsync(s => s.ShelfId == DefaultShelfId, ct);
             if (shelf != null)
             {
                 return shelf;
@@ -52,7 +58,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
 
             return await _db.Items
-                .AsNoTracking()
+                //.AsNoTracking()
                 .Include(i => i.Copies)
                 .ToListAsync(ct);
         }
@@ -77,7 +83,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
             // If user has a reservation than use copy
             ItemCopy? reservedForUser = await _db.ItemCopies
-                .AsNoTracking()
+                //.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == userId, ct);
 
             if (reservedForUser != null)
@@ -85,36 +91,37 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 
             // If not reserved, return first free copy
             return await _db.ItemCopies
-                .AsNoTracking()
+                //.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == null, ct);
         }
 
         
         public async Task<ItemCopy?> GetCopyToReserveAsync (Guid itemId, CancellationToken ct = default)
         {
-            return await _db.ItemCopies.AsNoTracking()
-                                       .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == null, ct);
+            return await _db
+                .ItemCopies
+                //.AsNoTracking()
+                .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == null, ct);
         }
 
         public async Task UpdateCopyAsync(ItemCopy copy, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            ItemCopy? tracked = _db.ItemCopies.Local.FirstOrDefault(i => i.Id == copy.Id);
+            //ItemCopy? tracked = _db.ItemCopies.Local.FirstOrDefault(i => i.Id == copy.Id);
 
-            if (tracked != null)
-            {
-                // Update tracked instance values
-                _db.Entry(tracked).CurrentValues.SetValues(copy);
-            }
-            else
-            {
-                _db.ItemCopies.Attach(copy);
-                _db.Entry(copy).State = EntityState.Modified;
-            }
+            //if (tracked != null)
+            //{
+            //    // Update tracked instance values
+            //    _db.Entry(tracked).CurrentValues.SetValues(copy);
+            //}
+            //else
+            //{
+            //    _db.ItemCopies.Attach(copy);
+            //    _db.Entry(copy).State = EntityState.Modified;
+            //}
 
-            _db.Entry(copy).Reference(c => c.Item).IsModified = false;
-            _db.Entry(copy).Reference(c => c.ReservedBy).IsModified = false;
-
+            //_db.Entry(copy).Reference(c => c.Item).IsModified = false;
+            //_db.Entry(copy).Reference(c => c.ReservedBy).IsModified = false;
             await _db.SaveChangesAsync(ct);
         }
 

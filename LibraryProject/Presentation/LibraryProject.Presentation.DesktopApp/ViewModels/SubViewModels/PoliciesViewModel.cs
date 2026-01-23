@@ -15,5 +15,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             PageName = ApplicationPageNames.ManagementPolicies;
         }
 
+        //TODO: List of policies as for navigation and delete, update is inside of the list itslef
+        //with a forum for policy creation
+
     }
 }

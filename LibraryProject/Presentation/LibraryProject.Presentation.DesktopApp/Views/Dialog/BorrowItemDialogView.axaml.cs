@@ -4,7 +4,7 @@ using Avalonia.Markup.Xaml;
 
 namespace LibraryProject.Presentation.DesktopApp.Views.Dialog;
 
-public partial class BorrowDialogView : UserControl
+public partial class BorrowItemDialogView : UserControl
 {
     public BorrowDialogView()
     {

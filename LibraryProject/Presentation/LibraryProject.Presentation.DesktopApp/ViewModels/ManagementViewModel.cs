@@ -23,6 +23,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         public ManagementViewModel(PageFactory pageFactory)
         {
             _pageFactory = pageFactory;
+
+            CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageNames.ManagementItems);
         }
 
 

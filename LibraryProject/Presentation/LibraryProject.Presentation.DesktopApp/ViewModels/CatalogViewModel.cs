@@ -105,7 +105,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [RelayCommand]
         private async Task ShowBorrowItemDialog(DisplayedItem item)
         {
-            BorrowDialogViewModel dialog = new BorrowDialogViewModel()
+            BorrowItemDialogViewModel dialog = new BorrowItemDialogViewModel()
             {
                 Title = "Ausleihen bestätigen",
                 Message = $"Möchten Sie “{item.Title}“ ausleihen?",
@@ -151,7 +151,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [RelayCommand]
         private async Task ShowReserveItemDialog(DisplayedItem item)
         {
-            ReserveDialogViewModel dialog = new ReserveDialogViewModel()
+            ReserveItemDialogViewModel dialog = new ReserveItemDialogViewModel()
             {
                 Title = "Reservation bestätigen",
                 Message = $"Möchten Sie “{item.Title}“ reservieren?",
@@ -205,10 +205,10 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 _ => throw new NotImplementedException(),
             };
 
-            var selectedItems = await _itemService.SearchForDesiredItem(nameContains: SearchText, isBorrowed: cases.isBorrowed, isReserved: cases.isReserved);
+            IEnumerable<Item> selectedItems = await _itemService.SearchForDesiredItem(nameContains: SearchText, isBorrowed: cases.isBorrowed, isReserved: cases.isReserved);
 
             Items.Clear();
-            foreach (var i in selectedItems)
+            foreach (Item i in selectedItems)
             {
                 ct.ThrowIfCancellationRequested();
                 Items.Add(MapItemToDisplayedItem(i));

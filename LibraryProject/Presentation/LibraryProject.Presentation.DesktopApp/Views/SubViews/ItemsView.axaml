@@ -110,7 +110,7 @@
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
                             <Button Content="Aktualisieren" Command="{Binding ReloadCommand}" Classes="update"/>
-                            <Button Content="Löschen x Menge" Command="{Binding DeleteXAmountCommand}" Classes="update"/>
+                            <Button Content="Löschen" Command="{Binding ShowDeleteItemDialogCommand}" Classes="update"/>
                         </StackPanel>
 
                     </Grid>

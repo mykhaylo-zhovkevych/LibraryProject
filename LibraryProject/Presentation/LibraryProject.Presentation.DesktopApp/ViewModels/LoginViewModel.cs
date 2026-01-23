@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LibraryProject.Application.Dto;
 using LibraryProject.Application.Interfaces;
 using LibraryProject.Application.Services;
 using LibraryProject.Presentation.DesktopApp.Services;
@@ -48,7 +49,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             
             try
             {
-                var session = await _accountService.LoginAsync(userguidId, _name, _password, default);
+                LoginSession? session = await _accountService.LoginAsync(userguidId, _name, _password, default);
 
                 if (session != null)
                 {

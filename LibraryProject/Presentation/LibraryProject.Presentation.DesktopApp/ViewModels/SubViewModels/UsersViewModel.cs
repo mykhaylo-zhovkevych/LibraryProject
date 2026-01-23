@@ -15,5 +15,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             PageName = ApplicationPageNames.ManagementUsers;
         }
 
+        //TODO: list of the users and list of the account 
+        // select user to see the rent hostory as apopup
+
     }
 }

@@ -3,14 +3,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              d:DesignWidth="300"
-             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.BorrowDialogView"
-             x:DataType="vm:BorrowDialogViewModel">
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.DeleteItemDialogView"
+             x:DataType="vm:DeleteItemDialogViewModel">
 
-  <Design.DataContext>
-    <vm:BorrowDialogViewModel/>
-  </Design.DataContext>
+    <Design.DataContext>
+		<vm:BorrowItemDialogViewModel/>
+    </Design.DataContext>
 
   <Border Background="#e5e7eb" CornerRadius="20" ClipToBounds="True" Margin="10" BorderThickness="1">
     <StackPanel>
@@ -22,6 +22,14 @@
         <StackPanel Spacing="20">
           <TextBlock TextWrapping="Wrap" Text="{Binding Message}" FontSize="16" />
 
+           <!-- If true/false react in controller-->
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <RadioButton Content="Delete all copies" IsChecked="{Binding DeleteAllCopies}"/>
+
+              <!-- Inversion isEnabled when another is not-->
+            <NumericUpDown Value="{Binding CountToDelete}" Minimum="1" Maximum="10" IsEnabled="{Binding !DeleteAllCopies}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+          </StackPanel>           
+
           <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="20">
             <Button Content="{Binding CancelText}" Command="{Binding CancelCommand}" Foreground="DarkRed" CornerRadius="10"/>
             <Button Content="{Binding ConfirmText}" Command="{Binding ConfirmCommand}" Foreground="DarkGreen" CornerRadius="10"/>
@@ -30,4 +38,6 @@
       </Border>
     </StackPanel>
   </Border>
+
+
 </UserControl>

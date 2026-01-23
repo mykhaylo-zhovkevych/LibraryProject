@@ -15,8 +15,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 
         public static async Task SeedAsync(LibraryDbContext db, ItemService service, CancellationToken ct = default)
         {
-            await db.Database.EnsureDeletedAsync(ct);
-            await db.Database.EnsureCreatedAsync(ct);
+            //await db.Database.EnsureDeletedAsync(ct);
+            //await db.Database.EnsureCreatedAsync(ct);
 
             // Seed Shelf first (required for Item.ShelfId FK)
             Shelf defaultShelf = new Shelf(DefaultShelfId);

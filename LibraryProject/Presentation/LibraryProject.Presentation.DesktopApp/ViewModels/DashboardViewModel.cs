@@ -45,7 +45,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         public bool ManagementPageIsActive => CurrentPage.PageName == ApplicationPageNames.Management;
 
 
-        // So like the same as injecting direct dependencies, but keeps the classes clean(not injecting each VM)
         [RelayCommand]
         public void GoToCatalog()
         { 

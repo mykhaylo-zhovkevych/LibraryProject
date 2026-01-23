@@ -21,7 +21,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             PolicyEntry? entry = await _db.PolicyEntries
-                .AsNoTracking()
+                //.AsNoTracking()
                 .FirstOrDefaultAsync(p => p.UserType == userType && p.ItemType == itemType, ct);
 
             if (entry == null) 
