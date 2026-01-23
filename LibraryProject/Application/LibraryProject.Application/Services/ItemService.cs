@@ -51,7 +51,9 @@ namespace LibraryProject.Application.Services
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (item == null) throw new NonexistentItemException();
 
-            ItemCopy? copyToReserve = item.Copies.FirstOrDefault(c => !c.IsBorrowed && c.ReservedById == null);
+            // Better not to use untracked object graph and causes issues with attaching 
+            //ItemCopy? copyToReserve = item.Copies.FirstOrDefault(c => !c.IsBorrowed && c.ReservedById == null);
+            ItemCopy? copyToReserve = await _itemRepository.GetCopyToReserveAsync(item.Id, ct);
             if (copyToReserve == null)
             {
                 throw new ArgumentException($"No copy can be reserved for {item.Name}.");

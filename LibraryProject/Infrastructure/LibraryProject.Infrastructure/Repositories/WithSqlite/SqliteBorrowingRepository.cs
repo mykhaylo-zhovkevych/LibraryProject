@@ -24,10 +24,14 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         public Task<Borrowing?> GetActiveBorrowingByCopyAsync(Guid userId, Guid itemCopyId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
+
             return _db.Borrowings
+                .AsNoTracking()
+                .Include(b => b.Policy)
                 .Include(b => b.ItemCopy).ThenInclude(c => c.Item)
                 .FirstOrDefaultAsync(b => b.UserId == userId && b.ItemCopyId == itemCopyId && b.ReturnDate == null, ct);
         }
+
 
         public Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
         {
@@ -66,7 +70,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         public async Task SaveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
         {
         
-            // Dont save the navigation properties if there is fk 
             _db.Entry(borrowing).Reference(b => b.User).CurrentValue = null;
             _db.Entry(borrowing).Reference(b => b.ItemCopy).CurrentValue = null;
 
@@ -78,7 +81,19 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         public async Task UpdateBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            _db.Borrowings.Update(borrowing);
+
+            Borrowing? tracked = _db.Borrowings.Local.FirstOrDefault(b => b.BorrowingId == borrowing.BorrowingId);
+            if (tracked != null)
+            {
+                _db.Entry(tracked).CurrentValues.SetValues(borrowing);
+                _db.Entry(tracked).Property(b => b.ReturnDate).IsModified = true;
+            }
+            else
+            {
+                _db.Borrowings.Attach(borrowing);
+                _db.Entry(borrowing).Property(b => b.ReturnDate).IsModified = true;
+            }
+
             await _db.SaveChangesAsync(ct);
         }
     }

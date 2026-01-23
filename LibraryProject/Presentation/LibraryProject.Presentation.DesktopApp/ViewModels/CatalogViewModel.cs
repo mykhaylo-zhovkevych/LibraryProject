@@ -124,11 +124,10 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                     Guid userId = _currentUserContext.UserId.Value;
                     User currentUser = await _userService.ReceiveUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Logged-in user not found.");
 
-                    Item domainItem = (await _itemService.SearchForDesiredItem(nameContains: item.Title, 
-                        yearSelected: item.Year, 
-                        itemType: null, 
+                    Item domainItem = (await _itemService.SearchForDesiredItem(nameContains: item.Title,
+                        yearSelected: item.Year,
+                        itemType: null,
                         customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Item not found.");
-                    ItemCopy freeCopy = domainItem.Copies.FirstOrDefault(c => !c.IsBorrowed && c.ReservedById == null) ?? throw new InvalidOperationException("No copies of the item found.");
 
                     await _borrowingService.CreateBorrowedItemAsync(currentUser, domainItem, default);
 
@@ -175,7 +174,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                         yearSelected: item.Year,
                         itemType: null,
                         customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Item not found.");
-                    ItemCopy freeCopy = domainItem.Copies.FirstOrDefault(c => !c.IsBorrowed && c.ReservedById == null) ?? throw new InvalidOperationException("No copies of the item found.");
 
                     await _itemService.CreateReservedItemAsync(currentUser, domainItem, default);
 

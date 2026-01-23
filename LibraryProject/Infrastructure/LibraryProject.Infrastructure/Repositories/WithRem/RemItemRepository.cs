@@ -79,7 +79,17 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             throw new NotImplementedException();
         }
 
-        public Task<ItemCopy?> GetFirstFreeCopyAsync(Guid itemId, CancellationToken ct = default)
+        public Task UpdateCirculationCountAsync(Guid itemId, int delta, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ItemCopy?> GetCopyToBorrowAsync(Guid itemId, Guid userId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ItemCopy?> GetCopyToReserveAsync(Guid itemId, CancellationToken ct)
         {
             throw new NotImplementedException();
         }

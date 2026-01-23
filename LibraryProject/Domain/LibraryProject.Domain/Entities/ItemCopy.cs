@@ -19,16 +19,16 @@ namespace LibraryProject.Domain.Entities
         public Guid? ReservedById { get; private set; }
         public User? ReservedBy { get; private set; }
 
-        public bool CheckBorrowPossible()
+        public bool CheckBorrowPossible(Guid userId)
         {
             if (IsBorrowed)
                 return false;
-
-            if (IsReserved)
+            if (IsReserved && ReservedById != userId)
                 return false;
-
             return true;
+
         }
+
 
         public bool CheckReservePossible()
         {

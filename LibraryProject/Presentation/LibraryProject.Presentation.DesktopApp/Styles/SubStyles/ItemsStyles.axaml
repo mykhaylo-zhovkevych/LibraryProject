@@ -25,4 +25,45 @@
     </Style>
 
 
+  <Style Selector="Button.update">
+    <Setter Property="Padding" Value="10"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="BorderBrush" Value="#e5e7eb"/>
+    <Setter Property="Background" Value="#969696"/>
+  </Style>
+  
+  <Style Selector="Border.list-header">
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="8"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="BorderBrush" Value="#e5e7eb"/>
+  </Style>
+
+  <Style Selector="Border.list-header TextBlock">
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+
+  <!-- Row container -->
+  <Style Selector="Border.list-row">
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="8"/>
+    <Setter Property="Margin" Value="0,6,0,0"/>
+    <Setter Property="BorderBrush" Value="#e5e7eb"/>
+    <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Background" Value="Transparent"/>
+  </Style>
+
+    <Style Selector="ListBox.items-list">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+    </Style>
+
+    <Style Selector="ListBox.items-list ListBoxItem">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="Padding" Value="0"/>
+    </Style>
+
+
 </Styles>

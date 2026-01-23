@@ -72,26 +72,58 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             await _db.SaveChangesAsync(ct);
         }
 
-        public async Task<ItemCopy?> GetFirstFreeCopyAsync(Guid itemId, CancellationToken ct = default)
+        public async Task<ItemCopy?> GetCopyToBorrowAsync(Guid itemId, Guid userId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
+            // If user has a reservation than use copy
+            ItemCopy? reservedForUser = await _db.ItemCopies
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == userId, ct);
 
+            if (reservedForUser != null)
+                return reservedForUser;
+
+            // If not reserved, return first free copy
             return await _db.ItemCopies
-                .Include(c => c.Item)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == null, ct);
+        }
+
+        
+        public async Task<ItemCopy?> GetCopyToReserveAsync (Guid itemId, CancellationToken ct = default)
+        {
+            return await _db.ItemCopies.AsNoTracking()
+                                       .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == null, ct);
         }
 
         public async Task UpdateCopyAsync(ItemCopy copy, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
+            ItemCopy? tracked = _db.ItemCopies.Local.FirstOrDefault(i => i.Id == copy.Id);
 
-            // TODO: issue with the reservationa and borrowing return again reservation , because the item attaches aggain
-            _db.Entry(copy).Reference(c => c.Item).CurrentValue = null;
-            _db.Entry(copy).Reference(c => c.ReservedBy).CurrentValue = null;
+            if (tracked != null)
+            {
+                // Update tracked instance values
+                _db.Entry(tracked).CurrentValues.SetValues(copy);
+            }
+            else
+            {
+                _db.ItemCopies.Attach(copy);
+                _db.Entry(copy).State = EntityState.Modified;
+            }
 
-            _db.ItemCopies.Attach(copy);
-            _db.Entry(copy).State = EntityState.Modified;
+            _db.Entry(copy).Reference(c => c.Item).IsModified = false;
+            _db.Entry(copy).Reference(c => c.ReservedBy).IsModified = false;
 
+            await _db.SaveChangesAsync(ct);
+        }
+
+        public async Task UpdateCirculationCountAsync(Guid itemId, int delta, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            Item selectedItem = await _db.Items.FirstOrDefaultAsync(i => i.Id == itemId, ct) ?? throw new ArgumentException($"Item {itemId} not found");
+
+            selectedItem.CirculationCount += delta;
             await _db.SaveChangesAsync(ct);
         }
     }

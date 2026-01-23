@@ -26,8 +26,14 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             _ = LoadItemsAsync();
         }
 
+        [ObservableProperty]
+        private DisplayedItem? selectedItem;
+
         [RelayCommand]
         private Task Reload() => LoadItemsAsync();
+
+        [RelayCommand]
+        private Task DeleteXAmount() => LoadItemsAsync();
 
         private async Task LoadItemsAsync(CancellationToken ct = default)
         {

@@ -19,8 +19,10 @@ namespace LibraryProject.Application.Interfaces
         Task<Shelf?> GetShelfByIdAsync(int id, CancellationToken ct = default);
         Task<IEnumerable<Item>> GetAllItemsAsync(CancellationToken ct = default);
 
-        Task<ItemCopy?> GetFirstFreeCopyAsync(Guid itemId, CancellationToken ct = default);
+        Task<ItemCopy?> GetCopyToBorrowAsync(Guid itemId, Guid userId, CancellationToken ct = default);
+        Task<ItemCopy?> GetCopyToReserveAsync(Guid itemId, CancellationToken ct);
 
+        Task UpdateCirculationCountAsync(Guid itemId, int delta, CancellationToken ct = default);
 
     }
 }

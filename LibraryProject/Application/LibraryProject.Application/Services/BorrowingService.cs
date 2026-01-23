@@ -40,15 +40,16 @@ namespace LibraryProject.Application.Services
         {
             _authorizationService.EnsureAuthenticated();
             Policy activePolicy = await _policyRepository.GetPolicyAsync(user.UserType, item.ItemType, ct) ?? throw new NonexistentPolicyException();
-            ItemCopy freeCopy = await _itemRepository.GetFirstFreeCopyAsync(item.Id, ct) ?? throw new ArgumentException("Error.");
 
-            if (!freeCopy.CheckBorrowPossible())
+            ItemCopy freeCopy = await _itemRepository.GetCopyToBorrowAsync(item.Id, user.Id, ct) ?? throw new ArgumentException("No available copy.");
+
+            if (!freeCopy.CheckBorrowPossible(user.Id))
             {
                 throw new IsAlreadyBorrowedException(item);
             }
 
             freeCopy.BorrowItem();
-            freeCopy.Item.CirculationCount--;
+            await _itemRepository.UpdateCirculationCountAsync(item.Id, -1, ct);
             await _itemRepository.UpdateCopyAsync(freeCopy, ct);
 
             Borrowing borrowing = new Borrowing(user, freeCopy, activePolicy);
@@ -63,9 +64,9 @@ namespace LibraryProject.Application.Services
             Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No active entry was found for: {user.Name}");
 
             activeBorrowing.ItemCopy.ReturnItem();
-            //activeBorrowing.ItemCopy.Item.CirculationCount++;
-            activeBorrowing.ReturnBorrowing(activeBorrowing);
+            activeBorrowing.ReturnBorrowing();
 
+            await _itemRepository.UpdateCirculationCountAsync(activeBorrowing.ItemCopy.ItemId, +1, ct);
             await _itemRepository.UpdateCopyAsync(activeBorrowing.ItemCopy, ct);
             await _borrowedRepository.UpdateBorrowingAsync(activeBorrowing, ct);
 
@@ -73,7 +74,6 @@ namespace LibraryProject.Application.Services
             {
                 OnInformReserver(new ItemEventArgs($"The {activeBorrowing.ItemCopy.Item.Name} is now available",activeBorrowing.ItemCopy.Item, activeBorrowing.ItemCopy.ReservedBy));
             }
-
         }
        
         public async Task ExtendBorrowingPeriodAsync(User user, Guid itemCopyId, CancellationToken ct)

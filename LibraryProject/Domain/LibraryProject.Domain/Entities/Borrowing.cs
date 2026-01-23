@@ -59,11 +59,11 @@ namespace LibraryProject.Domain.Entities
             return true;
         }
 
-        public void ReturnBorrowing(Borrowing borrowing)
+        public void ReturnBorrowing()
         {
-            borrowing.ReturnDate = DateTime.Now;
-            borrowing.ItemCopy.IsBorrowed = false;
-
+            ReturnDate = DateTime.Now;
+            ItemCopy.IsBorrowed = false;
         }
+
     }
 }
