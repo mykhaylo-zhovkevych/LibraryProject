@@ -39,21 +39,22 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
                 //b.Property(x => x.Extensions);
                 //b.Property(x => x.LoadPeriodInDays);
             });
-             
+
             modelBuilder.Entity<Shelf>(b =>
             {
                 b.HasKey(x => x.ShelfId);
+                //b.Property(x => x.ShelfId).ValueGeneratedOnAdd();
 
-                b.Ignore(x => x.Items);
+                b.HasMany(s => s.Items)
+                 .WithOne()
+                 .HasForeignKey(i => i.ShelfId)
+                 .OnDelete(DeleteBehavior.Cascade);
 
-                // Map private field collection
-                b.HasMany<Item>("_items")
-                                .WithOne()
-                                .HasForeignKey(nameof(Item.ShelfId))
-                                .OnDelete(DeleteBehavior.Cascade);
-
-                b.Navigation("_items").UsePropertyAccessMode(PropertyAccessMode.Field);
+                // Write direct to the _items field
+                b.Navigation(s => s.Items)
+                 .UsePropertyAccessMode(PropertyAccessMode.Field);
             });
+
 
             modelBuilder.Entity<Item>(b =>
             {

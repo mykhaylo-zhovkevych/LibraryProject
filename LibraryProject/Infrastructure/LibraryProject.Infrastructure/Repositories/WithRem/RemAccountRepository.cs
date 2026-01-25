@@ -51,5 +51,10 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         {
             throw new NotImplementedException();
         }
+
+        public Task<List<Account>> GetAllAccountsAsync(CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

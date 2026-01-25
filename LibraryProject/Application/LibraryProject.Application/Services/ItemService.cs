@@ -15,6 +15,7 @@ namespace LibraryProject.Application.Services
     {
         private readonly IItemRepository _itemRepository;
         private readonly IAuthorizationService _authorizationService;
+        private const int DefaultShelfId = 101;
 
         public ItemService(IItemRepository itemfRepository, IAuthorizationService authorizationService)
         {
@@ -22,7 +23,7 @@ namespace LibraryProject.Application.Services
             _authorizationService = authorizationService;
         }
 
-        public async Task CreateItemWithAmount(string name, ItemType itemType, string author, int year, string? description, int circulationCount, CancellationToken ct)
+        public async Task CreateItemWithAmount(string name, ItemType itemType, string author, int year, string? description, int circulationCount, int? shelfId, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(name))
             {
@@ -36,14 +37,12 @@ namespace LibraryProject.Application.Services
 
             _authorizationService.EnsureAdmin();
 
-            Item item = new Item(name, itemType, author, year, description, circulationCount);
+            Item item = new Item(name.Trim(),itemType, author.Trim(), year, description: string.IsNullOrWhiteSpace(description) ? null : description.Trim(), 0);
 
-            for (int i = 1; i <= circulationCount; i++)
-            {
-                item.Copies.Add(new ItemCopy {});
-            }
+            item.AddCopies(circulationCount);
+            item.CirculationCount = circulationCount;
 
-            await AddItemToShelf(item, ct);
+            await AddItemToShelf(item, shelfId, ct);
         }
 
         public async Task CreateReservedItemAsync(User user, Item item, CancellationToken ct)
@@ -51,8 +50,6 @@ namespace LibraryProject.Application.Services
             if (user == null) throw new ArgumentNullException(nameof(user));
             if (item == null) throw new NonexistentItemException();
 
-            // Better not to use untracked object graph and causes issues with attaching 
-            //ItemCopy? copyToReserve = item.Copies.FirstOrDefault(c => !c.IsBorrowed && c.ReservedById == null);
             ItemCopy? copyToReserve = await _itemRepository.GetCopyToReserveAsync(item.Id, ct);
             if (copyToReserve == null)
             {
@@ -84,10 +81,8 @@ namespace LibraryProject.Application.Services
                                                                   i.Year == item.Year);
 
             Item foundItem = itemsMatching.FirstOrDefault() ?? throw new NonexistentItemException();
-            
-            // await _itemRepository.UpdateCirculationCountAsync(foundItem.Id, -1, ct);
+
             await _itemRepository.RemoveItemAsync(foundItem, ct);
-            // foundItem.CirculationCount--;
         }
 
         public async Task RemoveItemCopiesByIdAsync(Item item, int count, CancellationToken ct)
@@ -98,33 +93,28 @@ namespace LibraryProject.Application.Services
             }
             _authorizationService.EnsureAdmin();
 
-            IEnumerable<Item> itemsToRemove = await _itemRepository.GetAllItemsAsync(ct);
-            IEnumerable<Item> itemsMatching = itemsToRemove.Where(i => i.Name == item.Name &&
-                                                                  i.ItemType == item.ItemType &&
-                                                                  i.Author == item.Author &&
-                                                                  i.Year == item.Year);
+            IEnumerable<Item> items = await _itemRepository.GetAllItemsAsync(ct);
 
-            Item? foundItem = itemsMatching.FirstOrDefault() ?? throw new NonexistentItemException();
+            Item foundItem = items.FirstOrDefault(i => i.Name == item.Name && i.ItemType == item.ItemType && i.Author == item.Author && i.Year == item.Year) ?? throw new NonexistentItemException();
 
-            if (count <= 0 || count > foundItem.Copies.Count)
+            if (count <= 0) throw new ArgumentException("Invalid copies value.");
+
+            List<ItemCopy> toRemoveItem = foundItem.Copies.Where(c => !c.IsBorrowed && c.ReservedById == null).Take(count).ToList();
+
+            if (toRemoveItem.Count < count)
             {
-                throw new ArgumentException("Invalid copies value.");
+                throw new ArgumentException("Not enought copies to remove.");
             }
-            else if (count == foundItem.Copies.Count)
-            {
-                foreach (var i in foundItem.Copies)
-                {
-                    foundItem.Copies.Remove(i);
-                }
+
+            foreach (ItemCopy currentItemCopy in toRemoveItem) 
+            { 
+                foundItem.Copies.Remove(currentItemCopy);
             }
-            else             
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    foundItem.Copies.Remove(foundItem.Copies.Last());
-                }
-            }
+
+            foundItem.CirculationCount -= count;
+            await _itemRepository.UpdateItemAsync(foundItem, ct);
         }
+
 
         public async Task CancelReservation(User user, Item item)
         {
@@ -133,7 +123,7 @@ namespace LibraryProject.Application.Services
 
             _authorizationService.EnsureAuthenticated();
 
-            ItemCopy reservedCopy = item.Copies.FirstOrDefault(c => c.ReservedById == user.Id);
+            ItemCopy? reservedCopy = item.Copies.FirstOrDefault(c => c.ReservedById == user.Id);
             if (reservedCopy == null)
             {
                 throw new ArgumentException($"{user.Name} has no reservation for {item.Name}");
@@ -144,20 +134,30 @@ namespace LibraryProject.Application.Services
 
         }
 
-        public void ChangeItemName(Item item, string newName)
+        public async Task UpdateItemAsync(Guid itemId, string title, string author, int year, string? description, CancellationToken ct)
         {
-            if (item == null)
+            if (string.IsNullOrWhiteSpace(title))
             {
-                throw new NonexistentItemException();
+                throw new ArgumentException("Titel is empty.");
             }
-            if (string.IsNullOrWhiteSpace(newName))
+            if (string.IsNullOrWhiteSpace(author))
             {
-                throw new ArgumentException("Item name cannot be null or empty.");
+                throw new ArgumentException("Autor is empty.");
             }
-            _authorizationService.EnsureAdmin();
+            if (year <= 0)
+            {
+                throw new ArgumentException("Year invalid.");
+            }
 
-            item.UpdateItemName(newName);
-            
+            _authorizationService.EnsureAdmin();
+            Item item = await _itemRepository.GetItemByIdAsync(itemId, ct) ?? throw new NonexistentItemException();
+
+            item.UpdateItemName(title.Trim());
+            item.UpdateAuthor(author.Trim());
+            item.UpdateYear(year);
+            item.UpdateDescription(string.IsNullOrWhiteSpace(description) ? null : description.Trim());
+
+            await _itemRepository.UpdateItemAsync(item, ct);
         }
 
         public async Task<IEnumerable<Item>> SearchForDesiredItem(
@@ -220,20 +220,18 @@ namespace LibraryProject.Application.Services
             return items.ToList();
         }
 
-
-        private async Task<Item> AddItemToShelf(Item item, CancellationToken ct)
+        private async Task<Item> AddItemToShelf(Item item, int? shelfId, CancellationToken ct)
         {
-            Item? interestedItem = await _itemRepository.GetExistingItemAsync(item.Name, item.ItemType);
-
-            if (interestedItem != null && interestedItem.Id == item.Id)
+            Item? existingItem = await _itemRepository.GetExistingItemAsync(item.Name, item.ItemType, ct);
+            if (existingItem != null)
             {
                 throw new ItemAlreadyExistsWithThisIdException(item);
             }
-            else
-            {
-                await _itemRepository.AddToShelfAsync(item);
-                return item;
-            }
+
+            int targetShelfId = shelfId ?? DefaultShelfId;
+
+            await _itemRepository.AddToShelfAsync(item, targetShelfId, ct);
+            return item;
         }
     }
 }

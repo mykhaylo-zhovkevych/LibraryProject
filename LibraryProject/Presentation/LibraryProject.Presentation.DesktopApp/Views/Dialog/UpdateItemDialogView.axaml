@@ -29,13 +29,15 @@
                           ColumnSpacing="16"
                           RowSpacing="12">
        
-                        <TextBlock Classes="field-label" Text="Titel" FontWeight="SemiBold" />
+                         <StackPanel Grid.Row="0" Grid.Column="0">
+                            <TextBlock Classes="field-label" Text="Titel" FontWeight="SemiBold" />
                             <TextBox Classes="primary" Watermark="Artikelname" Text="{Binding ItemTitle, Mode=TwoWay}" />
 
                             <TextBlock Classes="field-label" Text="Autor" FontWeight="SemiBold" />
                             <TextBox Classes="primary" Watermark="Autorname" Text="{Binding Author, Mode=TwoWay}" />
+                        </StackPanel>
 
-                        <StackPanel Grid.Row="0" Grid.Column="1" Spacing="6" HorizontalAlignment="Stretch">
+                        <StackPanel Grid.Row="1" Grid.Column="0" Spacing="6" HorizontalAlignment="Stretch">
                             <TextBlock Classes="field-label" Text="Year" FontWeight="SemiBold" />
                             <TextBox Classes="primary"
                                      Name="YearTextBox"
@@ -43,14 +45,9 @@
                                      MaxLength="4"
                                      Text="{Binding YearText, Mode=TwoWay}"/>
 
-                            <TextBlock Classes="field-label" Text="Anzahl Exemplare" FontWeight="SemiBold" />
-                            <TextBox Classes="primary"
-                                     Name="CopiesTextBox"
-                                     Watermark="z.B. 10" 
-                                     Text="{Binding CopiesText, Mode=TwoWay}"/>
                         </StackPanel>
 
-                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
+                        <StackPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Spacing="6">
                             <TextBlock Classes="field-label" Text="Beschreibung" FontWeight="SemiBold" />
                             <TextBox Classes="primary"
                                      TextWrapping="Wrap"
@@ -60,14 +57,6 @@
                                      Text="{Binding Description, Mode=TwoWay}"/>
                         </StackPanel>
 
-                        <!-- Buttons last row-->
-                        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
-                                    Orientation="Horizontal"
-                                    HorizontalAlignment="Right"
-                                    Spacing="10">
-                            <Button Classes="first" Content="Speichern" />
-                            <Button Classes="secound" Content="Abbrechen" />
-                        </StackPanel>
                     </Grid>
                 </Border>
             

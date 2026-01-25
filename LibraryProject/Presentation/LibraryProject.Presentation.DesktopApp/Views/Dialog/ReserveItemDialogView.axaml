@@ -5,11 +5,11 @@
              xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
              mc:Ignorable="d"
              d:DesignWidth="300"
-             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.ReserveDialogView"
-             x:DataType="vm:ReserveDialogViewModel">
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.ReserveItemDialogView"
+             x:DataType="vm:ReserveItemDialogViewModel">
 
     <Design.DataContext>
-        <vm:ReserveDialogViewModel/>
+        <vm:ReserveItemDialogViewModel/>
     </Design.DataContext>
 
 <Border Background="#e5e7eb" CornerRadius="20" ClipToBounds="True" Margin="10" BorderThickness="1">

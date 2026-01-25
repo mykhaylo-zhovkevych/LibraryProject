@@ -41,11 +41,6 @@ namespace LibraryProject.Domain.Entities
 
         public bool Extend()
         {
-            if (ItemCopy.IsReserved)
-            {
-                // throw new ItemUsedByException();
-            }
-
             if (IsReturned) return false;
 
             if (RemainingExtensionCredits == 0)
@@ -61,8 +56,9 @@ namespace LibraryProject.Domain.Entities
 
         public void ReturnBorrowing()
         {
+            if (IsReturned) return;
             ReturnDate = DateTime.Now;
-            ItemCopy.IsBorrowed = false;
+            ItemCopy.ReturnFromBorrowing();
         }
 
     }

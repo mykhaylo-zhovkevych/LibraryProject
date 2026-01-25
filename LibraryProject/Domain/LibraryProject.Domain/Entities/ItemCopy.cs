@@ -8,7 +8,6 @@ namespace LibraryProject.Domain.Entities
 {
     public class ItemCopy
     {
-
         public Guid Id { get; init; } = Guid.NewGuid();
 
         public Guid ItemId { get; private set; }
@@ -29,6 +28,14 @@ namespace LibraryProject.Domain.Entities
 
         }
 
+        protected ItemCopy() { }
+
+        internal ItemCopy(Guid itemId)
+        {
+            ItemId = itemId;
+        }
+
+        public static ItemCopy CreateFor(Item item) => new ItemCopy(item.Id);
 
         public bool CheckReservePossible()
         {
@@ -46,6 +53,24 @@ namespace LibraryProject.Domain.Entities
             IsBorrowed = true;
         }
 
+        public void ReserveById(Guid userId)
+        {
+            ReservedById = userId;
+            ReservedBy = null;
+        }
+
+
+        public void CancelReservation()
+        {
+            ReservedBy = null;
+            ReservedById = null;
+        }
+
+        public void ReturnFromBorrowing()
+        {
+            IsBorrowed = false;
+        }
+
         public void ReserveItem(User user)
         {
             ReservedBy = user;
@@ -56,7 +81,6 @@ namespace LibraryProject.Domain.Entities
         {
             ReservedBy = null;
             ReservedById = null;
-
         }
     }
 }

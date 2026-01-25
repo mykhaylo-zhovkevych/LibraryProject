@@ -49,5 +49,15 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         {
             throw new NotImplementedException();
         }
+
+        public Task UpdateUserAsync(User user, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<User>> GetAllUsersAsync(CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

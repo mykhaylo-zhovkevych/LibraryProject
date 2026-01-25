@@ -20,9 +20,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         public async Task<Policy?> GetPolicyAsync(UserType userType, ItemType itemType, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            PolicyEntry? entry = await _db.PolicyEntries
-                //.AsNoTracking()
-                .FirstOrDefaultAsync(p => p.UserType == userType && p.ItemType == itemType, ct);
+            PolicyEntry? entry = await _db.PolicyEntries.FirstOrDefaultAsync(p => p.UserType == userType && p.ItemType == itemType, ct);
 
             if (entry == null) 
             {

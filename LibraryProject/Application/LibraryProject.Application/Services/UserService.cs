@@ -35,20 +35,6 @@ namespace LibraryProject.Application.Services
             return newUser;
         }
 
-        //public async Task<User> UpdateUserProfile(Guid id, UserType newType)
-        //{
-        //    User? interestedUser = await _userRepository.GetExistingUserByIdAsync(id);
-
-        //    if (interestedUser == null)
-        //    {
-        //        throw new NonexistentUserException();
-        //    }
-        //    _authorizationService.EnsureAuthenticated();
-
-        //    interestedUser.ChangeUserProfile(newType);
-        //    return interestedUser;
-        //}
-
         public async Task<User> DeleteExistingUser(Guid id)
         {
             User? interestedUser = await _userRepository.GetExistingUserByIdAsync(id);
@@ -66,6 +52,23 @@ namespace LibraryProject.Application.Services
         {
             _authorizationService.EnsureAuthenticated();
             return await _userRepository.GetExistingUserByIdAsync(id, ct);
+        }
+
+        public async Task<List<User>> ReceiveAllUsersAsync(CancellationToken ct = default)
+        {
+            _authorizationService.EnsureAdmin();
+            return await _userRepository.GetAllUsersAsync(ct);
+        }
+
+        public async Task ConfirmIdentityAsync(Guid userId, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            _authorizationService.EnsureAdmin();
+
+            User user = await _userRepository.GetExistingUserByIdAsync(userId, ct) ?? throw new NonexistentUserException();
+
+            user.ConfirmIdentity();
+            await _userRepository.UpdateUserAsync(user, ct);
         }
     }
 }

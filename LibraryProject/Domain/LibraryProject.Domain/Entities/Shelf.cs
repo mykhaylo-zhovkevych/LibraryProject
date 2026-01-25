@@ -11,19 +11,22 @@ namespace LibraryProject.Domain.Entities
         public int ShelfId { get; private set; }
 
         private readonly List<Item> _items = new();
-        public IReadOnlyList<Item> Items => _items;
+        public IReadOnlyCollection<Item> Items => _items;
 
         protected Shelf() { }
 
         public Shelf(int? shelfId = null)
         {
-            ShelfId = shelfId ?? new Random().Next(1, int.MaxValue);
+            if (shelfId.HasValue)
+            {
+                ShelfId = shelfId.Value;
+            }
         }
 
         public void AddItem(Item item)
         {
             _items.Add(item);
-            item.ShelfId = ShelfId;
+            item.SetShelf(ShelfId);
         }
 
         public bool RemoveItem(Item item)

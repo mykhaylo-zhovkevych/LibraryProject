@@ -20,7 +20,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return await _db.Users
-                //.AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Name == name && u.UserType == userType, ct);
         }
 
@@ -28,7 +27,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return await _db.Users
-                //.AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == id, ct);
         }
 
@@ -36,7 +34,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return _db.Users
-                //.AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == id, ct);
         }
 
@@ -53,5 +50,18 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             await _db.Users.AddAsync(user, ct);
             await _db.SaveChangesAsync(ct);
         }
+
+        public Task<List<User>> GetAllUsersAsync(CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            return _db.Users.ToListAsync(ct);
+        }
+
+        public async Task UpdateUserAsync(User user, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            await _db.SaveChangesAsync(ct);
+        }
+
     }
 }

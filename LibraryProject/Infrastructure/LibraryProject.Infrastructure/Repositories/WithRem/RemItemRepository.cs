@@ -36,7 +36,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         }
 
 
-        public Task<Shelf> GetOrCreateDefaultShelfAsync(CancellationToken ct = default)
+        public Task<Shelf> GetOrCreateDefaultShelfAsync(int shelfId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
             Shelf? shelf = _storage.Shelves.FirstOrDefault(s => s.ShelfId == DefaultShelfId);
@@ -55,10 +55,10 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             return Task.FromResult(query);
         }
 
-        public async Task AddToShelfAsync(Item item, CancellationToken ct = default)
+        public async Task AddToShelfAsync(Item item, int shelfId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            Shelf shelf = await GetOrCreateDefaultShelfAsync(ct);
+            Shelf shelf = await GetOrCreateDefaultShelfAsync(shelfId, ct);
             shelf.AddItem(item);
         }
 
@@ -90,6 +90,16 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         }
 
         public Task<ItemCopy?> GetCopyToReserveAsync(Guid itemId, CancellationToken ct)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Item?> GetItemByIdAsync(Guid itemId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateItemAsync(Item item, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }

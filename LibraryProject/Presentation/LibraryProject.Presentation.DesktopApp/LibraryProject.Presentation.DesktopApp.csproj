@@ -52,6 +52,9 @@
     <Compile Update="Views\Dialog\BorrowItemDialogView.axaml.cs">
       <DependentUpon>BorrowItemDialogView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Dialog\ReserveItemDialogView.axaml.cs">
+      <DependentUpon>ReserveItemDialogView.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\MainView.axaml.cs">
       <DependentUpon>MainView.axaml</DependentUpon>
     </Compile>

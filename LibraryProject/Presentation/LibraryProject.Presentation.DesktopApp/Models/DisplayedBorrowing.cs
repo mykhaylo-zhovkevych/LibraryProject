@@ -14,12 +14,12 @@ namespace LibraryProject.Presentation.DesktopApp.Models
         public Guid BorrowingId { get; }
 
         public Guid ItemCopyId { get; }
-        public string BorrowingItemName { get; set; }
-        public string BorrowingItemAuthror { get; set; }
-        public string BorrowingItemType { get; set; }
-        public DateTime LoanDate { get; set; }
-        public DateTime DueDate { get; set; }
-        public string Status { get; set; }
+        public string BorrowingItemName { get; }
+        public string BorrowingItemAuthror { get;}
+        public string BorrowingItemType { get; }
+        public DateTime LoanDate { get; }
+        public DateTime DueDate { get; }
+        public string Status { get; }
 
 
         public DisplayedBorrowing(Guid borrowingId, Guid itemCopyId, string borrowingItemName, string BorrowingItemAuthor, string borrowingItemType, DateTime loanDate, DateTime dueDate, string status)

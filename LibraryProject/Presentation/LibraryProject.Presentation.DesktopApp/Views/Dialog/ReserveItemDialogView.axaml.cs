@@ -4,9 +4,9 @@ using Avalonia.Markup.Xaml;
 
 namespace LibraryProject.Presentation.DesktopApp.Views.Dialog;
 
-public partial class ReserveDialogView : UserControl
+public partial class ReserveItemDialogView : UserControl
 {
-    public ReserveDialogView()
+    public ReserveItemDialogView()
     {
         InitializeComponent();
     }

@@ -34,15 +34,41 @@ namespace LibraryProject.Domain.Entities
             CirculationCount = circulationCount;
         }
 
+        public void SetShelf(int shelfId) => ShelfId = shelfId;
+
         public void SetCoverImagePath(string? relativePath)
         {
             CoverImagePath = string.IsNullOrWhiteSpace(relativePath) ? null : relativePath;
         }
 
-  
         public void UpdateItemName(string newName)
         { 
             Name = newName;
         }
+
+        public void UpdateAuthor(string author)
+        {
+
+            Author = author;
+        }
+
+        public void UpdateYear(int year)
+        {
+            Year = year;
+        }
+
+        public void UpdateDescription(string? description)
+        {
+            Description = description;
+        }
+
+        public void AddCopies(int amount)
+        {
+            if (amount <= 0) return;
+
+            for (int i = 0; i < amount; i++)
+                Copies.Add(ItemCopy.CreateFor(this));
+        }
+
     }
 }

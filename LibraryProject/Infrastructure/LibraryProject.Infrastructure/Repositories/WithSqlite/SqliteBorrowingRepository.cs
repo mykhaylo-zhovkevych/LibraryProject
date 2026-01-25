@@ -26,9 +26,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
 
             return _db.Borrowings
-                //.AsNoTracking()
-                //.Include(b => b.Policy)
-                //.Include(b => b.ItemCopy).ThenInclude(c => c.Item)
+                .Include(b => b.Policy)
+                .Include(b => b.ItemCopy).ThenInclude(c => c.Item)
                 .FirstOrDefaultAsync(b => b.UserId == userId && b.ItemCopyId == itemCopyId && b.ReturnDate == null, ct);
         }
 
@@ -37,8 +36,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return _db.Borrowings
-                //.AsNoTracking()
-                //.Include(b => b.ItemCopy).ThenInclude(c => c.Item)
+                .Include(b => b.Policy)
+                .Include(b => b.ItemCopy).ThenInclude(c => c.Item)
                 .Where(b => b.UserId == userId && b.ReturnDate == null)
                 .ToListAsync(ct);
         }
@@ -47,8 +46,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return _db.Borrowings
-                //.AsNoTracking()
-                //.Include(b => b.ItemCopy).ThenInclude(c => c.Item)
+                .Include(b => b.Policy)
+                .Include(b => b.ItemCopy).ThenInclude(c => c.Item)
                 .Where(b => b.UserId == userId && b.ReturnDate != null).ToListAsync(ct);
         }
 
@@ -56,8 +55,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return _db.Borrowings
-                //.AsNoTracking()
-                //.Include(b => b.ItemCopy).ThenInclude(c => c.Item)
+                .Include(b => b.Policy)
+                .Include(b => b.ItemCopy).ThenInclude(c => c.Item)
                 .Where(b => b.UserId == userId).ToListAsync(ct);
         }
 
@@ -70,10 +69,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 
         public async Task SaveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
         {
-        
-            //_db.Entry(borrowing).Reference(b => b.User).CurrentValue = null;
-            //_db.Entry(borrowing).Reference(b => b.ItemCopy).CurrentValue = null;
-
             ct.ThrowIfCancellationRequested();
             await _db.Borrowings.AddAsync(borrowing, ct);
             await _db.SaveChangesAsync(ct);
@@ -82,19 +77,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         public async Task UpdateBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-
-            //Borrowing? tracked = _db.Borrowings.Local.FirstOrDefault(b => b.BorrowingId == borrowing.BorrowingId);
-            //if (tracked != null)
-            //{
-            //    _db.Entry(tracked).CurrentValues.SetValues(borrowing);
-            //    _db.Entry(tracked).Property(b => b.ReturnDate).IsModified = true;
-            //}
-            //else
-            //{
-            //    _db.Borrowings.Attach(borrowing);
-            //    _db.Entry(borrowing).Property(b => b.ReturnDate).IsModified = true;
-            //}
-
             await _db.SaveChangesAsync(ct);
         }
     }

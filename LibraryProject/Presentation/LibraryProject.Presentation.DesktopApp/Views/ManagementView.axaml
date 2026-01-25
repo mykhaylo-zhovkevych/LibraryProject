@@ -21,6 +21,12 @@
     <DataTemplate DataType="{x:Type dialogVm:ErrorDialogViewModel}">
       <dialogViews:ErrorDialogView/>
     </DataTemplate>
+    <DataTemplate DataType="{x:Type dialogVm:BorrowingHistoryDialogViewModel}">
+      <dialogViews:BorrowingHistoryDialogView/>
+    </DataTemplate>
+     <DataTemplate DataType="{x:Type dialogVm:ConfirmDialogViewModel}">
+      <dialogViews:ConfirmDialogView/>
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <Grid>

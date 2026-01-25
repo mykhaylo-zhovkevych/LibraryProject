@@ -19,7 +19,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return await _db.Accounts
-                //.AsNoTracking()
                 .FirstOrDefaultAsync(a => a.AccountName == userName, ct);
         }
 
@@ -27,7 +26,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             ct.ThrowIfCancellationRequested();
             return await _db.Accounts
-                //.AsNoTracking()
                 .FirstOrDefaultAsync(a => a.AccountId == accountId, ct);
         }
 
@@ -56,6 +54,12 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
             return _db.Accounts.FirstOrDefaultAsync(a => a.UserId == userId, ct);
 
+        }
+
+        public Task<List<Account>> GetAllAccountsAsync(CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            return _db.Accounts.ToListAsync(ct);
         }
     }
 }

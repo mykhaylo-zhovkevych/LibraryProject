@@ -16,5 +16,6 @@ namespace LibraryProject.Application.Interfaces
         Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default);
 
         Task<Account?> GetAccountByUserIdAsync(Guid userId, CancellationToken ct = default);
+        Task<List<Account>> GetAllAccountsAsync(CancellationToken ct = default);
     }
 }

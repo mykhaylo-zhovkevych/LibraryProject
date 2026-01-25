@@ -12,7 +12,7 @@ namespace LibraryProject.Domain.Entities
         public Guid Id { get; private set; }
         public string Name { get; private set; }
         public UserType UserType { get; private set; }
-        public bool IsAuthentication { get; set; } = false;
+        public bool IsAuthentication { get; private set; } = false;
 
         protected User() { }
         public User(string name, UserType userType)
@@ -21,5 +21,11 @@ namespace LibraryProject.Domain.Entities
             Name = name;
             UserType = userType;
         }
+
+        public void ConfirmIdentity()
+        {
+            IsAuthentication = true;
+        }
+
     }
 }

@@ -40,42 +40,48 @@ namespace LibraryProject.Application.Services
         {
             _authorizationService.EnsureAuthenticated();
             Policy activePolicy = await _policyRepository.GetPolicyAsync(user.UserType, item.ItemType, ct) ?? throw new NonexistentPolicyException();
+            ItemCopy copy = await _itemRepository.GetCopyToBorrowAsync(item.Id, user.Id, ct) ?? throw new ArgumentException("No available copy.");
 
-            ItemCopy freeCopy = await _itemRepository.GetCopyToBorrowAsync(item.Id, user.Id, ct) ?? throw new ArgumentException("No available copy.");
-
-            if (!freeCopy.CheckBorrowPossible(user.Id))
+            if (!copy.CheckBorrowPossible(user.Id))
             {
                 throw new IsAlreadyBorrowedException(item);
             }
+            if (copy.ReservedById == user.Id)
+            {
+                copy.ReturnItem();
+            }
 
-            freeCopy.BorrowItem();
+            copy.BorrowItem();
+
             await _itemRepository.UpdateCirculationCountAsync(item.Id, -1, ct);
-            await _itemRepository.UpdateCopyAsync(freeCopy, ct);
+            await _itemRepository.UpdateCopyAsync(copy, ct);
 
-            Borrowing borrowing = new Borrowing(user, freeCopy, activePolicy);
+            Borrowing borrowing = new Borrowing(user, copy, activePolicy);
             await _borrowedRepository.SaveBorrowingAsync(borrowing, ct);
-
         }
-         
 
         public async Task ReturnBorrowedItemAsync(User user, Guid itemCopyId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
             Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No active entry was found for: {user.Name}");
 
-            activeBorrowing.ItemCopy.ReturnItem();
             activeBorrowing.ReturnBorrowing();
 
             await _itemRepository.UpdateCirculationCountAsync(activeBorrowing.ItemCopy.ItemId, +1, ct);
             await _itemRepository.UpdateCopyAsync(activeBorrowing.ItemCopy, ct);
             await _borrowedRepository.UpdateBorrowingAsync(activeBorrowing, ct);
 
-            if (activeBorrowing.ItemCopy.IsReserved && activeBorrowing.ItemCopy.ReservedBy != null)
+            if (activeBorrowing.ItemCopy.IsReserved && activeBorrowing.ItemCopy.ReservedById != null)
             {
-                OnInformReserver(new ItemEventArgs($"The {activeBorrowing.ItemCopy.Item.Name} is now available",activeBorrowing.ItemCopy.Item, activeBorrowing.ItemCopy.ReservedBy));
+                OnInformReserver(new ItemEventArgs(
+                    $"The {activeBorrowing.ItemCopy.Item.Name} is now available",
+                    activeBorrowing.ItemCopy.Item,
+                    activeBorrowing.ItemCopy.ReservedBy
+                ));
             }
         }
-       
+
+
         public async Task ExtendBorrowingPeriodAsync(User user, Guid itemCopyId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
@@ -108,6 +114,5 @@ namespace LibraryProject.Application.Services
             return borrowings;
         }
 
-        public Task<int> CountActiveBorrowingsForItemAsync(Guid itemId, CancellationToken ct) => _borrowedRepository.CountActiveBorrowingsForItemAsync(itemId, ct);
     }
 }

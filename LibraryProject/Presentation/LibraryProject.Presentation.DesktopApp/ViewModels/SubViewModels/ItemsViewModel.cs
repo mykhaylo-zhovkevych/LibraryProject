@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using LibraryProject.Application.Interfaces;
 using LibraryProject.Application.Services;
 using LibraryProject.Domain.Entities;
+using LibraryProject.Domain.Enum;
 using LibraryProject.Presentation.DesktopApp.Data;
 using LibraryProject.Presentation.DesktopApp.Models;
 using LibraryProject.Presentation.DesktopApp.ViewModels.Dialog;
@@ -21,6 +22,26 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
         private readonly UserService _userService;
         private readonly ICurrentUserContext _currentUserContext;
 
+        [ObservableProperty] private string _newTitle = "";
+        [ObservableProperty] private string _newAuthor = "";
+        [ObservableProperty] private string _newYearText = "";
+        [ObservableProperty] private string _newCopiesText = "";
+        [ObservableProperty] private string _newDescription = "";
+
+        public ObservableCollection<ItemType> ItemTypes { get; } = new ObservableCollection<ItemType>(Enum.GetValues<ItemType>());
+
+        [ObservableProperty]
+        private ItemType _selectedItemType = ItemType.Book;
+
+        [ObservableProperty]
+        private string _newShelfIdText = "";
+
+
+        public int? NewShelfId => int.TryParse(NewShelfIdText, out var id) ? id : null;
+        public int? NewYear => int.TryParse(NewYearText, out var y) ? y : 0;
+        public int? NewCopies => int.TryParse(NewCopiesText, out var c) ? c : 1;
+
+
         public ObservableCollection<DisplayedItem> Items { get; } = new();
 
         public ItemsViewModel(ItemService itemService, ICurrentUserContext currentUserContext, UserService userService)
@@ -28,17 +49,132 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             _itemService = itemService;
             _currentUserContext = currentUserContext;
             _userService = userService;
-            PageName = ApplicationPageNames.ManagementItems;
 
+            PageName = ApplicationPageNames.ManagementItems;
             _ = LoadItemsAsync();
         }
 
         [ObservableProperty]
         private DisplayedItem? _selectedItem;
 
-        // TODO: Add the popup with the update item
         [RelayCommand]
-        private Task Reload() => LoadItemsAsync();
+        private async Task CreateNewItem()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(NewTitle))
+                {
+                    throw new ArgumentException("Titel ist leer.");
+                }
+
+                if (string.IsNullOrWhiteSpace(NewAuthor))
+                {
+                    throw new ArgumentException("Autor ist leer.");
+                }
+
+                if (NewYear is null)
+                {
+                    throw new ArgumentException("Year ist ungültig.");
+                }
+                    
+                if (NewCopies is null || NewCopies.Value <= 0)
+                {
+                    throw new ArgumentException("Copies ist ungültig.");
+                }
+
+                await _itemService.CreateItemWithAmount(
+                    NewTitle.Trim(), 
+                    SelectedItemType, 
+                    NewAuthor.Trim(), 
+                    NewYear.Value, 
+                    string.IsNullOrWhiteSpace(NewDescription) ? null : NewDescription.Trim(), 
+                    NewCopies.Value, 
+                    NewShelfId, 
+                    default);
+
+                ResetCreateForm();
+                await LoadItemsAsync();
+            }
+            catch (Exception ex)
+            {
+                CurrentDialog = new ErrorDialogViewModel
+                {
+                    Title = "Fehler",
+                    Message = ex.Message,
+                    ConfirmText = "OK"
+                };
+                CurrentDialog.Show();
+            }
+        }
+
+        [RelayCommand]
+        private void CancelCreate() => ResetCreateForm();
+
+        private void ResetCreateForm()
+        {
+            NewTitle = "";
+            NewAuthor = "";
+            NewYearText = "";
+            NewCopiesText = "";
+            NewDescription = "";
+            SelectedItemType = ItemType.Book;
+        }
+
+        [RelayCommand]
+        private async Task ShowUpdateItemDialog()
+        {
+            if (SelectedItem == null)
+            {
+                CurrentDialog = new ErrorDialogViewModel()
+                {
+                    Title = "Fehler",
+                    Message = "Kein Element ausgewählt.",
+                    ConfirmText = "OK"
+                };
+                CurrentDialog.Show();
+                return;
+            }
+
+            var selectedItem = SelectedItem;
+
+            var dialog = new UpdateItemDialogViewModel(selectedItem)
+            {
+                Title = "Artikel bearbeiten",
+                Message = $"Bearbeiten Sie “{selectedItem.Title}” und speichern Sie die Änderungen.",
+                ConfirmText = "Speichern",
+                CancelText = "Abbrechen"
+            };
+
+            CurrentDialog = dialog;
+            dialog.Show();
+
+            if (await dialog.WaitConfirmationAsync())
+            {
+                try
+                {
+                    await _itemService.UpdateItemAsync(
+                        itemId: selectedItem.Id,
+                        title: dialog.ItemTitle,
+                        author: dialog.Author,
+                        year: dialog.Year.Value,
+                        description: dialog.Description,
+                        ct: default);
+
+                    await LoadItemsAsync();
+                }
+                catch (Exception ex)
+                {
+                    CurrentDialog = new ErrorDialogViewModel()
+                    {
+                        Title = "Fehler",
+                        Message = $"Fehler: {ex.Message}",
+                        ConfirmText = "OK"
+                    };
+                    CurrentDialog.Show();
+                }
+            }   
+        }
+
 
         [RelayCommand]
         private async Task ShowDeleteItemDialog()

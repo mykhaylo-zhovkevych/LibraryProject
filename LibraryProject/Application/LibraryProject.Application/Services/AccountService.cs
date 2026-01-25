@@ -140,6 +140,25 @@ namespace LibraryProject.Application.Services
             }
         }
 
+        public async Task ReactivateAccountAsync(int accountId, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            _authorizationService.EnsureAdmin();
+
+            Account? interestedAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId, ct) ?? throw new NonexistingAccountException();
+
+            if (!interestedAccount.IsSuspended) return; 
+
+            interestedAccount.ReactivateAccount();
+            await _accountRepository.UpdateAccountAsync(interestedAccount, ct);
+        }
+
+
+        public async Task<List<Account>> ReceiveAllAccountsAsync(CancellationToken ct = default)
+        {
+            _authorizationService.EnsureAdmin();
+            return await _accountRepository.GetAllAccountsAsync(ct);
+        }
 
         public async Task UpdateEmailAsync(string newEmail, CancellationToken ct = default)
         {
