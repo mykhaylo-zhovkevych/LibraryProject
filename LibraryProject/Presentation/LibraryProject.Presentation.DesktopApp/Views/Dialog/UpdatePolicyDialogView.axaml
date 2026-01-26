@@ -1,0 +1,74 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
+             mc:Ignorable="d" 
+             d:DesignWidth="300"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.UpdatePolicyDialogView"
+             x:DataType="vm:UpdatePolicyDialogViewModel">
+  
+    <Design.DataContext>
+		<vm:UpdatePolicyDialogViewModel/>
+    </Design.DataContext>
+
+    <Border Background="#e5e7eb" CornerRadius="20" ClipToBounds="True" Margin="10" BorderThickness="1">
+    <StackPanel>
+      <Border Background="#969696" CornerRadius="20 0">
+        <TextBlock Text="{Binding Title}" Padding="10" Foreground="White" FontSize="20" HorizontalAlignment="Center" />
+      </Border>
+
+      <Border Padding="20">
+        <StackPanel Spacing="20">
+          <TextBlock TextWrapping="Wrap" Text="{Binding Message}" FontSize="16" />
+
+                <Border Classes="card" >
+                    <Grid ColumnDefinitions="*"
+                          RowDefinitions="Auto Auto Auto"
+                          ColumnSpacing="16"
+                          RowSpacing="12">
+       
+                         <StackPanel Grid.Row="0" Grid.Column="0">
+                            <TextBlock Classes="field-label" Text="{Binding PolicyTitle}" FontWeight="SemiBold" />
+
+                            <TextBlock Classes="field-label" Text="Richtlinie Verlängurengen Anzhal" FontWeight="SemiBold" />
+                            <TextBox Classes="primary" Watermark="z.B. 3" Text="{Binding NewPolicyExtensions, Mode=TwoWay}" />
+
+                            <TextBlock Classes="field-label" Text="Richtlinie in Tage" FontWeight="SemiBold" />
+                            <TextBox Classes="primary" Watermark="14" Text="{Binding NewPolicyLoadPeriodInDays, Mode=TwoWay}" />
+
+                            <TextBlock Classes="field-label" Text="Richtlinie Gebühren" FontWeight="SemiBold" />
+                            <TextBox Classes="primary" Watermark="0.25" Text="{Binding NewPolicyFees, Mode=TwoWay}" />
+
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Spacing="6">
+                            <TextBlock Classes="field-label" Text="Benutzertyp" FontWeight="SemiBold" />
+                            <TextBlock Classes="primary" Text="{Binding NewPolicyUserType}"/>
+                           <!-- <ComboBox Classes="primary"
+                                      ItemsSource="{Binding NewPolicyItemType}"
+                                      SelectedItem="{Binding SourcePolicy, Mode=TwoWay}" />-->
+
+                            <TextBlock Classes="field-label" Text="Artikeltyp" FontWeight="SemiBold" />
+                            <TextBlock Classes="primary" Text="{Binding NewPolicyItemType}"/>
+                            <!--<ComboBox Classes="primary"
+                                      ItemsSource="{Binding NewPolicyUserType}"
+                                      SelectedItem="{Binding SourcePolicy, Mode=TwoWay}" />-->
+
+                        </StackPanel>
+
+                    </Grid>
+                </Border>
+            
+
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="20">
+            <Button Content="{Binding CancelText}" Command="{Binding CancelCommand}" Foreground="DarkRed" CornerRadius="10"/>
+            <Button Content="{Binding ConfirmText}" Command="{Binding ConfirmCommand}" Foreground="DarkGreen" CornerRadius="10"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </Border>
+
+
+</UserControl>

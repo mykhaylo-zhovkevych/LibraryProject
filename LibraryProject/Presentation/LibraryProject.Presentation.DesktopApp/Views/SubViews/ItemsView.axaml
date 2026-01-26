@@ -21,6 +21,7 @@
                     <TextBlock Text="Bücher hinzufügen, bearbeiten oder entfernen" Classes="subtitle"/>
                 </StackPanel>
 
+                <!-- First Section-->
                 <Border Grid.Row="1" Classes="card">
                   <Grid ColumnDefinitions="* *"
                         RowDefinitions="Auto Auto Auto"

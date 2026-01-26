@@ -17,7 +17,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.Dialog
         [ObservableProperty] private string _confirmText = "";
         [ObservableProperty] private string _cancelText = "";
 
-
         public DisplayedItem? SourceItem { get; }
 
         [ObservableProperty] private string _itemTitle = "";

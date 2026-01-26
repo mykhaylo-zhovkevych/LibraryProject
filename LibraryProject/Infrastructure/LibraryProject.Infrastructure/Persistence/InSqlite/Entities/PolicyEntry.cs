@@ -9,11 +9,10 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite.Entities
 {
     public class PolicyEntry
     {
+        public Guid Id { get; set; }
         public UserType UserType { get; set; }
         public ItemType ItemType { get; set; }
 
-        // Policy id extra 
-        //public Guid Id { get; set; }
         public string? PolicyName { get; set; }
         public uint Extensions { get; set; }
         public decimal LoanFees { get; set; }

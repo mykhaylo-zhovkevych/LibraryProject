@@ -31,13 +31,19 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
             modelBuilder.Entity<PolicyEntry>(b =>
             {
                 b.ToTable("Policies");
-                b.HasKey(x => new { x.UserType, x.ItemType });
+                b.HasKey(x => new { x.Id });
+                // b.HasKey(x => new { x.UserType, x.ItemType });
 
                 // Will automatically created with EF
                 b.Property(x => x.PolicyName).HasMaxLength(20);
                 //b.Property(x => x.LoanFees);
                 //b.Property(x => x.Extensions);
                 //b.Property(x => x.LoadPeriodInDays);
+
+                // Optional: enforce uniqueness 
+                // Remove or comment out if duplicates by name are allowed.
+                //b.HasIndex(e => new { e.UserType, e.ItemType, e.PolicyName })
+                // .IsUnique();
             });
 
             modelBuilder.Entity<Shelf>(b =>

@@ -262,7 +262,10 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
 
                 BorrowingHistoryDialogViewModel dialog = new BorrowingHistoryDialogViewModel(history)
                 {
-                    Title = "Ausleihhistorie"
+                    Title = "Ausleihhistorie",
+                    Message = $"Hier sind alle Ausleihen von {SelectedUser.Name}.",
+                    ConfirmText = "Bestätigen",
+                    CancelText = "Abbrechen"
                 };
 
                 CurrentDialog = dialog;

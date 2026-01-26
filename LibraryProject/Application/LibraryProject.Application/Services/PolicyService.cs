@@ -23,7 +23,7 @@ namespace LibraryProject.Application.Services
             _authorizationService = authorizationService;
         }
 
-        public async Task AddPolicy(UserType userType, ItemType itemType, Policy policy, CancellationToken ct)
+        public async Task AddPolicyAsync(UserType userType, ItemType itemType, Policy policy, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
             Policy? foundPolicy = await _policyRepository.GetPolicyAsync(userType, itemType, ct);
@@ -36,7 +36,7 @@ namespace LibraryProject.Application.Services
             await _policyRepository.SavePolicyAsync(userType, itemType, policy, ct);
         }
 
-        public async Task<Policy> UpdatePolicyValues(UserType userType, ItemType itemType, uint extensions, decimal loanFees, uint loanPeriodDays, CancellationToken ct)
+        public async Task UpdatePolicyValuesAsync(UserType userType, ItemType itemType, uint extensions, decimal loanFees, uint loanPeriodDays, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
             Policy? foundPolicy = await _policyRepository.GetPolicyAsync(userType, itemType, ct);
@@ -49,11 +49,10 @@ namespace LibraryProject.Application.Services
             foundPolicy.LoanFees = loanFees;
             foundPolicy.LoanPeriodInDays = loanPeriodDays;
 
-            await _policyRepository.SavePolicyAsync(userType, itemType, foundPolicy, ct);
-            return foundPolicy;
+            await _policyRepository.UpdatePolicyAsync(userType, itemType, foundPolicy, ct);
         }
 
-        public async Task RemovePolicy(UserType userType, ItemType itemType, CancellationToken ct)
+        public async Task RemovePolicyAsync(UserType userType, ItemType itemType, string policyName, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
             Policy? foundPolicy = await _policyRepository.GetPolicyAsync(userType, itemType, ct);
@@ -63,7 +62,27 @@ namespace LibraryProject.Application.Services
                 throw new NonexistentPolicyException();
             }
 
-            await _policyRepository.RemovePolicyAsync(userType, itemType);
+            await _policyRepository.RemovePolicyAsync(userType, itemType, policyName);
+        }
+
+        // One UserType and ItemType can have only one Policy
+        public async Task<List<(UserType, ItemType, Policy)>> ReceiveExistingPoliciesWithTypesAsync(CancellationToken ct)
+        {
+            List<(UserType, ItemType, Policy)> policies = new List<(UserType, ItemType, Policy)>();
+
+            foreach (UserType userType in Enum.GetValues(typeof(UserType)))
+            {
+                foreach (ItemType itemType in Enum.GetValues(typeof(ItemType)))
+                {
+                    Policy? policy = await _policyRepository.GetPolicyAsync(userType, itemType, ct);
+                    if ( policy == null)
+                    {
+                        continue;
+                    }
+                    policies.Add((userType, itemType, policy) );
+                }
+            }
+            return policies;
         }
     }
 }

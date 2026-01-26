@@ -28,7 +28,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
         [ObservableProperty] private string _newCopiesText = "";
         [ObservableProperty] private string _newDescription = "";
 
-        public ObservableCollection<ItemType> ItemTypes { get; } = new ObservableCollection<ItemType>(Enum.GetValues<ItemType>());
+        [ObservableProperty]
+        private DisplayedItem? _selectedItem;
 
         [ObservableProperty]
         private ItemType _selectedItemType = ItemType.Book;
@@ -36,13 +37,12 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
         [ObservableProperty]
         private string _newShelfIdText = "";
 
+        public ObservableCollection<ItemType> ItemTypes { get; } = new ObservableCollection<ItemType>(Enum.GetValues<ItemType>());
+        public ObservableCollection<DisplayedItem> Items { get; } = new();
 
         public int? NewShelfId => int.TryParse(NewShelfIdText, out var id) ? id : null;
         public int? NewYear => int.TryParse(NewYearText, out var y) ? y : 0;
         public int? NewCopies => int.TryParse(NewCopiesText, out var c) ? c : 1;
-
-
-        public ObservableCollection<DisplayedItem> Items { get; } = new();
 
         public ItemsViewModel(ItemService itemService, ICurrentUserContext currentUserContext, UserService userService)
         {
@@ -53,9 +53,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             PageName = ApplicationPageNames.ManagementItems;
             _ = LoadItemsAsync();
         }
-
-        [ObservableProperty]
-        private DisplayedItem? _selectedItem;
 
         [RelayCommand]
         private async Task CreateNewItem()

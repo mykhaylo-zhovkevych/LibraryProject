@@ -27,6 +27,9 @@
      <DataTemplate DataType="{x:Type dialogVm:ConfirmDialogViewModel}">
       <dialogViews:ConfirmDialogView/>
     </DataTemplate>
+      <DataTemplate DataType="{x:Type dialogVm:UpdatePolicyDialogViewModel}">
+      <dialogViews:UpdatePolicyDialogView/>
+    </DataTemplate>
   </UserControl.DataTemplates>
 
   <Grid>

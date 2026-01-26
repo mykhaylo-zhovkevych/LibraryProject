@@ -37,13 +37,13 @@ Kunde
 
 ## Arbeitsplan und Arbeitspakete mit Aufwandsschätzungen
 
-| Datum                   | Zeit | Arbeitspaket                        | Erwartete Aufgabe                           | Erledigte Aufgabe                                         |
-| ----------------------- | ---- | ----------------------------------- | ------------------------------------------- | --------------------------------------------------------- |
-| 05.01.2026 / 06.01.2026 |      | Vorbereitung und Konzept erstellung | Das fertig Konzept                          | Das Konzept wurden während Projekt Ausführung nachgefasst |
-| 07.01.2026 / 09.01.2026 |      | Projektinitialisierung              | Die Core Projekt und allfällige Remastering | Ähnlich wie in Arbeitspaket 1 aber in geringem Masse      |
-| 12.01.2026 / 23.01.2026 |      | Desktop App Implementierung         | Das minimalistisch UI                       | Ja                                                        |
-| 23.01.2026 / 26.01.2026 |      | Web App Implementierung             | Das minimalistisch UI und RWD               |                                                           |
-| 28.01.2026 / 30.01.2026 |      | Refactoring + UnitTesting           | Dorrekte Ergebnisse                         |                                                           |
+| Datum                   | Arbeitspaket                        | Erwartete Aufgabe                           | Erledigte Aufgabe                                         |
+| ----------------------- | ----------------------------------- | ------------------------------------------- | --------------------------------------------------------- |
+| 05.01.2026 / 06.01.2026 | Vorbereitung und Konzept erstellung | Das fertig Konzept                          | Das Konzept wurden während Projekt Ausführung nachgefasst |
+| 07.01.2026 / 09.01.2026 | Projektinitialisierung              | Die Core Projekt und allfällige Remastering | Ähnlich wie in Arbeitspaket 1 aber in geringem Masse      |
+| 12.01.2026 / 26.01.2026 | Desktop App Implementierung         | Das minimalistisch UI                       | Ja                                                        |
+| 26.01.2026 / 29.01.2026 | Web App Implementierung             | Das minimalistisch UI und RWD               |                                                           |
+| 29.01.2026 / 30.01.2026 | Refactoring + UnitTesting           | Korrekte Tests Ergebnisse                   |                                                           |
 
 ---
 ## Architekturkonzept
@@ -84,11 +84,9 @@ Ich habe diese Architektur ausgewählt, weil das passt für die kleine bis mitle
 ## Datenkonzept und High Level Design
 
 ## UX Design Prototype
-### Desktop Interface für Administration 
 
 https://drift-shed-51908381.figma.site
 
-### Web Interface für die Kunde
 
 
 

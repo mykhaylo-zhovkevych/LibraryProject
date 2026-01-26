@@ -12,14 +12,12 @@
         <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/SubStyles/ItemsStyles.axaml"/>
     </UserControl.Styles>
 
-  <Grid RowDefinitions="Auto,Auto,*"
-        ColumnDefinitions="*"
-        RowSpacing="12">
+  <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="*" RowSpacing="12">
 
-    <Border Grid.Row="0" Classes="card" Padding="12">
+    <Border Grid.Row="0">
       <StackPanel Spacing="6">
-        <TextBlock FontSize="18" FontWeight="SemiBold" Text="Benutzerverwaltung" />
-        <TextBlock TextWrapping="Wrap" Text="Konten sperren/löschen, Identitätsanfragen bestätigen und Ausleihhistorie anzeigen." />
+        <TextBlock Classes="title" Text="Benutzerverwaltung" />
+        <TextBlock Classes="subtitle" TextWrapping="Wrap" Text="Konten sperren/löschen, Identitätsanfragen bestätigen und Ausleihhistorie anzeigen." />
       </StackPanel>
     </Border>
 
@@ -29,7 +27,7 @@
         <Button Grid.Column="0"
                 Content="Aktualisieren"
                 Command="{Binding ReloadCommand}"
-                Classes="secound" />
+                Classes="first" />
 
       </Grid>
     </Border>

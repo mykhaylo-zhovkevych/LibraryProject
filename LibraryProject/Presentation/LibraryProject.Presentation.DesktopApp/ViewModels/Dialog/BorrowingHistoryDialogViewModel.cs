@@ -12,8 +12,11 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.Dialog
 {
     public partial class BorrowingHistoryDialogViewModel : DialogViewModel
     {
-        [ObservableProperty]
-        private string _title = "Ausleihhistorie";
+     
+        [ObservableProperty] private string _title = "";
+        [ObservableProperty] private string _message = "";
+        [ObservableProperty] private string _confirmText = "";
+        [ObservableProperty] private string _cancelText = "";
 
         public ObservableCollection<Borrowing> Borrowings { get; } = new();
 

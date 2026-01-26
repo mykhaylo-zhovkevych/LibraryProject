@@ -79,6 +79,14 @@
 
 ### Use Case 2.1: Benutzerverwaltung
 
+**Beschreibung:** Als Admin möchte ich das Kundenkonto entsperren können, damit in Sonderfällen benötigte Aktionen durchgeführt werden können.
+
+**Akzeptanzkriterien**
+1. Der Admin kann das Kundenkonto entsperren.    
+
+---
+### Use Case 2.2: Benutzerverwaltung
+
 **Beschreibung:** Als Admin möchte ich Kunden löschen lassen, damit die Infrastruktur aufrechterhalten wird.
 
 **Akzeptanzkriterien**
@@ -86,7 +94,7 @@
 
 ---
 
-### Use Case 2.2: Benutzerverwaltung
+### Use Case 2.3: Benutzerverwaltung
 
 **Beschreibung:** Als Admin möchte ich die Kunden-Identitätsanfrage bestätigen lassen, damit Kunden für sich Konten eröffnen können.
 

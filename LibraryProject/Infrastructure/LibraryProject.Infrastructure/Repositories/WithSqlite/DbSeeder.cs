@@ -44,6 +44,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             {
                 db.PolicyEntries.Add(new PolicyEntry
                 {
+                    Id = Guid.NewGuid(),
                     UserType = UserType.Admin,
                     ItemType = ItemType.Book,
                     PolicyName = "Admin-Book (Test)",

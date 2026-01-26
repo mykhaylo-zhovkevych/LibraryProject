@@ -1,10 +1,10 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+ï»¿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
              mc:Ignorable="d"
-             d:DesignWidth="300"
+             MinWidth="300"
              x:Class="LibraryProject.Presentation.DesktopApp.Views.Dialog.BorrowingHistoryDialogView"
              x:DataType="vm:BorrowingHistoryDialogViewModel">
 
@@ -12,7 +12,7 @@
 		<vm:BorrowingHistoryDialogViewModel/>
     </Design.DataContext>
 
-    <Border Padding="12">
+    <Border Background="#e5e7eb" CornerRadius="20" ClipToBounds="True" Margin="10" BorderThickness="1">
     <Grid RowDefinitions="Auto,*,Auto" RowSpacing="10">
 
       <TextBlock Text="{Binding Title}" FontSize="18" FontWeight="SemiBold" />
@@ -25,8 +25,8 @@
               <StackPanel>
                 <TextBlock Text="{Binding ItemCopy.Item.Name}" FontWeight="SemiBold"/>
                 <TextBlock Text="{Binding LoanDate, StringFormat='Ausgeliehen: {0:d}'}"/>
-                <TextBlock Text="{Binding DueDate, StringFormat='Fällig: {0:d}'}"/>
-                <TextBlock Text="{Binding IsReturned, StringFormat='Zurückgegeben: {0}'}"/>
+                <TextBlock Text="{Binding DueDate, StringFormat='FÃ¤llig: {0:d}'}"/>
+                <TextBlock Text="{Binding IsReturned, StringFormat='ZurÃ¼ckgegeben: {0}'}"/>
               </StackPanel>
             </Border>
           </DataTemplate>
