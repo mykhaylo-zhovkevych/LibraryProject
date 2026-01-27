@@ -30,7 +30,7 @@ namespace LibraryProject.Application.Services
             }
             _authorizationService.EnsureAdmin();
 
-            User newUser = new User(name, userType);
+            User newUser = new User(name, userType, default);
             await _userRepository.SaveUserAsync(newUser);
             return newUser;
         }

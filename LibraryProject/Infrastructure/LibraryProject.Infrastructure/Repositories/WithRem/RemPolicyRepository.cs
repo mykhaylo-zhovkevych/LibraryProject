@@ -14,7 +14,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
     public class RemPolicyRepository : IPolicyRepository
     {
         private readonly LibraryStorage _storage;
-        private (UserType, ItemType) _key;
+        // private (UserType, ItemType) _key;
 
         public RemPolicyRepository(LibraryStorage storage) => _storage = storage;
 

@@ -11,6 +11,7 @@ namespace LibraryProject.Domain.Entities
     public class Account
     {
         public int AccountId { get; private set; }
+        // FK
         public Guid UserId { get; private set; }
         public string AccountName { get; private set; }
         public string Password { get; private set; }

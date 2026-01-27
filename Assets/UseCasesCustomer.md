@@ -1,17 +1,31 @@
 ﻿## Use Cases
 ### Use Case 1 Kunde Registrierung
 
-**Beschreibung:** Als Kunde möchte ich meine Identität von der Bibliothek bestätigen lassen, damit ich mich später einloggen kann.
+**Beschreibung:** Als Kunde möchte ich meine Bibliothek Konto eröffnen lassen, damit ich mich später einloggen kann.
 
 **Ablauf:**
 1. Kunde gibt die Daten ein.
-2. Die Administration überprüft die Identität und bestätigt sie.
+2. Kunde wird zu Login weitergeleitet
 
 **Akzeptanzkriterien**
-1. Der Kunde ist bestätigt.
+1. Der Kunde kann sich einloggen.
 
 ---
 
+### Use Case 1.1 Kunde Auth-ID Wiedergabe
+
+**Beschreibung** Als Kunde möchte ich meine Auth-ID nach erfolgreiche Erstellung sehen, damit ich mich später einloggen kann.
+
+**Ablauf:**
+1. Kunde hat Konto eröffnet
+2. Auth-ID wird in UI für 5 Sekunde gezeigt  
+3. Kunde speichert es in Zwischenablagen
+
+**Akzeptanzkriterien**
+1. Der Kunde kann Auth-ID zu erfolgreichen Feld passen.
+
+
+---
 ### Use Case 2 Kunde Login
 
 **Beschreibung:** Als Kunde möchte ich mich selbstständig anmelden, damit ich bequem die Bibliotheksinfrastruktur nutzen kann.

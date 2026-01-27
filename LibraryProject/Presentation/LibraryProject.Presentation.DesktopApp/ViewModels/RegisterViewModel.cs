@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using LibraryProject.Application.Interfaces;
 using LibraryProject.Application.Services;
+using LibraryProject.Domain.Entities;
 using LibraryProject.Presentation.DesktopApp.Services;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         private readonly INavigationService _navigationService;
         private readonly AccountService _accountService;
 
-
         public RegisterViewModel(INavigationService navigationService, AccountService accountService)
         {
             _navigationService = navigationService;
@@ -29,28 +29,30 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [ObservableProperty] private string? _password;
 
         [ObservableProperty] private string? _errorMessage;
+        [ObservableProperty] private string? _TempUserId;
 
+        [ObservableProperty] private bool? _showTempUserId;
+
+        partial void OnShowTempUserIdChanged(bool? value)
+        {
+            TempUserId = value == true ? UserId : null;
+        }
 
         [RelayCommand]
         public async Task TryToRegisterAsync()
         {
             ErrorMessage = null;
-
-            Guid userGuidId;
-
-            if (!Guid.TryParse(UserId, out userGuidId))
-            {
-                ErrorMessage = "Invalid User ID format.";
-                return;
-            }
-
+            TempUserId = null;
             try
             {
-                var result = await _accountService.RegisterAccountAsync(userGuidId, Name, Password, Email, default);
+                Account result = await _accountService.RegisterAccountAsync(Name, Password, Email, default);
 
                 if (result != null)
                 {
-                    await Task.Delay(3000);
+                    TempUserId = result.UserId.ToString();
+                    await Task.Delay(5000);
+                    TempUserId = null;
+
                     await _navigationService.NavigateTo<LoginViewModel>();
                     return;
                 }

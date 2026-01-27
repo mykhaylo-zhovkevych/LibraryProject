@@ -15,17 +15,17 @@ namespace LibraryProject.Domain.Entities
         public bool IsAuthentication { get; private set; } = false;
 
         protected User() { }
-        public User(string name, UserType userType)
+        public User(string name, UserType userType, bool isAuthenticated)
         {
             Id = Guid.NewGuid();
             Name = name;
             UserType = userType;
+            IsAuthentication = isAuthenticated;
         }
 
         public void ConfirmIdentity()
         {
             IsAuthentication = true;
         }
-
     }
 }

@@ -55,18 +55,21 @@ namespace LibraryProject.Application.Services
             {
                 throw new SecurityException("Account is suspended.");
             } 
-
             User? user = await _userRepository.GetExistingUserByIdAsync(userId, ct);
             if (user == null)
             {
                 throw new SecurityException("Invalid credentials.");
             }
 
-            
+            if (!user.IsAuthentication)
+            {
+                throw new SecurityException("User identity is not confirmed.");
+            }
+
             return new LoginSession(user.Id, user.UserType, account.AccountName);
         }
 
-        public async Task<Account> RegisterAccountAsync(Guid userId, string accountName, string password, string email, CancellationToken ct)
+        public async Task<Account> RegisterAccountAsync(string accountName, string password, string email, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(accountName) || accountName.Length > 20)
             {
@@ -78,29 +81,25 @@ namespace LibraryProject.Application.Services
                 throw new ArgumentException("Password is required and must be at least 8 characters long.");
             }
 
-            User? user = await _userRepository.GetExistingUserByIdAsync(userId);
-            if (user == null) {
+            User newUser = new User(accountName, Domain.Enum.UserType.Admin, default);
+            await _userRepository.SaveUserAsync(newUser);
+
+            User? user = await _userRepository.GetExistingUserByIdAsync(newUser.Id);
+            if (user == null)
+            {
                 throw new NonexistentUserException();
             }
-            
-            User? occuredUsed = await _userRepository.GetExistingUserByIdAsync(userId);
-
-            // Should one user have multiple accounts or not?
-            //if (occuredUsed != null)
-            //{
-            //    throw new SecurityException("One User cannnot have multiple accounts");
-            //}
 
             Account? account = await _accountRepository.GetAccountByUsernameAsync(accountName);
             if (account != null) {
                 throw new AccountUsedException(account);
             }
 
-            string hashedPassword = HashPassword(password);
-            Account newAccount = new Account(user, accountName, hashedPassword, email);
+            // TODO redo it
+            //string hashedPassword = HashPassword(password);
+            Account newAccount = new Account(newUser, accountName, password, email);
 
             await _accountRepository.SaveAccountAsync(newAccount);
-
             return newAccount;
         }
 

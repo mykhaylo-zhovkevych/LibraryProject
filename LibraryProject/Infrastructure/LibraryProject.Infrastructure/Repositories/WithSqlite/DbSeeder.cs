@@ -56,7 +56,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 
             if (!await db.Users.AnyAsync(ct) && !await db.Accounts.AnyAsync(ct))
             {
-                User adminUser = new User("admin", UserType.Admin);
+                User adminUser = new User("admin", UserType.Admin, true);
                 Account adminAccount = new Account(adminUser, "admin1", "admin12345", "admin@local");
                 adminAccount.ReactivateAccount();
 
