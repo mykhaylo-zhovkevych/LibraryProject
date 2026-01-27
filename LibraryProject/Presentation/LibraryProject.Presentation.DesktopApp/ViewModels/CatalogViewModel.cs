@@ -24,6 +24,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         private readonly BorrowingService _borrowingService;
         private readonly UserService _userService;
         private readonly ICurrentUserContext _currentUserContext;
+        private bool _initialized;
 
         public ObservableCollection<DisplayedItem> Items { get; set; } = new();
         
@@ -60,14 +61,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _suppressReload = true;
             SelectedFilterOption = FilterOptions[0];
             _suppressReload = false;
-
-            _ = LoadDataAsync();
         }
-
-        //public CatalogViewModel ()
-        //{
-        //    Items.Add(new DisplayedItem(Guid.NewGuid(), "Die Verwandlung", "Franz Kafka", "Die Verwandlung ist eine im Jahr 1912 entstandene Erzählung von Franz Kafka. Die Geschichte handelt von Gregor Samsa, dessen plötzliche Verwandlung in ein „Ungeziefer“ die Kommunikation seines sozialen Umfelds mit ihm immer mehr hemmt, bis er von seiner Familie für untragbar gehalten wird und schließlich zugrunde geht. ", 1975, "Buch", 3));
-        //}
 
         partial void OnSearchTextChanged(string? value) => DebouncedReload();
 
@@ -78,6 +72,15 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
             DebouncedReload();
         }
+
+        public async Task InitializedAsync()
+        {
+            if (_initialized) return;
+            _initialized = true;
+
+            await LoadDataAsync();
+        }
+
 
         private void DebouncedReload()
         {

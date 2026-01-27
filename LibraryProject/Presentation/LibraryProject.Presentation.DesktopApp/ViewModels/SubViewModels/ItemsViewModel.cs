@@ -52,7 +52,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             _userService = userService;
 
             PageName = ApplicationPageNames.ManagementItems;
-            // _ = LoadItemsAsync();
         }
 
         public async Task InitializeAsync()

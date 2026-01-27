@@ -113,6 +113,5 @@ namespace LibraryProject.Application.Services
             List<Borrowing> borrowings = await _borrowedRepository.GetInactiveBorrowingsAsync(userId, ct);
             return borrowings;
         }
-
     }
 }

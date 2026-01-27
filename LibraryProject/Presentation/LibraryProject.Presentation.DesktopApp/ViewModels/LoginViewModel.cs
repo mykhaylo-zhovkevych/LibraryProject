@@ -41,7 +41,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
             Guid userguidId;
 
-            if (!Guid.TryParse(_userId, out userguidId))
+            if (!Guid.TryParse(UserId, out userguidId))
             {
                 ErrorMessage = "Login failed. Please check your ID.";
                 return;
@@ -49,7 +49,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             
             try
             {
-                LoginSession? session = await _accountService.LoginAsync(userguidId, _name, _password, default);
+                LoginSession? session = await _accountService.LoginAsync(userguidId, Name, Password, default);
 
                 if (session != null)
                 {

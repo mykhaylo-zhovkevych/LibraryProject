@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+ï»¿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -21,7 +21,6 @@
 
         <StackPanel Spacing="8">
             <!-- Icon -->
-            
             <StackPanel Classes="Intro"> 
                 <TextBlock FontSize="24" Text="Bibliothek Verwaltung" HorizontalAlignment="Center"/>
                 <TextBlock Text="Erstellen Sie ein neues Benutzerkonto" HorizontalAlignment="Center"></TextBlock>
@@ -31,34 +30,27 @@
                 <!--<Label FontFamily="{DynamicResource Phosphor}" Content="&#xe2c2;"/>-->
                 <Label Content="Melden Sie sich mit Ihren Zugangsdaten an" Margin="0,0,0,10" />
 
-            <!--User Id-->
+                <!--User Id-->
 				<TextBlock Classes="field-label" Text="User Id" FontWeight="SemiBold" ></TextBlock>
                 <TextBox Classes="primary" Watermark="Benutzer Id" Text="{Binding UserId}"/>
      
-            <!--Name-->
+                <!--Name-->
                 <TextBlock Classes="field-label" Text="Name" FontWeight="SemiBold" ></TextBlock>
-                <TextBox Classes="primary" Watermark="Ihr vollständiger Name" Text="{Binding Name}" />
+                <TextBox Classes="primary" Watermark="Ihr vollstÃ¤ndiger Name" Text="{Binding Name}" />
 
-            <!--Email-->
+                <!--Email-->
 				<TextBlock Classes="field-label" Text="Email" FontWeight="SemiBold" ></TextBlock>
                 <TextBox Classes="primary" Watermark="ihre.email@beispile.ch" Text="{Binding Email}"/>
        
-            <!--Pasword-->
+                <!--Pasword-->
 				<TextBlock Classes="field-label" Text="Password" FontWeight="SemiBold" ></TextBlock>
                 <TextBox  Classes="primary" PasswordChar="*" Watermark="Mindestens 8 Zeichnen" Text="{Binding Password}" />
 
 
             <TextBlock Classes="error" Text="{Binding ErrorMessage}" />
 
-            <StackPanel>
-				<ProgressBar></ProgressBar>
-            </StackPanel>
-
             <Button Classes="first" Content="Registrieren" Command="{Binding TryToRegisterCommand}" />
-
-            <!-- <ProgressBar Height="4" IsIndeterminate="True"></ProgressBar>-->
-
-            <Button Classes="secound" Content="Zurück zur Anmeldung" Command="{Binding NavigateToLogin}" />
+            <Button Classes="secound" Content="ZurÃ¼ck zur Anmeldung" Command="{Binding NavigateToLogin}" />
 
         </StackPanel>		
     </Border>

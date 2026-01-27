@@ -59,7 +59,6 @@ namespace LibraryProject.Domain.Entities
             ReservedBy = null;
         }
 
-
         public void CancelReservation()
         {
             ReservedBy = null;

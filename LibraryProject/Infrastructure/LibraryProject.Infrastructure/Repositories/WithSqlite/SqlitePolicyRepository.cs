@@ -36,22 +36,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             );
         }
 
-        //public async Task<Policy?> GetPolicyByNameAsync(UserType userType, ItemType itemType, string policyName, CancellationToken ct = default)
-        //{
-        //    ct.ThrowIfCancellationRequested();
-        //    PolicyEntry? entry = await _db.PolicyEntries.FirstOrDefaultAsync(p => p.UserType == userType && p.ItemType == itemType && p.PolicyName == policyName, ct);
-        //    if (entry == null)
-        //    {
-        //        return null;
-        //    }
-        //    return new Policy(
-        //        policyName: entry.PolicyName ?? "",
-        //        extensions: entry.Extensions,
-        //        loanFees: entry.LoanFees,
-        //        loanPeriodInDays: entry.LoadPeriodInDays
-        //    );
-        //}
-
         public async Task RemovePolicyAsync(UserType userType, ItemType itemType, string policyName, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();

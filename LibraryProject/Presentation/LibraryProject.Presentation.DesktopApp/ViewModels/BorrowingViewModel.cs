@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         private readonly ICurrentUserContext _currentUserContext;
         private readonly BorrowingService _borrowingService;
         private readonly UserService _userService;
+        private bool _initialized;
 
         public ObservableCollection<DisplayedBorrowing> Borrowings { get; } = new();
         public BorrowingViewModel(ICurrentUserContext currentUserContext, BorrowingService borrowingService, UserService userService)
@@ -27,17 +29,18 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _borrowingService = borrowingService;
             _userService = userService;
             PageName = ApplicationPageNames.Borrowing;
-            _ = LoadDataAsync();
         }
 
         public string BorrowingsSubtitle => $"Sie haben insgesamt {TotalActiveBorrowings} aktive Ausleihe(n).";
         private int TotalActiveBorrowings => Borrowings.Count(b => b.Status == "Ausgeliehen");
 
-        // For design-time data
-        //public BorrowingViewModel()
-        //{
+        public async Task InitializedAsync()
+        {
+            if (_initialized) return;
+            _initialized = true;
 
-        //}
+            await LoadDataAsync();
+        }
 
         private async Task LoadDataAsync(CancellationToken ct = default)
         {

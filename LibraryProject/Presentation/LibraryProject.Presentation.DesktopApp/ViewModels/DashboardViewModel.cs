@@ -48,7 +48,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [RelayCommand]
         public void GoToCatalog()
         { 
-            // CurrentPage = _iserviceProvider.GetRequiredService<CatalogViewModel>();
             CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageNames.Catalog);
         }
 
@@ -76,6 +75,5 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _currentUser.SignOut();
             _navigation.NavigateTo<LoginViewModel>();
         }
-
     }
 }

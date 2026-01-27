@@ -12,52 +12,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
     public class RemBorrowingRepository : IBorrowingsRepository
     {
         private readonly LibraryStorage _storage;
-
         public RemBorrowingRepository(LibraryStorage storage) => _storage = storage;
-
-        public Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default) 
-        {
-            ct.ThrowIfCancellationRequested();
-            List<Borrowing> quary = _storage.Borrowings
-                .Where(b => b.User.Id == userId && !b.IsReturned)
-                .ToList();
-
-            return Task.FromResult(quary);
-        }
-
-        public Task<List<Borrowing>> GetInactiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            List<Borrowing> quary = _storage.Borrowings
-                .Where(b => b.User.Id == userId && b.IsReturned)
-                .ToList();
-
-            return Task.FromResult(quary);
-        }
-
-        public Task<List<Borrowing>> GetAllBorrowingsAsync(Guid userId, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            List<Borrowing> quary = _storage.Borrowings
-                .Where(b => b.User.Id == userId)
-                .ToList();
-
-            return Task.FromResult(quary);
-        }
-
-        public Task RemoveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            _storage.Borrowings.Remove(borrowing);
-            return Task.CompletedTask;
-        }
-
-        public Task SaveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            _storage.Borrowings.Add(borrowing);
-            return Task.CompletedTask;
-        }
 
         public Task UpdateBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
         {
@@ -70,6 +25,26 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         }
 
         public Task<int> CountActiveBorrowingsForItemAsync(Guid itemId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SaveBorrowingAsync(Borrowing borrowing, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Borrowing>> GetActiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Borrowing>> GetInactiveBorrowingsAsync(Guid userId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<Borrowing>> GetAllBorrowingsAsync(Guid userId, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }

@@ -56,8 +56,21 @@
 1. Die Artikel zeigen die aktualisierte Menge.    
 
 ---
+### Use Case 1.5: Artikelverwaltung: Kopie Einfügung
 
-### Use Case 1.5: Artikelverwaltung: Alle Artikel löschen, während Kunde sie als „Ausgeliehen“ hat
+**Beschreibung:** Als Admin möchte ich die bestehenden Artikelexemplare erweitern, damit zusätzliche Exemplare erstellen können.
+
+**Ablauf:**
+1. Admin wählt „Verwaltung“.
+2. Admin kann:
+    1. Die gewünschte Menge von Kopien eingeben.
+
+**Akzeptanzkriterien**
+1. Die Artikelkopie zeigen die aktualisierte Menge.    
+
+---
+
+### Use Case 1.6: Artikelverwaltung: Alle Artikel löschen, während Kunde sie als „Ausgeliehen“ hat
 
 **Beschreibung:** Als Admin möchte ich alle Artikel löschen lassen, aber wenn jemand diese Artikel in Besitz hat, sei es als „Ausgeliehen“, dann sollen sie freigegeben werden, damit keine weiteren Vorgehen vorgenommen werden müssen.
 

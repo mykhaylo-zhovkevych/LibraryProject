@@ -21,6 +21,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
     public partial class PoliciesViewModel : PageViewModel
     {
         private readonly PolicyService _policyService;
+        private bool _initialized;
 
         [ObservableProperty] private string _newPolicyName = "";
         [ObservableProperty] private string _newPolicyExtensionsText = "1";
@@ -53,8 +54,17 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             _policyService = policyService;
 
             PageName = ApplicationPageNames.ManagementPolicies;
-            _ = LoadPoliciesAsync();
         }
+
+
+        public async Task InitializeAsync()
+        {
+            if (_initialized) return;
+            _initialized = true;
+
+            await LoadPoliciesAsync();
+        }
+
 
         [RelayCommand]
         private void CancelCreate() => ResetCreateForm();

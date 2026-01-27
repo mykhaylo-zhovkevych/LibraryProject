@@ -21,7 +21,7 @@
       </StackPanel>
     </Border>
 
-    <Border Grid.Row="1" Classes="card" Padding="12">
+   <!--<Border Grid.Row="1" Classes="card" Padding="12">
       <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
 
         <Button Grid.Column="0"
@@ -30,9 +30,9 @@
                 Classes="first" />
 
       </Grid>
-    </Border>
+    </Border>-->
 
-    <Grid Grid.Row="2" ColumnDefinitions="* *" ColumnSpacing="12">
+    <Grid Grid.Row="1" ColumnDefinitions="* *" ColumnSpacing="12">
 
       <!-- left -->
       <Border Grid.Column="0" Classes="card" Padding="12">

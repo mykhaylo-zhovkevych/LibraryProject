@@ -15,36 +15,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         private readonly LibraryStorage _storage;
         public RemUserRepository(LibraryStorage storage) => _storage = storage;
 
-        public Task<User?> GetExistingUserAsync(string name, UserType userType, CancellationToken ct)
-        {
-            ct.ThrowIfCancellationRequested();
-            User? query = _storage.Users
-                .FirstOrDefault(u => u.Name == name && u.UserType == userType);
-            return Task.FromResult(query);
-        }
-
-        public Task<User?> GetExistingUserByIdAsync(Guid id, CancellationToken ct)
-        {
-            ct.ThrowIfCancellationRequested();
-            User? query = _storage.Users
-                .FirstOrDefault(u => u.Id == id);
-            return Task.FromResult(query);
-        }
-
-        public Task SaveUserAsync(User user, CancellationToken ct)
-        {
-            ct.ThrowIfCancellationRequested();
-            _storage.Users.Add(user);
-            return Task.CompletedTask;
-        }
-
-        public Task RemoveUserAsync(User user, CancellationToken ct)
-        {
-            ct.ThrowIfCancellationRequested();
-            _storage.Users.Remove(user);
-            return Task.CompletedTask;
-        }
-
         public Task<User?> GetUserByIdAsync(Guid id, CancellationToken ct)
         {
             throw new NotImplementedException();
@@ -56,6 +26,26 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         }
 
         public Task<List<User>> GetAllUsersAsync(CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SaveUserAsync(User user, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveUserAsync(User user, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User?> GetExistingUserByIdAsync(Guid id, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User?> GetExistingUserAsync(string name, UserType userType, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }

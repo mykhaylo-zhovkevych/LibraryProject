@@ -15,33 +15,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
 
         public RemAccountRepository(LibraryStorage storage) => _storage = storage;
 
-        public Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            return Task.FromResult(_storage.Accounts.FirstOrDefault(u => u.AccountName == userName));
-
-        }
-
-        public Task<Account?> GetAccountByAccountIdAsync(int accountId, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            return Task.FromResult(_storage.Accounts.FirstOrDefault(u => u.AccountId == accountId));
-        }
-
-        public Task DeleteAccountAsync(Account account, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            _storage.Accounts.Remove(account);
-            return Task.CompletedTask;
-        }
-
-        public Task SaveAccountAsync(Account account, CancellationToken ct = default)
-        {
-            ct.ThrowIfCancellationRequested();
-            _storage.Accounts.Add(account);
-            return Task.CompletedTask;
-        }
-
         public Task UpdateAccountAsync(Account account, CancellationToken ct = default)
         {
             throw new NotImplementedException();
@@ -53,6 +26,26 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         }
 
         public Task<List<Account>> GetAllAccountsAsync(CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SaveAccountAsync(Account account, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAccountAsync(Account account, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Account?> GetAccountByAccountIdAsync(int accountId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }

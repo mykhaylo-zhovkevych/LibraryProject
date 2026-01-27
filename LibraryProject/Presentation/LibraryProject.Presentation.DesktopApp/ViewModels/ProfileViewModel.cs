@@ -19,23 +19,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         private readonly ICurrentUserContext _currentUserContext;
         private readonly UserService _userService;
         private readonly AccountService _accountService;
-
-
-        public ProfileViewModel(ICurrentUserContext currentUserContext, UserService userService, AccountService accountService)
-        {
-            _currentUserContext = currentUserContext;
-            _userService = userService;
-            _accountService = accountService;
-            PageName = ApplicationPageNames.Profile;
-
-            _ = LoadDataAsync();
-        }
-
-        public ProfileViewModel()
-        {
-
-        }
-
+        private bool _initialized;
 
         [ObservableProperty]
         private string _accountName;
@@ -55,6 +39,21 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         [ObservableProperty]
         private string _emailDraft;
 
+        public ProfileViewModel(ICurrentUserContext currentUserContext, UserService userService, AccountService accountService)
+        {
+            _currentUserContext = currentUserContext;
+            _userService = userService;
+            _accountService = accountService;
+            PageName = ApplicationPageNames.Profile;
+        }
+
+        public async Task InitializeAsync()
+        {
+            if (_initialized) return;
+            _initialized = true;
+
+            await LoadDataAsync();
+        }
 
         private async Task LoadDataAsync(CancellationToken ct = default)
         {

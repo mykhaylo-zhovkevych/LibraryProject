@@ -38,7 +38,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
             Guid userGuidId;
 
-            if (!Guid.TryParse(_userId, out userGuidId))
+            if (!Guid.TryParse(UserId, out userGuidId))
             {
                 ErrorMessage = "Invalid User ID format.";
                 return;
@@ -46,11 +46,10 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
             try
             {
-                var result = await _accountService.RegisterAccountAsync(userGuidId, _name, _password, _email, default);
+                var result = await _accountService.RegisterAccountAsync(userGuidId, Name, Password, Email, default);
 
                 if (result != null)
                 {
-                    // animate the waiting time
                     await Task.Delay(3000);
                     await _navigationService.NavigateTo<LoginViewModel>();
                     return;

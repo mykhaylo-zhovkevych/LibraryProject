@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -29,15 +29,15 @@
                 <!--<Label FontFamily="{DynamicResource Phosphor}" Content="&#xe2c2;"/>-->
                 <Label Content="Melden Sie sich mit Ihren Zugangsdaten an" />
 
-            <!--User Id-->
+                <!--User Id-->
 				<TextBlock Classes="field-label" Text="User Id" FontWeight="SemiBold" ></TextBlock>
                 <TextBox Classes="primary" Watermark="Benutzer Id" Text="{Binding UserId}" />
                 
-            <!--Name-->
+                <!--Name-->
 				<TextBlock Classes="field-label" Text="Name" FontWeight="SemiBold" ></TextBlock>
-                <TextBox Classes="primary" Watermark="Ihr vollst�ndiger Name" Text="{Binding Name}" />
+                <TextBox Classes="primary" Watermark="Ihr vollständiger Name" Text="{Binding Name}" />
             
-            <!--Password-->
+                <!--Password-->
 				<TextBlock Classes="field-label" Text="Password" FontWeight="SemiBold" ></TextBlock>
                 <TextBox Classes="primary" PasswordChar="*" Watermark="Mindestens 8 Zeichnen" Text="{Binding Password}" />
 

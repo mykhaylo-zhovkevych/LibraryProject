@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace LibraryProject.Presentation.DesktopApp.Views.SubViews;
 

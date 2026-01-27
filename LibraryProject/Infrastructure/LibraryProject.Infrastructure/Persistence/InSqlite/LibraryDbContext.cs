@@ -34,14 +34,12 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
                 b.HasKey(x => new { x.Id });
                 // b.HasKey(x => new { x.UserType, x.ItemType });
 
-                // Will automatically created with EF
                 b.Property(x => x.PolicyName).HasMaxLength(20);
                 //b.Property(x => x.LoanFees);
                 //b.Property(x => x.Extensions);
                 //b.Property(x => x.LoadPeriodInDays);
 
                 // Optional: enforce uniqueness 
-                // Remove or comment out if duplicates by name are allowed.
                 //b.HasIndex(e => new { e.UserType, e.ItemType, e.PolicyName })
                 // .IsUnique();
             });
@@ -49,6 +47,7 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
             modelBuilder.Entity<Shelf>(b =>
             {
                 b.HasKey(x => x.ShelfId);
+                // If null will auto generate
                 //b.Property(x => x.ShelfId).ValueGeneratedOnAdd();
 
                 b.HasMany(s => s.Items)
@@ -115,8 +114,6 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
                     .HasForeignKey(x => x.ItemCopyId)
                     .OnDelete(DeleteBehavior.Cascade);
             });
-
-
         }
     }
 }

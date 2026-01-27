@@ -19,6 +19,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
         private readonly UserService _userService;
         private readonly AccountService _accountService;
         private readonly BorrowingService _borrowingService;
+        private bool _initialized;
 
         public ObservableCollection<DisplayedUser> Users { get; } = new();
         public ObservableCollection<DisplayedAccount> Accounts { get; } = new();
@@ -40,7 +41,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             _borrowingService = borrowingService;
 
             PageName = ApplicationPageNames.ManagementUsers;
-            _ = ReloadAsync();
         }
 
 
@@ -49,6 +49,13 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
         partial void OnSelectedAccountChanged(DisplayedAccount? value) => OnPropertyChanged(nameof(HasSelectedAccount));
 
 
+        public async Task InitializeAsync()
+        {
+            if (_initialized) return;
+            _initialized = true;
+
+            await ReloadAsync();
+        }
 
         [RelayCommand]
         private async Task ReloadAsync()
@@ -134,7 +141,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
         }
 
 
-        // Confirmation Dialog
         [RelayCommand]
         private async Task DeleteAccountAsync()
         {
@@ -204,8 +210,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             }    
         }
 
-
-        // Confirmation Dialog
         [RelayCommand]
         private async Task ConfirmIdentityAsync()
         {
@@ -240,7 +244,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             }    
         }
 
-        // BorrowingHsitory Dialog 
         [RelayCommand]
         private async Task ShowBorrowingHistoryAsync()
         {

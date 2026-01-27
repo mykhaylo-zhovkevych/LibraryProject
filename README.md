@@ -31,6 +31,7 @@ Kunde
 ---
 
 ## Use Cases
+_Einige Use Cases können aus einer Benutzergruppen  zu andere Benutzergruppen mitgenommen und implementiert werden._ 
 - [Admin Use Cases](./Assets/UseCasesAdmin.md)
 - [Customer Use Cases](./Assets/UseCasesCustomer.md)
 ---

@@ -50,6 +50,5 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         {
             CurrentPage = _pageFactory.GetPageViewModel(ApplicationPageNames.ManagementPolicies);
         }
-
     }
 }
