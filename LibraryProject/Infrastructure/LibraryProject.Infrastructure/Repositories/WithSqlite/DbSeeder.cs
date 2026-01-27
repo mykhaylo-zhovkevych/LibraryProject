@@ -22,8 +22,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             Shelf defaultShelf = new Shelf(DefaultShelfId);
             db.Shelves.Add(defaultShelf);
 
-                if (!await db.Items.AnyAsync(ct))
-                {
+            if (!await db.Items.AnyAsync(ct))
+            {
                 CreateItemWithAmountTest(
                         defaultShelf,
                         "Die Verwandlung",
@@ -33,14 +33,9 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                         "Die Verwandlung ist eine im Jahr 1912 entstandene Erzählung von Franz Kafka. Die Geschichte handelt von Gregor Samsa, dessen plötzliche Verwandlung in ein „Ungeziefer“ die Kommunikation seines sozialen Umfelds mit ihm immer mehr hemmt, bis er von seiner Familie für untragbar gehalten wird und schließlich zugrunde geht. ",
                         5,
                         ct);
-                }
+            }
 
-                if (db.ItemCopies == null)
-                {
-
-                }
-
-              if (!await db.PolicyEntries.AnyAsync(ct))
+            if (!await db.PolicyEntries.AnyAsync(ct))
             {
                 db.PolicyEntries.Add(new PolicyEntry
                 {
@@ -57,7 +52,8 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             if (!await db.Users.AnyAsync(ct) && !await db.Accounts.AnyAsync(ct))
             {
                 User adminUser = new User("admin", UserType.Admin, true);
-                Account adminAccount = new Account(adminUser, "admin1", "admin12345", "admin@local");
+                // password: admin12345
+                Account adminAccount = new Account(adminUser, "admin1", "100000.3nTcX8KTECxxTDyrg1XgGg==.dIXcIDSZ4j2Hkx6E2NyP2Z4Gt2GQpLRcyeQqlhd1oqg=", "admin@local");
                 adminAccount.ReactivateAccount();
 
                 db.Users.Add(adminUser);

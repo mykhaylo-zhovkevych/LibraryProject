@@ -47,10 +47,10 @@ namespace LibraryProject.Application.Services
             {
                 throw new SecurityException("Invalid credentials.");
             }
-            //if (!VarifyPassword(password, account.Password))
-            //{
-            //    throw new SecurityException("Invalid credentials.");
-            //}
+            if (!VarifyPassword(password, account.Password))
+            {
+                throw new SecurityException("Invalid credentials.");
+            }
             if (account.IsSuspended)
             {
                 throw new SecurityException("Account is suspended.");
@@ -95,9 +95,8 @@ namespace LibraryProject.Application.Services
                 throw new AccountUsedException(account);
             }
 
-            // TODO redo it
-            //string hashedPassword = HashPassword(password);
-            Account newAccount = new Account(newUser, accountName, password, email);
+            string hashedPassword = HashPassword(password);
+            Account newAccount = new Account(newUser, accountName, hashedPassword, email);
 
             await _accountRepository.SaveAccountAsync(newAccount);
             return newAccount;

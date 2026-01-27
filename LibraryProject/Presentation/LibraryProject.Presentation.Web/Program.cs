@@ -1,4 +1,5 @@
-using LibraryProject.Presentation.Web.Components;
+﻿using LibraryProject.Presentation.Web.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryProject.Presentation.Web
 {
@@ -6,11 +7,14 @@ namespace LibraryProject.Presentation.Web
     {
         public static void Main(string[] args)
         {
+            //var config = new ConfigurationBuilder()
+            //        .SetBasePath(AppContext.BaseDirectory)
+            //        .AddJsonFile("appsettings.json", optional: false);
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddRazorComponents()
-                .AddInteractiveServerComponents();
+            builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
             var app = builder.Build();
 
