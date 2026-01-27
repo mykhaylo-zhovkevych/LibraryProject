@@ -126,5 +126,18 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
             await _db.SaveChangesAsync(ct);
         }
+
+        public async Task InsertCopiesToItemAsync(Guid itemId, int count, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            // Item tracked 
+            Item item = await _db.Items.FirstOrDefaultAsync(i => i.Id == itemId, ct) ?? throw new ArgumentException($"Item {itemId} not found");
+            List<ItemCopy> newCopies = Enumerable.Range(0, count).Select(_ => ItemCopy.CreateFor(item)).ToList();
+
+            await _db.ItemCopies.AddRangeAsync(newCopies, ct);
+            item.CirculationCount += count;
+
+            await _db.SaveChangesAsync(ct);
+        }
     }
 }

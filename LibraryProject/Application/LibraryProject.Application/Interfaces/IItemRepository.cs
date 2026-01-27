@@ -14,7 +14,7 @@ namespace LibraryProject.Application.Interfaces
         Task RemoveItemAsync(Item item, CancellationToken ct = default);
         Task UpdateCopyAsync(ItemCopy copy, CancellationToken ct = default);
         Task UpdateItemAsync(Item item, CancellationToken ct = default);
-
+        Task InsertCopiesToItemAsync(Guid itemId, int count, CancellationToken ct = default);
 
         Task<Item?> GetItemByIdAsync(Guid itemId, CancellationToken ct = default);
 

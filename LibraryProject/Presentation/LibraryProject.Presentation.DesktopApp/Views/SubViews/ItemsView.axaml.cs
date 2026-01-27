@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels;
 using System.Linq;
 
 namespace LibraryProject.Presentation.DesktopApp.Views.SubViews;
@@ -10,6 +11,7 @@ public partial class ItemsView : UserControl
     public ItemsView()
     {
         InitializeComponent();
+        this.AttachedToVisualTree += OnAttached;
     }
 
     private void NumericTextBox_OnTextInput(object? sender, Avalonia.Input.TextInputEventArgs e)
@@ -22,5 +24,12 @@ public partial class ItemsView : UserControl
             e.Handled = true;        
         }
 
+    }
+    private async void OnAttached(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (DataContext is ItemsViewModel vm)
+        {
+            await vm.InitializeAsync();
+        }
     }
 }

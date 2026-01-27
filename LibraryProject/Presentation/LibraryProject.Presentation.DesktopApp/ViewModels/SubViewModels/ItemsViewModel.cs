@@ -21,6 +21,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
         private readonly ItemService _itemService;
         private readonly UserService _userService;
         private readonly ICurrentUserContext _currentUserContext;
+        private bool _initialized;
 
         [ObservableProperty] private string _newTitle = "";
         [ObservableProperty] private string _newAuthor = "";
@@ -51,7 +52,15 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             _userService = userService;
 
             PageName = ApplicationPageNames.ManagementItems;
-            _ = LoadItemsAsync();
+            // _ = LoadItemsAsync();
+        }
+
+        public async Task InitializeAsync()
+        {
+            if (_initialized) return;
+            _initialized = true;
+
+            await LoadItemsAsync();
         }
 
         [RelayCommand]
@@ -236,6 +245,55 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
                     };
                     CurrentDialog = errorDialog;
                     errorDialog.Show();
+                }
+            }
+        }
+
+        [RelayCommand]
+        private async Task ShowAddExtraCopiesDialog()
+        {
+            if (SelectedItem == null)
+            {
+                CurrentDialog = new ErrorDialogViewModel()
+                {
+                    Title = "Fehler",
+                    Message = "Kein Element ausgewählt.",
+                    ConfirmText = "OK"
+                };
+                CurrentDialog.Show();
+                return;
+            }
+
+            DisplayedItem selectedItem = SelectedItem;
+
+            AddExtraItemDialogViewModel dialog = new AddExtraItemDialogViewModel()
+            {
+                Title = "Kopien hinzufügen",
+                Message = $"Wie viele zusätzliche Exemplare möchten Sie für {selectedItem.Title} hinzufügen?",
+                ConfirmText = "Hinzufügen",
+                CancelText = "Abbrechen",
+                CountToAdd = 1
+            };
+
+            CurrentDialog = dialog;
+            dialog.Show();
+
+            if (await dialog.WaitConfirmationAsync())
+            {
+                try
+                {
+                    await _itemService.AddCopiesToItemAsync(selectedItem.Id, dialog.CountToAdd, default);
+                    await LoadItemsAsync();
+                }
+                catch (Exception ex)
+                {
+                    CurrentDialog = new ErrorDialogViewModel()
+                    {
+                        Title = "Fehler",
+                        Message = $"Fehler: {ex.Message}",
+                        ConfirmText = "OK"
+                    };
+                    CurrentDialog.Show();
                 }
             }
         }

@@ -103,5 +103,10 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         {
             throw new NotImplementedException();
         }
+
+        public Task InsertCopiesToItemAsync(Guid itemId, int count, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

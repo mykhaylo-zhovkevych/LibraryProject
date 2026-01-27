@@ -125,6 +125,7 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
                             <Button Content="Aktualisieren" Command="{Binding ShowUpdateItemDialogCommand}" Classes="update"/>
                             <Button Content="Löschen" Command="{Binding ShowDeleteItemDialogCommand}" Classes="update"/>
+                            <Button Content="Kopie einfügen" Command="{Binding ShowAddExtraCopiesDialogCommand}" Classes="update"/>
                         </StackPanel>
 
                     </Grid>

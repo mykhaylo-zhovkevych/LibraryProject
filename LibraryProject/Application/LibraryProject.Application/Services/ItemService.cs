@@ -85,6 +85,16 @@ namespace LibraryProject.Application.Services
             await _itemRepository.RemoveItemAsync(foundItem, ct);
         }
 
+
+        public async Task AddCopiesToItemAsync(Guid itemId, int count, CancellationToken ct)
+        {
+            if (count <= 0) throw new ArgumentException("Invalid copies value.");
+            _authorizationService.EnsureAdmin();
+
+            await _itemRepository.InsertCopiesToItemAsync(itemId, count, ct);
+        }
+
+
         public async Task RemoveItemCopiesByIdAsync(Item item, int count, CancellationToken ct)
         {
             if (item == null)

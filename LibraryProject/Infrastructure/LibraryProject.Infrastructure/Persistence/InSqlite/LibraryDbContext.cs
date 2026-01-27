@@ -108,12 +108,12 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
                 b.HasOne(x => x.User)
                     .WithMany()
                     .HasForeignKey(x => x.UserId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 b.HasOne(x => x.ItemCopy)
                     .WithMany()
                     .HasForeignKey(x => x.ItemCopyId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
 
