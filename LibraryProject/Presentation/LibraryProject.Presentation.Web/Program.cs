@@ -1,4 +1,5 @@
 ﻿using LibraryProject.Presentation.Web.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LibraryProject.Presentation.Web
@@ -13,8 +14,14 @@ namespace LibraryProject.Presentation.Web
 
             var builder = WebApplication.CreateBuilder(args);
 
+
+            builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationStateProvider>();
+
             // Add services to the container.
             builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+
+
 
             var app = builder.Build();
 

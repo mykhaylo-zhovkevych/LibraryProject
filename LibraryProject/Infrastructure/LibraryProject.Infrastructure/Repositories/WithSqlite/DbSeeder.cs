@@ -80,6 +80,5 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             item.AddCopies(circulationCount);
 
         }
-
     }
 }
