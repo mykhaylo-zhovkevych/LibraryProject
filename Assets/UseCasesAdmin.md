@@ -31,7 +31,7 @@ Als Admin möchte ich bestehende Artikel bearbeiten können, damit die Infrastru
 
 **Ablauf:**
 1. Admin navigiert zu "Verwaltung".
-2. Admin wählt die Untersektion „Artikelverwaltung“ aus.
+2. Admin wählt die Untersektion "Artikelverwaltung" aus.
 3. Admin kann:
     - einen Artikel aus einer Liste auswählen,
     - die folgenden Daten aktualisieren:
