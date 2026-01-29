@@ -1,0 +1,113 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Page background -->
+  <Style Selector="Border.catalog-page">
+    <Setter Property="Background" Value="#d7d7d7"/>
+      <Setter Property="Padding" Value="24"/>
+  </Style>
+
+  <!-- Title -->
+  <Style Selector="TextBlock.page-title">
+    <Setter Property="FontSize" Value="28"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="#111827"/>
+  </Style>
+
+  <Style Selector="TextBlock.page-subtitle">
+    <Setter Property="FontSize" Value="14"/>
+    <Setter Property="Foreground" Value="#6b7280"/>
+    <Setter Property="Margin" Value="0,6,0,0"/>
+  </Style>
+
+  <Style Selector="TextBlock.found-text">
+    <Setter Property="Foreground" Value="#6b7280"/>
+    <Setter Property="Margin" Value="0,12,0,12"/>
+  </Style>
+
+  <!-- Search -->
+  <Style Selector="TextBox.search">
+    <Setter Property="Background" Value="White"/>
+    <Setter Property="BorderBrush" Value="#e5e7eb"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="Padding" Value="12,10"/>
+    <Setter Property="Foreground" Value="#111827"/>
+  </Style>
+
+  <Style Selector="TextBox.search:focus">
+    <Setter Property="BorderBrush" Value="#4f46e5"/>
+    <Setter Property="BorderThickness" Value="2"/>
+  </Style>
+
+  <Style Selector="ComboBox.filter">
+    <Setter Property="Background" Value="White"/>
+    <Setter Property="BorderBrush" Value="#e5e7eb"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="Padding" Value="10,8"/>
+    <Setter Property="Foreground" Value="#111827"/>
+  </Style>
+
+
+  <!-- Card -->
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="White"/>
+    <Setter Property="CornerRadius" Value="16"/>
+    <Setter Property="Padding" Value="16"/>
+    <Setter Property="BorderBrush" Value="#e5e7eb"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="BoxShadow" Value="0 10 25 #14000000"/>
+  </Style>
+
+  <!-- Cover -->
+  <Style Selector="Border.cover">
+    <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="Background" Value="#e5e7eb"/>
+  </Style>
+
+  <Style Selector="TextBlock.cover-text">
+    <Setter Property="HorizontalAlignment" Value="Center"/>
+    <Setter Property="VerticalAlignment" Value="Center"/>
+    <Setter Property="Foreground" Value="#6b7280"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+
+  <!-- Card text -->
+  <Style Selector="TextBlock.card-title">
+    <Setter Property="FontSize" Value="16"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="#111827"/>
+  </Style>
+
+  <Style Selector="TextBlock.card-author">
+    <Setter Property="Foreground" Value="#6b7280"/>
+  </Style>
+
+  <Style Selector="TextBlock.card-description">
+    <Setter Property="Foreground" Value="#374151"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Margin" Value="0,6,0,0"/>
+  </Style>
+
+<Style Selector="TextBlock.meta">
+    <Setter Property="Foreground" Value="#6b7280"/>
+    <Setter Property="FontSize" Value="12"/>
+  </Style>
+
+  <!-- Details button -->
+  <Style Selector="Button.details-button">
+    <Setter Property="Background" Value="#969696"/>
+    <Setter Property="Foreground" Value="#e5e7eb"/>
+    <Setter Property="CornerRadius" Value="12"/>
+    <Setter Property="Padding" Value="12,8"/>
+    <Setter Property="BorderThickness" Value="0"/>
+  </Style>
+
+
+    <Style Selector="Button.details-Button:pointerover">
+		<Setter Property="Background" Value="#d7d7d7"/>
+    </Style>
+
+
+</Styles>

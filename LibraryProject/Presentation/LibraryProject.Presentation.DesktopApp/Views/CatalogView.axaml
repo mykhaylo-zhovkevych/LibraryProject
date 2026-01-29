@@ -1,0 +1,124 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewmodels="using:LibraryProject.Presentation.DesktopApp.ViewModels"
+             xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
+             xmlns:models="using:LibraryProject.Presentation.DesktopApp.Models"
+             mc:Ignorable="d"
+             d:DesignWidth="1100" d:DesignHeight="700"
+             x:DataType="viewmodels:CatalogViewModel"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.CatalogView"
+             x:Name="Root">
+
+  <Design.DataContext>
+    <viewmodels:CatalogViewModel/>
+  </Design.DataContext>
+
+  <UserControl.Styles>
+    <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/CatalogStyles.axaml"/>
+  </UserControl.Styles>
+
+  <!-- Page background -->
+  <Border Classes="catalog-page">
+    <ScrollViewer>
+      <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" Classes="page-content">
+
+        <!-- Title -->
+        <TextBlock Grid.Row="0" Text="Buchkatalog" Classes="page-title"/>
+
+        <!-- Subtitle -->
+        <TextBlock Grid.Row="1" Text="Durchsuchen Sie unsere Sammlung und leihen Sie Bücher aus." Classes="page-subtitle"/>
+
+        <!-- Filters row -->
+        <Grid Grid.Row="2"
+              ColumnDefinitions="*,16,220"
+              Margin="0,18,0,0">
+          <TextBox Grid.Column="0"
+                   Classes="search"
+                   Watermark="Suche nach Titel oder Autor..."
+                   Text="{Binding SearchText, Mode=TwoWay}"/>
+
+          <ComboBox Grid.Column="2"
+                    Classes="filter"
+                    ItemsSource="{Binding FilterOptions}"
+                    SelectedItem="{Binding SelectedFilterOption, Mode=TwoWay}"/>
+        </Grid>
+
+        <!-- Found count -->
+        <TextBlock Grid.Row="3" Classes="found-text" Text="{Binding TotalFoundItems, StringFormat='Gefundene Artikeln: {0}'}"/>
+
+        <!-- Cards -->
+        <ItemsControl Grid.Row="4" ItemsSource="{Binding Items}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Orientation="Horizontal"
+                         ItemWidth="320"
+                         ItemHeight="450"/>
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+
+              <Border Classes="card" Margin="0,0,18,18">
+                <Grid RowDefinitions="160,Auto,Auto,Auto,*">
+
+                  <!-- Image -->
+                  <Border Grid.Row="0" Classes="cover">
+                    <TextBlock Text="Cover" Classes="cover-text"/>
+                  </Border>
+
+                  <!-- Title / Author / Description -->
+                  <StackPanel Grid.Row="1"
+                              Margin="0,12,0,0"
+                              Spacing="4">
+                    <TextBlock Text="{Binding Title}"
+                               Classes="card-title"/>
+                    <TextBlock Text="{Binding Author}"
+                               Classes="card-author"/>
+
+                    <TextBlock Text="{Binding Description}"
+                               Classes="card-description"
+                               MaxLines="3"
+                               TextWrapping="Wrap"/>
+                  </StackPanel>
+
+                  <!-- Bottom row -->
+                  <Grid Grid.Row="2"
+                        ColumnDefinitions="*"
+                        VerticalAlignment="Bottom"
+                        Margin="0,12,0,0">
+
+                    <StackPanel Grid.Column="0" Spacing="6">
+                      <TextBlock Text="{Binding Year, StringFormat='Jahr: {0}'}" Classes="meta" />
+                      <TextBlock Text="{Binding AvailableCopies, StringFormat='Verfügbare exemplaren: {0}'}" Classes="meta" />
+                    </StackPanel>
+                  </Grid>
+
+                    <Grid Grid.Row="3" >
+                        <Button Content="reservieren"
+                                Classes="details-button"
+                                HorizontalAlignment="Right"
+                                Command="{Binding #Root.DataContext.ShowReserveItemDialogCommand}"
+                                CommandParameter="{Binding}"/>
+                    </Grid>
+
+                    <Grid Grid.Row="4" >
+                            <Button Content="ausleihen"
+                                    Classes="details-button"
+                                    HorizontalAlignment="Right"
+                                    Command="{Binding #Root.DataContext.ShowBorrowItemDialogCommand}"
+                                    CommandParameter="{Binding}"/>
+                    </Grid>
+
+
+                </Grid>
+              </Border>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+         </ItemsControl>        
+    </Grid>
+   </ScrollViewer>
+ </Border>
+</UserControl>

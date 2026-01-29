@@ -1,0 +1,98 @@
+﻿
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
+             xmlns:viewmodels="using:LibraryProject.Presentation.DesktopApp.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="viewmodels:BorrowingViewModel"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.BorrowingView"
+             x:Name="Root">
+
+  <Design.DataContext>
+    <viewmodels:BorrowingViewModel/>
+  </Design.DataContext>
+
+  <UserControl.Styles>
+    <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/BorrowingStyles.axaml"/>
+  </UserControl.Styles>
+
+
+<Border Classes="page">
+    <Grid RowDefinitions="Auto,*">
+
+      <!-- Top -->
+      <StackPanel Grid.Row="0" Spacing="2">
+        <TextBlock Classes="title" Text="Ausgeliehene Bücher" />
+        <TextBlock Classes="subtitle" Text="{Binding BorrowingsSubtitle}" />
+
+      </StackPanel>
+
+      <!-- List -->
+      <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" >
+        <ItemsControl ItemsSource="{Binding Borrowings}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel Orientation="Horizontal"
+                         ItemWidth="760"
+                         ItemHeight="260" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="16">
+
+                <Border Classes="card" Grid.Column="0">
+                  <StackPanel Spacing="10" >
+                      
+                    <TextBlock Text="{Binding BorrowingItemName}"/> 
+                    <TextBlock Text="{Binding BorrowingItemAuthror}"/>
+                    <TextBlock Text="{Binding BorrowingItemType}"/>
+
+                    <Grid ColumnDefinitions="*,*,*" ColumnSpacing="16">
+                      <Border Classes="card" Grid.Column="0">
+                        <StackPanel>
+                          <TextBlock Text="{Binding LoanDate, StringFormat='Ausgeliehen am: {0:dd.MM.yyyy}', FallbackValue='Ausgeliehen am: —'}" />
+                        </StackPanel>
+                      </Border>
+
+                      <Border Classes="card" Grid.Column="1">
+                        <StackPanel>
+                          <TextBlock Text="{Binding DueDate, StringFormat='Rückgabedatum: {0:dd.MM.yyyy}', FallbackValue='Rückgabedatum: —'}" />
+                        </StackPanel>
+                      </Border>
+
+                      <Border Classes="card" Grid.Column="2">
+                        <StackPanel>
+                          <TextBlock Text="{Binding Status, StringFormat='Status: {0}', FallbackValue='Status: —'}" />
+                        </StackPanel>
+                      </Border>
+                    </Grid>
+
+                  </StackPanel>
+                </Border>
+
+                <StackPanel Grid.Column="1" Orientation="Vertical" Spacing="8">
+                  <Button Content="Erweitern"
+                          CornerRadius="8"
+                          Classes="delete-button"
+                          Command="{Binding #Root.DataContext.ExpandCommand}"
+                          CommandParameter="{Binding}" />
+
+                  <Button Content="Zurückgeben"
+                          CornerRadius="8"
+                          Command="{Binding #Root.DataContext.ReturnCommand}"
+                          CommandParameter="{Binding}" />
+                </StackPanel>
+
+              </Grid>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+
+    </Grid>
+  </Border>
+</UserControl>

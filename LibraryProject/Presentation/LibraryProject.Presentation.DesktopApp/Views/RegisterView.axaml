@@ -1,0 +1,55 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="using:LibraryProject.Presentation.DesktopApp.Views.Controlls"
+             mc:Ignorable="d"
+             xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels"
+             d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.RegisterView"
+             x:DataType="vm:RegisterViewModel">
+
+    <Design.DataContext>
+        <vm:RegisterViewModel/>
+    </Design.DataContext>
+
+   <UserControl.Styles>
+    <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/LoginStyles.axaml"/>
+  </UserControl.Styles>
+
+<Grid>
+    <Border Classes="login-card" MaxWidth="400" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+        <StackPanel Spacing="8">
+            <!-- Icon -->
+            <StackPanel Classes="Intro"> 
+                <TextBlock FontSize="24" Text="Bibliothek Verwaltung" HorizontalAlignment="Center"/>
+                <TextBlock Text="Erstellen Sie ein neues Benutzerkonto" HorizontalAlignment="Center"></TextBlock>
+            </StackPanel>
+
+                <Label Content="Registrierung" Margin="0,10,0,0"/>
+                <!--<Label FontFamily="{DynamicResource Phosphor}" Content="&#xe2c2;"/>-->
+                <Label Content="Melden Sie sich mit Ihren Zugangsdaten an" Margin="0,0,0,10" />
+  
+                <!--Name-->
+                <TextBlock Classes="field-label" Text="Name" FontWeight="SemiBold" ></TextBlock>
+                <TextBox Classes="primary" Watermark="Ihr vollständiger Name" Text="{Binding Name}" />
+
+                <!--Email-->
+				<TextBlock Classes="field-label" Text="Email" FontWeight="SemiBold" ></TextBlock>
+                <TextBox Classes="primary" Watermark="ihre.email@beispile.ch" Text="{Binding Email}"/>
+       
+                <!--Pasword-->
+				<TextBlock Classes="field-label" Text="Password" FontWeight="SemiBold" ></TextBlock>
+                <TextBox  Classes="primary" PasswordChar="*" Watermark="Mindestens 8 Zeichnen" Text="{Binding Password}" />
+
+            <controls:CopyTextButton Text="{Binding TempUserId}" IsVisible="{Binding ShowTempUserId}" />
+            <TextBlock Classes="error" Text="{Binding ErrorMessage}"/>
+
+            <Button Classes="first" Content="Registrieren" Command="{Binding TryToRegisterCommand}" />
+            <Button Classes="secound" Content="Zurück zur Anmeldung" Command="{Binding NavigateToLogin}" />
+
+        </StackPanel>		
+    </Border>
+</Grid>
+</UserControl>

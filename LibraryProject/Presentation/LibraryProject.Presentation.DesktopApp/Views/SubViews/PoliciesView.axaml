@@ -1,0 +1,122 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels"
+             xmlns:model="clr-namespace:LibraryProject.Presentation.DesktopApp.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.SubViews.PoliciesView"
+             x:DataType="vm:PoliciesViewModel">
+
+    <UserControl.Styles>
+        <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/SubStyles/ItemsStyles.axaml"/>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+    <Grid RowDefinitions="Auto, Auto, Auto, *" RowSpacing="12">
+		
+        <Border Grid.Row="0">
+            <StackPanel Spacing="6">
+                <TextBlock Classes="title" Text="Richtlinienverwaltung" />
+                <TextBlock Classes="subtitle" TextWrapping="Wrap" Text="Konten sperren/löschen, Identitätsanfragen bestätigen und Ausleihhistorie anzeigen." />
+            </StackPanel>
+        </Border>
+
+        <!--  <TextBlock Grid.Column="0" Text="Neue Policy hinzufügen"> </TextBlock> -->
+
+        <Border Grid.Row="1" Classes="card" Padding="12">
+
+            <StackPanel Margin="8">
+            <TextBlock Grid.Column="0" Text="Neue Policy hinzufügen" /> 
+                <Grid ColumnDefinitions="Auto,*,*">
+				    <StackPanel Grid.Column="1" Spacing="10">
+                    
+                        <TextBlock Classes="field-label" Text="Richtlinie Name" FontWeight="SemiBold" />
+                        <TextBox Classes="primary" Watermark="z.B. Standard Buch Policy" Text="{Binding NewPolicyName, Mode=TwoWay}" />
+
+                        <TextBlock Classes="field-label" Text="Artikeltyp" FontWeight="SemiBold" />
+                        <ComboBox Classes="primary"
+                                  ItemsSource="{Binding ItemTypes}"
+                                  SelectedItem="{Binding SelectedItemType, Mode=TwoWay}" />
+                        <!-- PolicyExtensions -->
+                        <TextBlock Classes="field-label" Text="Maximale Ausleihe Wiederholdungen" FontWeight="SemiBold" />
+                        <NumericUpDown Value="{Binding NewPolicyExtensionsText}" Minimum="1" Maximum="10"/>
+
+                    </StackPanel>
+
+
+                    <StackPanel Grid.Column="2" Spacing="10" Margin="10">
+					
+                        <TextBlock Classes="field-label" Text="Benutzertyp" FontWeight="SemiBold" />
+                        <ComboBox Classes="primary"
+                                  ItemsSource="{Binding UserTypes}"
+                                  SelectedItem="{Binding SelectedUserType, Mode=TwoWay}" />
+                        <!--PolicyLoadPeriodInDays -->
+                        <TextBlock Classes="field-label" Text="Ausleihdauer in Tage" FontWeight="SemiBold" />
+                        <NumericUpDown Value="{Binding NewPolicyLoadPeriodInDaysText}" Minimum="1" Maximum="60" />
+
+                        <!--PolicyFees -->
+                        <TextBlock Classes="field-label" Text="Leihgebühr in $" FontWeight="SemiBold" />
+                        <NumericUpDown Value="{Binding NewPolicyFeesText}" Increment="0.05" Minimum="0" Maximum="1"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10"> 
+                    <Button Content="Speichern" 
+                            Command="{Binding CreatePolicyCommand}" 
+                            Classes="first">
+                    </Button>
+                     
+                    <Button Content="Abbrechnen"
+                            Command="{Binding CancelCreateCommand }"
+                            Classes="secound">
+                    </Button>
+
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Classes="card" Padding="12">
+			<Grid RowDefinitions="Auto,*" RowSpacing="8">
+                    <!-- Header -->
+                    <Border Grid.Row="0" Classes="list-header" HorizontalAlignment="Stretch">
+				        <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="12">
+							<TextBlock Text="Richtlinie Name" />
+                            <TextBlock Grid.Column="1" Text="Benutzer Typ" />
+                            <TextBlock Grid.Column="2" Text="Artikel Typ" />
+                            <TextBlock Grid.Column="3" Text="Ausleihdauer" />
+                            <TextBlock Grid.Column="4" Text="Verlängerungen" />
+                            <TextBlock Grid.Column="5" Text="Gebühre" />
+                        </Grid>
+                    </Border>
+
+                    <ListBox Grid.Row="1" ItemsSource="{Binding Policies}" SelectedItem="{Binding SelectedPolicy}" Classes="items-list"
+                             HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="model:DisplayedPolicy">
+                                <Border Classes="list-row">
+                                    <Grid ColumnDefinitions="*,*,*,*,*,*" ColumnSpacing="12">
+                                        <TextBlock Text="{Binding PolicyName}" />
+                                        <TextBlock Grid.Column="1" Text="{Binding PolicyUserType}" />
+                                        <TextBlock Grid.Column="2" Text="{Binding PolicyItemType}" />
+                                        <TextBlock Grid.Column="3" Text="{Binding PolicyLoanPeriodInDays}" />
+                                        <TextBlock Grid.Column="4" Text="{Binding PolicyExtensions}" />
+                                        <TextBlock Grid.Column="5" Text="{Binding PolicyLoanFees}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                <StackPanel  Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                            <Button Content="Aktualisieren" Command="{Binding ShowUpdatePolicyDialogCommand}" Classes="update"/>
+                            <Button Content="Löschen" Command="{Binding ShowDeletePolicyDialogCommand}" Classes="update"/>
+                    </StackPanel>
+                </Grid>	
+
+        </Border>
+
+    </Grid>
+    </ScrollViewer>
+</UserControl>

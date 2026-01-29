@@ -1,0 +1,33 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+<Style x:Key="PageTitle" Selector="TextBlock">
+    <Setter Property="FontSize" Value="18"/>
+    <Setter Property="Foreground" Value="#111827"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="VerticalAlignment" Value="Top"/>
+  </Style>
+
+    <Style x:Key="ValidatedName" Selector="TextBlock">
+	    <Setter Property="FontSize" Value="10"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <!--<Setter Property="Foreground" Value="{DynamicResource PrimaryForegroundColor}"/>-->
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+        <Setter Property="Foreground" Value="#111827"/>
+    </Style>
+
+    <Style x:Key="CloseButtonContainer" Selector="StackPanel">
+		<Setter Property="Orientation" Value="Horizontal"/>
+        <Setter Property="Spacing" Value="2"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+
+    </Style>
+
+    <Style x:Key="CloseButton" Selector="Button">
+		<Setter Property="Padding" Value="6"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="MinHeight" Value="28"/>
+        <Setter Property="Content" Value="Close"/>
+    </Style>
+
+</ResourceDictionary>

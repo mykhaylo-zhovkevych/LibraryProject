@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "W5Ja5NlQnUk=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\mzovk\\Source\\Repos\\LibraryProject\\LibraryProject\\Application\\LibraryProject.Application\\LibraryProject.Application.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mzovk\\.nuget\\packages\\system.security.cryptography.protecteddata\\9.0.11\\system.security.cryptography.protecteddata.9.0.11.nupkg.sha512",
+    "C:\\Users\\mzovk\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.22\\microsoft.windowsdesktop.app.ref.8.0.22.nupkg.sha512",
+    "C:\\Users\\mzovk\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.22\\microsoft.netcore.app.ref.8.0.22.nupkg.sha512",
+    "C:\\Users\\mzovk\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.22\\microsoft.aspnetcore.app.ref.8.0.22.nupkg.sha512"
+  ],
+  "logs": []
+}

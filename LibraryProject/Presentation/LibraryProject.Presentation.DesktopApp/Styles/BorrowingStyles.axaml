@@ -1,0 +1,46 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <Style Selector="Border.page">
+    <Setter Property="Background" Value="#d7d7d7"/>
+    <Setter Property="Padding" Value="24"/>
+  </Style>
+
+  <Style Selector="TextBlock.title">
+    <Setter Property="FontSize" Value="26"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="#111827"/>
+  </Style>
+
+  <Style Selector="TextBlock.subtitle">
+    <Setter Property="Foreground" Value="#6b7280"/>
+    <Setter Property="Margin" Value="6,6,6,6"/>
+  </Style>
+
+
+  <Style Selector="Border.card">
+    <Setter Property="CornerRadius" Value="14"/>
+    <Setter Property="Padding" Value="16"/>
+    <Setter Property="BorderBrush" Value="#e5e7eb"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="BoxShadow" Value="0 10 25 #14000000"/>
+  </Style>
+
+
+  <Style Selector="Button.extend-button">
+    <Setter Property="Foreground" Value="#b3b3b3"/>
+    <Setter Property="BorderBrush" Value="#d1d5db"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="10,8"/>
+  </Style>
+
+
+  <Style Selector="Button.return-button">
+    <Setter Property="Foreground" Value="#bfbfbf"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="10,8"/>
+  </Style>
+
+</Styles>

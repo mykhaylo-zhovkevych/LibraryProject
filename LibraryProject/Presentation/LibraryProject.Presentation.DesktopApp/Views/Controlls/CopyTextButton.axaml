@@ -1,0 +1,14 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.Controlls.CopyTextButton"
+             x:Name="root">
+  <Button Name="PART_Button" 
+          Content="{Binding Text, ElementName=root}"
+          Padding="8"
+          FontSize="12"
+          HorizontalAlignment="Center"
+          Foreground="#296dff"
+        
+          CornerRadius="12"/>
+
+</UserControl>

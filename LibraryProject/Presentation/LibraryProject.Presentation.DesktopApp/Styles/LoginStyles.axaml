@@ -1,0 +1,85 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+
+  <Style Selector="Border.login-card">
+    <Setter Property="Background" Value="#f2f2f2"/>
+    <Setter Property="CornerRadius" Value="14"/>
+    <Setter Property="Padding" Value="22"/>
+    <Setter Property="BorderBrush" Value="#e5e7eb"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    
+    <Setter Property="BoxShadow" Value="0 10 25 #22000000"/>
+  </Style>
+
+    <Style Selector="Label">
+      <Setter Property="Foreground" Value="#111827"/>
+      <Setter Property="Margin" Value="0,0,0,10"/>
+    </Style>
+
+  <Style Selector="StackPanel.Intro">
+    <Setter Property="Spacing" Value="4"/>
+    <Setter Property="Margin" Value="0,0,0,16"/>
+  </Style>
+
+  <Style Selector="StackPanel.Intro > TextBlock:first-child">
+    <Setter Property="FontSize" Value="22"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="HorizontalAlignment" Value="Center"/>
+  </Style>
+
+  <Style Selector="StackPanel.Intro > TextBlock">
+    <Setter Property="HorizontalAlignment" Value="Center"/>
+    <Setter Property="Foreground" Value="#6b7280"/>
+  </Style>
+
+
+  <Style Selector="TextBlock.field-label">
+    <Setter Property="Margin" Value="0,8,0,4"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+    <Setter Property="Foreground" Value="#111827"/>
+  </Style>
+
+  <!-- Text Box-->
+
+  <Style Selector="TextBox.primary">
+    <Setter Property="Background" Value="#e6e1e1"/>
+    <Setter Property="BorderBrush" Value="#d1d5db"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="12,10"/>
+
+  </Style>
+
+
+  <Style Selector="TextBlock.error">
+    <Setter Property="Foreground" Value="#ff0015"/>
+    <Setter Property="FontSize" Value="12"/>
+    <Setter Property="Margin" Value="0,8,0,0"/>
+    <Setter Property="HorizontalAlignment" Value="Center"/>
+  </Style>
+
+
+
+  <Style Selector="Button.first">
+    <Setter Property="Background" Value="#969696"/>
+    <Setter Property="Foreground" Value="#ffffff"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="12,10"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+  </Style>
+
+
+  <Style Selector="Button.secound">
+    <Setter Property="Foreground" Value="#ffffff"/>
+    <Setter Property="BorderBrush" Value="#d1d5db"/>
+    <Setter Property="BorderThickness" Value="1"/>
+    <Setter Property="CornerRadius" Value="10"/>
+    <Setter Property="Padding" Value="12,10"/>
+    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+  </Style>
+
+</Styles>

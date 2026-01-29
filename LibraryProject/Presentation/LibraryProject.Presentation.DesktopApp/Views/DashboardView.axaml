@@ -1,0 +1,42 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dialog="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
+             xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels"
+             xmlns:dialogVm="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
+             xmlns:dialoViews="using:LibraryProject.Presentation.DesktopApp.Views.Dialog"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.DashboardView"
+             x:DataType="vm:DashboardViewModel">
+
+  <Design.DataContext>
+    <vm:MainViewModel/>
+  </Design.DataContext>
+
+    <!--<UserControl.DataTemplates>
+		<DataTemplate DataType="{x:Type dialogVm:DeleteItemDialogViewModel}">
+            <dialoViews:DeleteItemDialogView />
+        </DataTemplate>
+    </UserControl.DataTemplates>-->
+
+
+  <Grid RowDefinitions="Auto,*">
+    <!-- Static -->
+    <views:TopBarView Grid.Row="0" />
+
+    <Grid Grid.Row="1">
+      <ContentControl Content="{Binding CurrentPage}" />
+
+        <!-- Overlay only when dialog is open on the current page -->
+        <Grid DataContext="{Binding CurrentPage.CurrentDialog}"
+          IsVisible="{Binding IsDialogOpen, TargetNullValue=False, FallbackValue=False}">
+        <Border Background="Black" Opacity="0.5"/>
+        <ContentControl Content="{Binding }"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"/>
+        </Grid>
+    </Grid>
+  </Grid>
+</UserControl>

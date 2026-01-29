@@ -1,0 +1,103 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
+             x:DataType="vm:ProfileViewModel"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.ProfileView">
+
+
+    <Design.DataContext>
+        <vm:ProfileViewModel/>
+    </Design.DataContext>
+
+  <UserControl.Styles>
+    <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/ProfileStyles.axaml"/>
+  </UserControl.Styles>
+
+<Border Classes="page">
+    <Grid RowDefinitions="Auto, Auto, *" Classes="content">
+
+        <TextBlock Grid.Row="0" Text="Benutzerprofil" Classes="title"/>
+        <TextBlock Grid.Row="1" Text="Verwalten Sie Ihre persönlichen Informationen" Classes="subtitle"/>
+
+        <!--Two columns  -->
+        <Grid Grid.Row="2" ColumnDefinitions="*, Auto" ColumnSpacing="24">
+
+        <!-- First Card-->
+        <Border Classes="card">
+            <Grid Grid.Column="0" RowDefinitions="Auto, Auto">
+
+                <!--Image + Name + Buttons -->
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto">
+                    <Border Classes="avatar">
+                        <TextBlock Text="IMG" Classes="avatarText"/>
+                    </Border>
+
+                  <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center" Margin="10">
+
+                      <Grid ColumnDefinitions="Auto, *" >
+                          <TextBlock Grid.Column="0" Text="Kontoname"/>
+                          <TextBlock Grid.Column="1" FontWeight="Bold" Text="{Binding AccountName}" />
+                      </Grid>
+                      <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12">
+                          <TextBlock Grid.Column="0" Text="Benutzer Type"/>
+                          <TextBlock Grid.Column="1" FontWeight="Bold" Text="{Binding UserType}" />
+                      </Grid>
+                      <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12">
+                          <TextBlock Grid.Column="0" Text="Suspendiert"/>
+                          <TextBlock Grid.Column="1" FontWeight="Bold" Text="{Binding IsSuspended}" />
+                      </Grid>
+
+                  </StackPanel>
+
+                  <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                        <Button Content="Bearbeiten" 
+                                Classes="update-button" 
+                                Command="{Binding BeginEditEmailCommand}"/>
+
+                        <Button Content="Löschen" Classes="delete-button"/>
+                  </StackPanel>
+                </Grid>
+
+                <!--Email -->
+                <Grid Grid.Row="1" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                    <TextBlock Grid.Column="0" VerticalAlignment="Center">Email:</TextBlock>
+                    
+                    <!-- <TextBox Grid.Column="1" Watermark="User Data" />-->
+                    <StackPanel Grid.Column="1" Spacing="10">
+						<TextBox Text="{Binding EmailDraft}"
+                                    IsReadOnly="{Binding !IsEditingEmail}"
+                                    Watermark="Keine E-Mail eingetragen">
+                        </TextBox>
+
+                        <StackPanel Orientation="Horizontal" Spacing="10" IsVisible="{Binding IsEditingEmail}">
+							<Button Content="Speichern" Command="{Binding SaveEmailCommand}">
+								
+                            </Button>
+
+                            <Button Content="Abbrechen" Command="{Binding CancelEditEmailCommand}">
+								
+                            </Button>
+                        </StackPanel>
+
+
+
+                    </StackPanel>
+                </Grid>
+
+            </Grid>
+        </Border>
+
+            <Border Grid.Column="1" Classes="card">
+                <StackPanel Spacing="6">
+                    <TextBlock>Statistik:</TextBlock>
+                    <TextBlock>Ihre Bibliotheksaktivitäten:</TextBlock>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Border>
+</UserControl>

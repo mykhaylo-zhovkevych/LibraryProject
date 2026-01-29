@@ -1,0 +1,40 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="LibraryProject.Presentation.DesktopApp.App"
+             xmlns:local="using:LibraryProject.Presentation.DesktopApp"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+  
+    <Application.Styles>
+        <FluentTheme />
+
+        <StyleInclude Source="Styles/AppDefaultStyles.axaml" />
+
+        <StyleInclude Source="Styles/LoginStyles.axaml" />
+
+    </Application.Styles>
+
+
+  <!--Here is a global variables-->
+
+  <Application.Resources>
+	  
+      <SolidColorBrush x:Key="PrimaryForegroundColor">#d7d7d7</SolidColorBrush>
+        <SolidColorBrush x:Key="PrimaryBackgroundColor">#ebf2ff</SolidColorBrush>
+
+        <LinearGradientBrush x:Key="PrimaryBackgroundGradient" StartPoint="0%, 0%" EndPoint="100%, 0%"> 
+            <GradientStop Offset="0" Color="#111214"></GradientStop>
+            <GradientStop Offset="1" Color="#151E3E"></GradientStop>
+        </LinearGradientBrush>
+
+        <SolidColorBrush x:Key="PrimaryHoverBackground">#333B5A</SolidColorBrush>
+        <SolidColorBrush x:Key="PrimaryHoverForeground">White</SolidColorBrush>
+        <FontFamily x:Key="Phosphor">avares://AvaloniaApplication01/Assets/Fonts/Phosphor.ttf#Phosphor</FontFamily>
+        
+  </Application.Resources>
+
+</Application>

@@ -1,0 +1,137 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels"
+             xmlns:model="clr-namespace:LibraryProject.Presentation.DesktopApp.Models"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.SubViews.ItemsView"
+             x:DataType="vm:ItemsViewModel">
+
+    <UserControl.Styles>
+        <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/SubStyles/ItemsStyles.axaml"/>
+    </UserControl.Styles>
+
+    <ScrollViewer>
+        <Border>
+            <Grid RowDefinitions="Auto Auto Auto Auto">
+
+                <StackPanel Grid.Row="0">
+                    <TextBlock Text="Buchverwaltung" Classes="title"/>
+                    <TextBlock Text="Bücher hinzufügen, bearbeiten oder entfernen" Classes="subtitle"/>
+                </StackPanel>
+
+                <!-- First Section-->
+                <Border Grid.Row="1" Classes="card">
+                  <Grid ColumnDefinitions="* *"
+                        RowDefinitions="Auto Auto Auto"
+                        ColumnSpacing="16"
+                        RowSpacing="12">
+
+                    <StackPanel Grid.Row="0" Grid.Column="0" Spacing="6" HorizontalAlignment="Stretch">
+                      <TextBlock FontWeight="SemiBold" Margin="0,0,0,10">Artikel hinzufügen</TextBlock>
+                      <TextBlock TextWrapping="Wrap">Fügen Sie einen neuen Artikel zur Bibliothek hinzu</TextBlock>
+
+                      <TextBlock Classes="field-label" Text="Titel" FontWeight="SemiBold" />
+                      <TextBox Classes="primary"
+                               Watermark="Artikelname"
+                               Text="{Binding NewTitle, Mode=TwoWay}" />
+
+                      <TextBlock Classes="field-label" Text="Autor" FontWeight="SemiBold" />
+                      <TextBox Classes="primary"
+                               Watermark="Autorname"
+                               Text="{Binding NewAuthor, Mode=TwoWay}" />
+
+                      <TextBlock Classes="field-label" Text="Typ" FontWeight="SemiBold" />
+                      <ComboBox Classes="primary"
+                                ItemsSource="{Binding ItemTypes}"
+                                SelectedItem="{Binding SelectedItemType, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="0" Grid.Column="1" Spacing="6" HorizontalAlignment="Stretch">
+                      <TextBlock Classes="field-label" Text="Jahr" FontWeight="SemiBold" />
+                      <TextBox Classes="primary"
+                               Watermark="z.B. 1943"
+                               MaxLength="4"
+                               Text="{Binding NewYearText, Mode=TwoWay}"
+                               TextInput="NumericTextBox_OnTextInput"/>
+
+                      <TextBlock Classes="field-label" Text="Anzahl Exemplare" FontWeight="SemiBold" />
+                      <TextBox Classes="primary"
+                               Watermark="z.B. 10"
+                               Text="{Binding NewCopiesText, Mode=TwoWay}"
+                               TextInput="NumericTextBox_OnTextInput" />
+        
+                        <TextBlock Classes="field-label" Text="RegalID (optional)" FontWeight="SemiBold" />
+                        <TextBox Classes="primary"
+                                 Watermark="z.B 100"
+                                 Text="{Binding NewShelfIdText, Mode=TwoWay}"
+                                 TextInput="NumericTextBox_OnTextInput" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Spacing="6">
+                      <TextBlock Classes="field-label" Text="Beschreibung" FontWeight="SemiBold" />
+                      <TextBox Classes="primary"
+                               TextWrapping="Wrap"
+                               AcceptsReturn="True"
+                               MinHeight="70"
+                               Watermark="Beschreibung von Artikel"
+                               Text="{Binding NewDescription, Mode=TwoWay}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Spacing="10">
+                      <Button Classes="first" Content="Speichern"
+                              Command="{Binding CreateNewItemCommand}" />
+                      <Button Classes="secound" Content="Abbrechen"
+                              Command="{Binding CancelCreateCommand}" />
+                    </StackPanel>
+                  </Grid>
+                </Border>
+
+                <!-- Third Section-->
+                <Border Grid.Row="2" Classes="card">
+                    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="8">
+
+                        <!-- Header -->
+                        <Border Grid.Row="1" Classes="list-header">
+                          <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
+                            <TextBlock Text="Titel" />
+                            <TextBlock Grid.Column="1" Text="Autor" />
+                            <TextBlock Grid.Column="2" Text="Jahr" />
+                            <TextBlock Grid.Column="3" Text="Typ" />
+                            <TextBlock Grid.Column="4" Text="Verfügbar" HorizontalAlignment="Right"/>
+                          </Grid>
+                        </Border>
+
+                        <ListBox Grid.Row="2" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" Classes="items-list">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate x:DataType="model:DisplayedItem">
+                                    <Border Classes="list-row">
+                                        <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
+                                            <TextBlock Grid.Column="0" Text="{Binding Title}" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Author}" />
+                                            <TextBlock Grid.Column="2" Text="{Binding Year}" />
+                                            <TextBlock Grid.Column="3" Text="{Binding Type}" />
+                                            <TextBlock Grid.Column="4" Text="{Binding AvailableCopies}" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                            <Button Content="Aktualisieren" Command="{Binding ShowUpdateItemDialogCommand}" Classes="update"/>
+                            <Button Content="Löschen" Command="{Binding ShowDeleteItemDialogCommand}" Classes="update"/>
+                            <Button Content="Kopie einfügen" Command="{Binding ShowAddExtraCopiesDialogCommand}" Classes="update"/>
+                        </StackPanel>
+
+                    </Grid>
+                </Border>
+
+            </Grid>
+        </Border>
+    </ScrollViewer>
+</UserControl>

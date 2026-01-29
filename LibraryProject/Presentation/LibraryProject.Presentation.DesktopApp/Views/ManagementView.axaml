@@ -1,0 +1,60 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="using:LibraryProject.Presentation.DesktopApp.Views"
+             xmlns:vm="using:LibraryProject.Presentation.DesktopApp.ViewModels"
+             xmlns:dialogVm="using:LibraryProject.Presentation.DesktopApp.ViewModels.Dialog"
+             xmlns:dialogViews="using:LibraryProject.Presentation.DesktopApp.Views.Dialog"
+             mc:Ignorable="d"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.ManagementView"
+             x:DataType="vm:ManagementViewModel">
+
+<UserControl.Styles>
+    <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/ManagementStyles.axaml"/>
+</UserControl.Styles>
+
+  <UserControl.DataTemplates>
+    <DataTemplate DataType="{x:Type dialogVm:DeleteItemDialogViewModel}">
+      <dialogViews:DeleteItemDialogView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type dialogVm:ErrorDialogViewModel}">
+      <dialogViews:ErrorDialogView/>
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type dialogVm:BorrowingHistoryDialogViewModel}">
+      <dialogViews:BorrowingHistoryDialogView/>
+    </DataTemplate>
+     <DataTemplate DataType="{x:Type dialogVm:ConfirmDialogViewModel}">
+      <dialogViews:ConfirmDialogView/>
+    </DataTemplate>
+      <DataTemplate DataType="{x:Type dialogVm:UpdatePolicyDialogViewModel}">
+      <dialogViews:UpdatePolicyDialogView/>
+    </DataTemplate>
+  </UserControl.DataTemplates>
+
+  <Grid>
+    <Border Classes="page">
+      <Grid RowDefinitions="Auto,Auto,Auto,*">
+        <TextBlock Classes="title" Grid.Row="0" Text="Verwaltung"/>
+        <TextBlock Classes="subtitle" Grid.Row="1" Text="Systemverwaltung und Übersicht"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+          <Button Classes="management" Content="Bücher" Command="{Binding GoToItemsViewCommand}" />
+          <Button Classes="management" Content="Benutzer" Command="{Binding GoToUsersViewCommand}" />
+          <Button Classes="management" Content="Einstellungen" Command="{Binding GoToPoliciesViewCommand}" />
+        </StackPanel>
+
+        <ContentControl Grid.Row="3" Content="{Binding CurrentPage}" />
+      </Grid>
+    </Border>
+
+    <Grid DataContext="{Binding CurrentPage.CurrentDialog}"
+          IsVisible="{Binding IsDialogOpen, TargetNullValue=False, FallbackValue=False}"
+          ZIndex="999">
+      <Border Background="Black" Opacity="0.5"/>
+      <ContentControl Content="{Binding}"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"/>
+    </Grid>
+  </Grid>
+</UserControl>

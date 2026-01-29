@@ -1,0 +1,149 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:model="using:LibraryProject.Presentation.DesktopApp.Models"
+             xmlns:vm="clr-namespace:LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="LibraryProject.Presentation.DesktopApp.Views.SubViews.UsersView"
+             x:DataType="vm:UsersViewModel">
+
+    <UserControl.Styles>
+        <StyleInclude Source="avares://LibraryProject.Presentation.DesktopApp/Styles/SubStyles/ItemsStyles.axaml"/>
+    </UserControl.Styles>
+
+  <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="*" RowSpacing="12">
+
+    <Border Grid.Row="0">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="title" Text="Benutzerverwaltung" />
+        <TextBlock Classes="subtitle" TextWrapping="Wrap" Text="Konten sperren/löschen, Identitätsanfragen bestätigen und Ausleihhistorie anzeigen." />
+      </StackPanel>
+    </Border>
+
+   <!--<Border Grid.Row="1" Classes="card" Padding="12">
+      <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+
+        <Button Grid.Column="0"
+                Content="Aktualisieren"
+                Command="{Binding ReloadCommand}"
+                Classes="first" />
+
+      </Grid>
+    </Border>-->
+
+    <Grid Grid.Row="1" ColumnDefinitions="* *" ColumnSpacing="12">
+
+      <!-- left -->
+      <Border Grid.Column="0" Classes="card" Padding="12">
+        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="10">
+
+          <TextBlock Grid.Row="0" FontWeight="SemiBold" Text="Konten" />
+
+          <!-- header -->
+          <Border Grid.Row="1" Classes="list-header">
+            <Grid ColumnDefinitions="*,*,Auto,Auto" ColumnSpacing="12">
+              <TextBlock Text="Account" />
+              <TextBlock Grid.Column="1" Text="E-Mail" />
+              <TextBlock Grid.Column="2" Text="Status" />
+              <TextBlock Grid.Column="3" Text="UserId" HorizontalAlignment="Right"/>
+            </Grid>
+          </Border>
+
+          <ListBox Grid.Row="2"
+                   ItemsSource="{Binding Accounts}"
+                   SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
+                   Classes="items-list">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="model:DisplayedAccount">
+                <Border Classes="list-row">
+                  <Grid ColumnDefinitions="*,*,Auto,Auto" ColumnSpacing="12">
+                    <TextBlock Text="{Binding AccountName}" />
+                    <TextBlock Grid.Column="1" Text="{Binding Email}" />
+                    <TextBlock Grid.Column="2" Text="{Binding Status}" />
+                    <TextBlock Grid.Column="3" Text="{Binding UserId}" HorizontalAlignment="Right"/>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+          <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+            <Button Content="Sperren"
+                    Command="{Binding LockAccountCommand}"
+                    IsEnabled="{Binding HasSelectedAccount}"
+                    Classes="update"/>
+            <Button Content="Entsperren"
+                    Command="{Binding UnlockAccountCommand}"
+                    IsEnabled="{Binding HasSelectedAccount}"
+                    Classes="update"/>
+            <Button Content="Löschen"
+                    Command="{Binding DeleteAccountCommand}"
+                    IsEnabled="{Binding HasSelectedAccount}"
+                    Classes="update"/>
+          </StackPanel>
+
+        </Grid>
+      </Border>
+
+      <!-- right -->
+      <Border Grid.Column="1" Classes="card" Padding="12">
+        <Grid RowDefinitions="Auto,Auto,*,Auto" RowSpacing="10">
+
+          <TextBlock Grid.Row="0"
+                     FontWeight="SemiBold"
+                     Text="Benutzer (Users)" />
+
+          <Border Grid.Row="1" Classes="list-header">
+            <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+              <TextBlock Text="Name" />
+              <TextBlock Grid.Column="1" Text="Typ" />
+              <TextBlock Grid.Column="2" Text="Id" HorizontalAlignment="Right"/>
+            </Grid>
+          </Border>
+
+          <ListBox Grid.Row="2"
+                   ItemsSource="{Binding Users}"
+                   SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
+                   Classes="items-list">
+            <ListBox.ItemTemplate>
+              <DataTemplate x:DataType="model:DisplayedUser">
+                <Border Classes="list-row">
+                  <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+                    <TextBlock Text="{Binding Name}" />
+                    <TextBlock Grid.Column="1" Text="{Binding UserType}" />
+                    <TextBlock Grid.Column="2" Text="{Binding Id}" HorizontalAlignment="Right"/>
+                  </Grid>
+                </Border>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+
+          <StackPanel Grid.Row="3"
+                      Orientation="Horizontal"
+                      HorizontalAlignment="Right"
+                      Spacing="10">
+
+            <Button Content="Identität bestätigen"
+                    Command="{Binding ConfirmIdentityCommand}"
+                    IsEnabled="{Binding HasSelectedUser}"
+                    Classes="update"/>
+
+            <Button Content="Ausleihhistorie"
+                    Command="{Binding ShowBorrowingHistoryCommand}"
+                    IsEnabled="{Binding HasSelectedUser}"
+                    Classes="update"/>
+
+            <Button Content="Kunde löschen"
+                    Command="{Binding DeleteUserCommand}"
+                    IsEnabled="{Binding HasSelectedUser}"
+                    Classes="update"/>
+          </StackPanel>
+
+        </Grid>
+      </Border>
+
+    </Grid>
+  </Grid>
+
+</UserControl>
