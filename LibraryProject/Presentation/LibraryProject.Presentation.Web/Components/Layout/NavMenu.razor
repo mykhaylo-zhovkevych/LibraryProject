@@ -1,30 +1,64 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">LibraryProject.Presentation.Web</a>
-    </div>
-</div>
+﻿@using Microsoft.AspNetCore.Authorization
+@using LibraryProject.Application.Interfaces
+@using Microsoft.AspNetCore.Antiforgery
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+@inject ICurrentUserContext CurrentUser
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IAntiforgery Antiforgery
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+<nav class="topnav" id="topnav">
+    <AuthorizeView>
+        <Authorized>
+            <div class="topnav__row topnav__row--primary">
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
+                <div class="topnav__left">
+                    <span class="topnav__brand">
+                        Bibliothek
+                    </span>
+                </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+                <div class="topnav__right">
+                    <form method="post"
+                          action="/auth/logout"
+                          class="topnav__logout-form">
+                        <input type="hidden"
+                               name="__RequestVerificationToken"
+                               value="@AntiForgeryToken" />
 
+                        <button type="submit"
+                                class="topnav__button topnav__button--logout">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="topnav__row topnav__row--links">
+                <NavLink class="topnav__link" href="/" Match="NavLinkMatch.All">Katalog</NavLink>
+                <NavLink class="topnav__link" href="/profile">Profil</NavLink>
+                <NavLink class="topnav__link" href="/overview">Übersicht</NavLink>
+            </div>
+        </Authorized>
+
+        <NotAuthorized>
+            <div class="topnav__row topnav__row--primary">
+                <span class="topnav__brand">
+                    Bibliothek
+                </span>
+            </div>
+        </NotAuthorized>
+    </AuthorizeView>
+</nav>
+
+@code {
+    private string AntiForgeryToken = "";
+
+    protected override void OnInitialized()
+    {
+        HttpContext? http = HttpContextAccessor.HttpContext;
+        if (http is not null)
+        {
+            AntiForgeryToken = Antiforgery.GetAndStoreTokens(http).RequestToken ?? "";
+        }
+    }
+}

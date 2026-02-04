@@ -224,14 +224,14 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
 
                     if (dialog.DeleteAllCopies)
                     {
-                        await _itemService.RemoveItemAsync(domainItem, default);
+                        await _itemService.ArchiveItemAsync(domainItem.Id, default);
                     }
                     else
                     {
-                        await _itemService.RemoveItemCopiesByIdAsync(domainItem, dialog.CountToDelete, default);
+                        await _itemService.ArchiveItemCopiesAsync(domainItem.Id, dialog.CountToDelete, default);
                     }
 
-                    LoadItemsAsync();
+                    await LoadItemsAsync();
 
                 }
                 catch (Exception ex)
@@ -309,6 +309,26 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             }
         }
 
+        private static ArchiveStatus CalculateArchiveStatus(Item item)
+        {
+            if (item.IsArchived)
+            {
+                return ArchiveStatus.Yes;
+            }
+            int total = item.Copies?.Count ?? 0;
+            if (total == 0)
+            {
+                return ArchiveStatus.No;
+            }
+
+            int archived = item.Copies.Count(c => c.IsArchived);
+
+            if (archived == 0) return ArchiveStatus.No;
+            if (archived == total) return ArchiveStatus.Yes;
+
+            return ArchiveStatus.Partial;
+        }
+
         private static DisplayedItem MapItemToDisplayedItem(Item item)
         {
             return new DisplayedItem(
@@ -318,7 +338,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
                 item.Description ?? string.Empty,
                 item.Year,
                 item.ItemType.ToString(),
-                availableCopies: item.CirculationCount
+                availableCopies: item.CirculationCount,
+                archiveStatus: CalculateArchiveStatus(item)
             );
         }
     }

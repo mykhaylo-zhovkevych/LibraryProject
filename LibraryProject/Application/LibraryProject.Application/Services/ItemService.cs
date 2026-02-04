@@ -27,12 +27,12 @@ namespace LibraryProject.Application.Services
         {
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("Item name cannot be null or empty.");
+                throw new ArgumentException("Der Name des Mediums darf nicht leer sein.");
             }
 
-            if (circulationCount <= 0)
+            if (circulationCount < 0)
             {
-                throw new ArgumentException("circulationCount must be less than 0.");
+                throw new ArgumentException("Die Anzahl der Exemplare muss größer als 0 sein.");
             }
 
             _authorizationService.EnsureAdmin();
@@ -47,13 +47,13 @@ namespace LibraryProject.Application.Services
 
         public async Task CreateReservedItemAsync(User user, Item item, CancellationToken ct)
         {
-            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (user == null) throw new ArgumentNullException(nameof(user), "Benutzer darf nicht null sein.");
             if (item == null) throw new NonexistentItemException();
 
             ItemCopy? copyToReserve = await _itemRepository.GetCopyToReserveAsync(item.Id, ct);
             if (copyToReserve == null)
             {
-                throw new ArgumentException($"No copy can be reserved for {item.Name}.");
+                throw new ArgumentException($"Für {item.Name} kann kein Exemplar reserviert werden.");
             }
 
             if (!copyToReserve.CheckReservePossible())
@@ -65,70 +65,47 @@ namespace LibraryProject.Application.Services
             await _itemRepository.UpdateCopyAsync(copyToReserve, ct);
         }
 
-
-        public async Task RemoveItemAsync(Item item, CancellationToken ct)
+        
+        public async Task ArchiveItemAsync(Guid itemId, CancellationToken ct)
         {
-            if (item == null)
-            {
-                throw new NonexistentItemException();
-            }
             _authorizationService.EnsureAdmin();
+            Item item = await _itemRepository.GetItemByIdAsync(itemId, ct) ?? throw new NonexistentItemException();
 
-            IEnumerable<Item> itemsToRemove = await _itemRepository.GetAllItemsAsync(ct);
-            IEnumerable<Item> itemsMatching = itemsToRemove.Where(i => i.Name == item.Name &&
-                                                                  i.ItemType == item.ItemType &&
-                                                                  i.Author == item.Author &&
-                                                                  i.Year == item.Year);
+            item.ArchiveAllCopies(cancelReservations: true);
 
-            Item foundItem = itemsMatching.FirstOrDefault() ?? throw new NonexistentItemException();
-
-            await _itemRepository.RemoveItemAsync(foundItem, ct);
+            await _itemRepository.UpdateItemAsync(item, ct);
         }
 
+        public async Task ArchiveItemCopiesAsync(Guid itemId, int count, CancellationToken ct)
+        {
+            if (count <= 0) throw new ArgumentException("Ungültige Anzahl von Exemplaren.");
+            _authorizationService.EnsureAdmin();
+
+
+            Item item = await _itemRepository.GetItemByIdAsync(itemId, ct) ?? throw new NonexistentItemException();
+            item.ArchiveSomeCopies(count);
+
+            await _itemRepository.UpdateItemAsync(item, ct);
+        }
 
         public async Task AddCopiesToItemAsync(Guid itemId, int count, CancellationToken ct)
         {
-            if (count <= 0) throw new ArgumentException("Invalid copies value.");
+            if (count <= 0) throw new ArgumentException("Ungültige Anzahl von Exemplaren.");
             _authorizationService.EnsureAdmin();
+
+            Item item = await _itemRepository.GetItemByIdAsync(itemId, ct) ?? throw new NonexistentItemException();
+
+            if (item.IsArchived)
+            {
+                throw new InvalidOperationException("Zu archivierten Medien können keine Exemplare hinzugefügt werden.");
+            }
 
             await _itemRepository.InsertCopiesToItemAsync(itemId, count, ct);
         }
 
-
-        public async Task RemoveItemCopiesByIdAsync(Item item, int count, CancellationToken ct)
-        {
-            if (item == null)
-            {
-                throw new NonexistentItemException();
-            }
-            _authorizationService.EnsureAdmin();
-
-            IEnumerable<Item> items = await _itemRepository.GetAllItemsAsync(ct);
-
-            Item foundItem = items.FirstOrDefault(i => i.Name == item.Name && i.ItemType == item.ItemType && i.Author == item.Author && i.Year == item.Year) ?? throw new NonexistentItemException();
-
-            if (count <= 0) throw new ArgumentException("Invalid copies value.");
-
-            List<ItemCopy> toRemoveItem = foundItem.Copies.Where(c => !c.IsBorrowed && c.ReservedById == null).Take(count).ToList();
-
-            if (toRemoveItem.Count < count)
-            {
-                throw new ArgumentException("Not enought copies to remove.");
-            }
-
-            foreach (ItemCopy currentItemCopy in toRemoveItem) 
-            { 
-                foundItem.Copies.Remove(currentItemCopy);
-            }
-
-            foundItem.CirculationCount -= count;
-            await _itemRepository.UpdateItemAsync(foundItem, ct);
-        }
-
-
         public async Task CancelReservation(User user, Item item)
         {
-            if (user == null) throw new ArgumentNullException(nameof(user));
+            if (user == null) throw new ArgumentNullException(nameof(user), "Benutzer darf nicht null sein.");
             if (item == null) throw new NonexistentItemException();
 
             _authorizationService.EnsureAuthenticated();
@@ -136,7 +113,7 @@ namespace LibraryProject.Application.Services
             ItemCopy? reservedCopy = item.Copies.FirstOrDefault(c => c.ReservedById == user.Id);
             if (reservedCopy == null)
             {
-                throw new ArgumentException($"{user.Name} has no reservation for {item.Name}");
+                throw new ArgumentException($"{user.Name} hat keine Reservierung für {item.Name}.");
             }
 
             reservedCopy.ReturnItem();
@@ -148,15 +125,15 @@ namespace LibraryProject.Application.Services
         {
             if (string.IsNullOrWhiteSpace(title))
             {
-                throw new ArgumentException("Titel is empty.");
+                throw new ArgumentException("Titel ist leer.");
             }
             if (string.IsNullOrWhiteSpace(author))
             {
-                throw new ArgumentException("Autor is empty.");
+                throw new ArgumentException("Autor ist leer.");
             }
             if (year <= 0)
             {
-                throw new ArgumentException("Year invalid.");
+                throw new ArgumentException("Ungültiges Jahr.");
             }
 
             _authorizationService.EnsureAdmin();
@@ -198,7 +175,6 @@ namespace LibraryProject.Application.Services
                 {
                     items = items.Where(i => i.Copies.Any(c => !c.IsBorrowed));
                 }
-                    
             }
 
             if (isReserved.HasValue)

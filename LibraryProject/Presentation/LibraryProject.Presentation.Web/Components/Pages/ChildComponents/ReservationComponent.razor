@@ -1,5 +1,92 @@
-﻿<h3>ReservationComponent</h3>
+﻿@using LibraryProject.Application.Interfaces
+@using LibraryProject.Domain.Entities
+
+@inject IItemRepository ItemRepository
+@inject ICurrentUserContext CurrentUser
+
+@if (_isLoading)
+{
+    <p class="data__loading">Lade Reservierungen...</p>
+}
+else if (!string.IsNullOrWhiteSpace(_error))
+{
+    <p class="data__error">@_error</p>
+}
+else if (_reservedCopies.Count == 0)
+{
+    <p class="data__empty">Keine Reservierungen vorhanden.</p>
+}
+else
+{
+    <div class="data-table">
+
+        <table class="data-table__table">
+            <thead class="data-table__head">
+                <tr>
+                    <th class="data-table__th">Titel</th>
+                    <th class="data-table__th">Exemplar IBAN</th>
+                    <th class="data-table__th">Status</th>
+                </tr>
+            </thead>
+            <tbody class="data-table__body">
+                @foreach (ItemCopy c in _reservedCopies)
+                {
+                    <tr class="data-table__row">
+                        <td class="data-table__td">@(c.Item!.Name ?? "(Unbekanntes Medium)")</td>
+                        <td class="data-table__td">@c.Id</td>
+                        <td class="data-table__td">Reserviert</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+     
+    </div>
+}
 
 @code {
+    private bool _isLoading;
+    private string? _error;
+    private List<ItemCopy> _reservedCopies = new();
+    private CancellationTokenSource? _cts;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
+
+        _isLoading = true;
+        _error = null;
+
+        try
+        {
+            Guid userId = CurrentUser.UserId.Value;
+            if (userId == Guid.Empty)
+            {
+                _error = "Nicht angemeldet.";
+                return;
+            }
+            _reservedCopies = await ItemRepository.GetReservedCopiesByUserAsync(userId, _cts.Token);
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+            _reservedCopies = new();
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    public void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
 }

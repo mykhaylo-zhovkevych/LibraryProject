@@ -97,12 +97,13 @@
 
                         <!-- Header -->
                         <Border Grid.Row="1" Classes="list-header">
-                          <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
+                          <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
                             <TextBlock Text="Titel" />
                             <TextBlock Grid.Column="1" Text="Autor" />
                             <TextBlock Grid.Column="2" Text="Jahr" />
                             <TextBlock Grid.Column="3" Text="Typ" />
                             <TextBlock Grid.Column="4" Text="Verfügbar" HorizontalAlignment="Right"/>
+                              <TextBlock Grid.Column="5" Text="Archiviert" HorizontalAlignment="Right"/>
                           </Grid>
                         </Border>
 
@@ -110,12 +111,13 @@
                             <ListBox.ItemTemplate>
                                 <DataTemplate x:DataType="model:DisplayedItem">
                                     <Border Classes="list-row">
-                                        <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
+                                        <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
                                             <TextBlock Grid.Column="0" Text="{Binding Title}" />
                                             <TextBlock Grid.Column="1" Text="{Binding Author}" />
                                             <TextBlock Grid.Column="2" Text="{Binding Year}" />
                                             <TextBlock Grid.Column="3" Text="{Binding Type}" />
                                             <TextBlock Grid.Column="4" Text="{Binding AvailableCopies}" />
+                                            <TextBlock Grid.Column="5" Text="{Binding ArchiveStatusText}" />
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -124,7 +126,7 @@
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
                             <Button Content="Aktualisieren" Command="{Binding ShowUpdateItemDialogCommand}" Classes="update"/>
-                            <Button Content="Löschen" Command="{Binding ShowDeleteItemDialogCommand}" Classes="update"/>
+                            <Button Content="Löschen(Archivieren)" Command="{Binding ShowDeleteItemDialogCommand}" Classes="update"/>
                             <Button Content="Kopie einfügen" Command="{Binding ShowAddExtraCopiesDialogCommand}" Classes="update"/>
                         </StackPanel>
 

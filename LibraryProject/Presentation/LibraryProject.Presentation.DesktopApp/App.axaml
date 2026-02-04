@@ -16,6 +16,8 @@
 
         <StyleInclude Source="Styles/LoginStyles.axaml" />
 
+       <!-- <StyleInclude Source="Styles/InputStyles.axaml" />-->
+
     </Application.Styles>
 
 

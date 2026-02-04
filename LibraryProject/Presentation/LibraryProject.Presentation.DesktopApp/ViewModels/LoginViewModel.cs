@@ -27,8 +27,8 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _currentUser = currentUser;
         }
 
-        [ObservableProperty] private string? _userId;
-        [ObservableProperty] private string? _name;
+        //[ObservableProperty] private string? _userId;
+        [ObservableProperty] private string? _accountName;
         [ObservableProperty] private string? _password;
 
         [ObservableProperty] private string? _errorMessage;
@@ -39,17 +39,17 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         {
             ErrorMessage = null;
 
-            Guid userguidId;
+            //Guid userguidId;
 
-            if (!Guid.TryParse(UserId, out userguidId))
-            {
-                ErrorMessage = "Login failed. Please check your ID.";
-                return;
-            }
+            //if (!Guid.TryParse(UserId, out userguidId))
+            //{
+            //    ErrorMessage = "Login failed. Please check your ID.";
+            //    return;
+            //}
             
             try
             {
-                LoginSession? session = await _accountService.LoginAsync(userguidId, Name, Password, default);
+                LoginSession? session = await _accountService.LoginAdminAsync(AccountName, Password, default);
 
                 if (session != null)
                 {
@@ -59,7 +59,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 }
                 else
                 {
-                    ErrorMessage = "Login failed. Please check your credentials.";
+                    ErrorMessage = "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldeinformationen.";
                 }
             }
             catch (Exception ex)

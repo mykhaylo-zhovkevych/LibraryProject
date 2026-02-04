@@ -21,6 +21,7 @@ namespace LibraryProject.Domain.Entities
         public int CirculationCount { get; set; }
 
         public List<ItemCopy> Copies { get; private set; } = new();
+        public bool IsArchived { get; private set; }
 
         protected Item() { }
         public Item(string name, ItemType itemType, string author, int year, string? description = null, int circulationCount = 0)
@@ -32,6 +33,58 @@ namespace LibraryProject.Domain.Entities
             Year = year;
             Description = description;
             CirculationCount = circulationCount;
+        }
+
+        public void ArchiveItemOnly()
+        {
+            IsArchived = true;
+        }
+
+        public void ArchiveAllCopies(bool cancelReservations = false)
+        {
+            IsArchived = true;
+
+            foreach (var copy in Copies)
+            {
+                if (cancelReservations && copy.ReservedById != null)
+                {
+                    copy.CancelReservation();
+                }
+                copy.RequestArchive();
+            }
+
+            RecalculateCirculation();
+        }
+
+        public void ArchiveSomeCopies(int count)
+        {
+            if (count <= 0) throw new ArgumentException("Count must be > 0.");
+
+            List<ItemCopy> candidates = Copies.Where(c => !c.IsArchived).Take(count).ToList();
+
+            if (candidates.Count < count)
+            {
+                throw new InvalidOperationException("Not enough copies exist to archive.");
+            }
+
+            foreach (ItemCopy copy in candidates)
+            {
+                if (copy.IsReserved)
+                {
+                    copy.CancelReservation();
+                }
+
+                if (copy.CanArchivateNow())
+                {
+                    copy.ArchiveNow();
+                }
+                else
+                {
+                    copy.RequestArchive();
+                }
+            }
+
+            RecalculateCirculation();
         }
 
         public void SetShelf(int shelfId) => ShelfId = shelfId;
@@ -68,6 +121,11 @@ namespace LibraryProject.Domain.Entities
 
             for (int i = 0; i < amount; i++)
                 Copies.Add(ItemCopy.CreateFor(this));
+        }
+
+        private void RecalculateCirculation()
+        {
+            CirculationCount = Copies.Count(c => !c.IsArchived);
         }
 
     }

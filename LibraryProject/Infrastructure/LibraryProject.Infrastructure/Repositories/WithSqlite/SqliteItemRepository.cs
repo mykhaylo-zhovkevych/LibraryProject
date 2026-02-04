@@ -32,7 +32,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                 .FirstOrDefaultAsync(s => s.ShelfId == id, ct);
         }
 
-        public async Task<Shelf> GetOrCreateDefaultShelfAsync(int shelfId, CancellationToken ct = default)
+        public async Task<Shelf> GetOrCreateShelfAsync(int shelfId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
 
@@ -47,7 +47,6 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
 
             return shelf;
         }
-
 
         public async Task<IEnumerable<Item>> GetAllItemsAsync(CancellationToken ct = default)
         {
@@ -67,7 +66,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         public async Task AddToShelfAsync(Item item, int shelfId, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-            Shelf shelf = await GetOrCreateDefaultShelfAsync(shelfId, ct);
+            Shelf shelf = await GetOrCreateShelfAsync(shelfId, ct);
 
             item.SetShelf(shelf.ShelfId);
             _db.Items.Add(item);
@@ -79,14 +78,14 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
             // If user has a reservation than use copy
             ItemCopy? reservedForUser = await _db.ItemCopies
-                .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == userId, ct);
+                .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsArchived && !c.IsBorrowed && c.ReservedById == userId, ct);
 
             if (reservedForUser != null)
                 return reservedForUser;
 
             // If not reserved, return first free copy
             return await _db.ItemCopies
-                .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == null, ct);
+                .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsArchived && !c.IsBorrowed && c.ReservedById == null, ct);
         }
 
         
@@ -94,7 +93,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         {
             return await _db
                 .ItemCopies
-                .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsBorrowed && c.ReservedById == null, ct);
+                .FirstOrDefaultAsync(c => c.ItemId == itemId && !c.IsArchived && !c.IsBorrowed && c.ReservedById == null, ct);
         }
 
         public async Task UpdateCopyAsync(ItemCopy copy, CancellationToken ct = default)
@@ -138,6 +137,18 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             item.CirculationCount += count;
 
             await _db.SaveChangesAsync(ct);
+        }
+
+        public Task<bool> HasAnyReservationsAsync(Guid userId, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            return _db.ItemCopies.AnyAsync(c => c.ReservedById == userId, ct);
+        }
+
+        public async Task<List<ItemCopy>> GetReservedCopiesByUserAsync(Guid userId, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            return await _db.ItemCopies.Where(c => c.ReservedById == userId).Include(c => c.Item).ToListAsync(ct);
         }
     }
 }

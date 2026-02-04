@@ -24,17 +24,24 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         private readonly BorrowingService _borrowingService;
         private readonly UserService _userService;
         private readonly ICurrentUserContext _currentUserContext;
+
         private bool _initialized;
+        private CancellationTokenSource? _reloadCts;
+
+        private const string FilterAll = "Alle";
+        private const string FilterAvailable = "Verfuegbar";
+        private const string FilterReserved = "Reserviert";
+        private const string FilterBorrowed = "Ausgeliehen";
 
         public ObservableCollection<DisplayedItem> Items { get; set; } = new();
-        
-        public int TotalFoundItems => GetTotalFoundItems();
+
+        public int TotalFoundItems => Items.Count;
         public ObservableCollection<string> FilterOptions { get; } = new()
         {
-            "Alle",
-            "Verfuegbar",
-            "Reserviert",
-            "Ausgeliehen"
+            FilterAll,
+            FilterAvailable,
+            FilterReserved,
+            FilterBorrowed
         };
 
         [ObservableProperty]
@@ -46,9 +53,9 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
         private CancellationTokenSource? _loadCts;
         private bool _suppressReload;
 
-        public CatalogViewModel(ItemService itemService, 
-                                BorrowingService borrowingService, 
-                                UserService userService, 
+        public CatalogViewModel(ItemService itemService,
+                                BorrowingService borrowingService,
+                                UserService userService,
                                 ICurrentUserContext currentUserContext)
         {
             _itemService = itemService;
@@ -58,19 +65,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
             PageName = ApplicationPageNames.Catalog;
 
-            _suppressReload = true;
-            SelectedFilterOption = FilterOptions[0];
-            _suppressReload = false;
-        }
-
-        partial void OnSearchTextChanged(string? value) => DebouncedReload();
-
-        partial void OnSelectedFilterOptionChanged(string? value)
-        {
-            if (_suppressReload)
-                return;
-
-            DebouncedReload();
         }
 
         public async Task InitializedAsync()
@@ -78,31 +72,114 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             if (_initialized) return;
             _initialized = true;
 
-            await LoadDataAsync();
+            SelectedFilterOption = FilterOptions[0];
+
+            await LoadDataAsync(CancellationToken.None);
         }
 
+        partial void OnSearchTextChanged(string? value)
+        {
+            if (!_initialized) return;
+            DebouncedReload();
+        }
+
+        partial void OnSelectedFilterOptionChanged(string? value)
+        {
+            if (!_initialized) return;
+            DebouncedReload();
+        }
 
         private void DebouncedReload()
         {
-            _loadCts?.Cancel();
-            _loadCts?.Dispose();
+            _reloadCts?.Cancel();
+            _reloadCts?.Dispose();
+            _reloadCts = new CancellationTokenSource();
 
-            _loadCts = new CancellationTokenSource();
+            CancellationToken ct = _reloadCts.Token;
 
-            var ct = _loadCts.Token;
+            _ = DebouncedReloadCoreAsync(ct);
+        }
 
-            _ = Task.Run(async () =>
+        private async Task DebouncedReloadCoreAsync(CancellationToken ct)
+        {
+            try
             {
-                try
-                {
-                    await Task.Delay(1500, ct);
-                    await LoadDataAsync();
-                }
-                catch (TaskCanceledException)
-                {
+                await Task.Delay(1500, ct);
+                await LoadDataAsync(ct);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
 
-                }
-            }, ct);
+        private int CalculateAvailableCopiesAsync(Item item) => item.CirculationCount;
+
+        private (bool? isBorrowed, bool? isReserved) GetFilterCases()
+        {
+            return SelectedFilterOption switch
+            {
+                FilterAll => (null, null),
+                FilterAvailable => (false, false),
+                FilterReserved => (null, true),
+                FilterBorrowed => (true, null),
+                _ => (null, null),
+            };
+        }
+
+        private async Task LoadDataAsync(CancellationToken ct)
+        {
+            ct.ThrowIfCancellationRequested();
+
+            (bool? isBorrowed, bool? isReserved) cases = GetFilterCases();
+
+            IEnumerable<Item> selectedItems = await _itemService.SearchForDesiredItem(nameContains: SearchText, isBorrowed: cases.isBorrowed, isReserved: cases.isReserved
+            );
+
+            ct.ThrowIfCancellationRequested();
+
+            Items.Clear();
+
+            foreach (Item i in selectedItems)
+            {
+                ct.ThrowIfCancellationRequested();
+                Items.Add(MapItemToDisplayedItem(i));
+            }
+
+            OnPropertyChanged(nameof(TotalFoundItems));
+        }
+
+        private ArchiveStatus CalculateArchiveStatus(Item item)
+        {
+            if (item.IsArchived)
+            {
+                return ArchiveStatus.Yes;
+            }
+            int total = item.Copies?.Count ?? 0;
+            if (total == 0)
+            {
+                return ArchiveStatus.No;
+            }
+
+            int archived = item.Copies.Count(c => c.IsArchived);
+
+            if (archived == 0) return ArchiveStatus.No;
+            if (archived == total) return ArchiveStatus.Yes;
+
+            return ArchiveStatus.Partial;
+        }
+
+        private DisplayedItem MapItemToDisplayedItem(Item item)
+        {
+            return new DisplayedItem(
+                item.Id,
+                item.Name,
+                item.Author,
+                item.Description ?? string.Empty,
+                item.Year,
+                item.ItemType.ToString(),
+                availableCopies: CalculateAvailableCopiesAsync(item),
+                archiveStatus: CalculateArchiveStatus(item)
+            );
         }
 
         [RelayCommand]
@@ -125,12 +202,12 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 try
                 {
                     Guid userId = _currentUserContext.UserId.Value;
-                    User currentUser = await _userService.ReceiveUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Logged-in user not found.");
+                    User currentUser = await _userService.ReceiveUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Angemeldeter Benutzer nicht gefunden.");
 
                     Item domainItem = (await _itemService.SearchForDesiredItem(nameContains: item.Title,
                         yearSelected: item.Year,
                         itemType: null,
-                        customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Item not found.");
+                        customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Artikel nicht gefunden.");
 
                     await _borrowingService.CreateBorrowedItemAsync(currentUser, domainItem, default);
 
@@ -149,7 +226,6 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 }
             }
         }
-
 
         [RelayCommand]
         private async Task ShowReserveItemDialog(DisplayedItem item)
@@ -171,12 +247,12 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 try
                 {
                     Guid userId = _currentUserContext.UserId.Value;
-                    User currentUser = await _userService.ReceiveUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Logged-in user not found.");
+                    User currentUser = await _userService.ReceiveUserByIdAsync(userId, default) ?? throw new InvalidOperationException("Angemeldeter Benutzer nicht gefunden.");
 
                     Item domainItem = (await _itemService.SearchForDesiredItem(nameContains: item.Title,
                         yearSelected: item.Year,
                         itemType: null,
-                        customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Item not found.");
+                        customPredicate: i => i.Author == item.Author)).FirstOrDefault() ?? throw new InvalidOperationException("Artikel nicht gefunden.");
 
                     await _itemService.CreateReservedItemAsync(currentUser, domainItem, default);
 
@@ -195,48 +271,5 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 }
             }
         }
-
-
-        private async Task LoadDataAsync(CancellationToken ct = default)
-        {
-            (bool? isBorrowed, bool? isReserved) cases = SelectedFilterOption switch
-            {
-                "Alle" => (null, null),
-                "Verfuegbar" => (false, false),
-                "Reserviert" => (null, true),
-                "Ausgeliehen" => (true, null),
-                _ => throw new NotImplementedException(),
-            };
-
-            IEnumerable<Item> selectedItems = await _itemService.SearchForDesiredItem(nameContains: SearchText, isBorrowed: cases.isBorrowed, isReserved: cases.isReserved);
-
-            Items.Clear();
-            foreach (Item i in selectedItems)
-            {
-                ct.ThrowIfCancellationRequested();
-                Items.Add(MapItemToDisplayedItem(i));
-            }
-
-            OnPropertyChanged(nameof(TotalFoundItems));
-        }
-
-        private DisplayedItem MapItemToDisplayedItem(Item item)
-        {
-            return new DisplayedItem(
-                item.Id,
-                item.Name,
-                item.Author,
-                item.Description ?? string.Empty,
-                item.Year,
-                item.ItemType.ToString(),
-                availableCopies: CalculateAvailableCopiesAsync(item)
-            );
-        }
-
-        private int CalculateAvailableCopiesAsync(Item item) => item.CirculationCount;
-
-
-        private int GetTotalFoundItems() => Items.Count();
-
     }
 }

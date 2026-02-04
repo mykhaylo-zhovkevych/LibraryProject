@@ -13,8 +13,7 @@ namespace LibraryProject.Application.Interfaces
     {
         Task SavePolicyAsync(UserType userType, ItemType itemType, Policy policy, CancellationToken ct = default);
         Task UpdatePolicyAsync(UserType userType, ItemType itemType, Policy policy, CancellationToken ct = default);
-        Task RemovePolicyAsync(UserType userType, ItemType itemType, string policy, CancellationToken ct = default);
+        Task RemovePolicyAsync(UserType userType, ItemType itemType, string policyName, CancellationToken ct = default);
         Task<Policy?> GetPolicyAsync(UserType userType, ItemType itemType, CancellationToken ct = default);
-        // Task<Policy?> GetPolicyByNameAsync(UserType userType, ItemType itemType, string policyName, CancellationToken ct = default);
     }
 }

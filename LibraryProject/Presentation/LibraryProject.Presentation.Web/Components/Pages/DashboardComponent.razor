@@ -1,9 +1,225 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.Authorization
+@using LibraryProject.Application.Services
+@using LibraryProject.Domain.Entities
+@using LibraryProject.Domain.Enum
+@using LibraryProject.Application.Interfaces
+@using System.Collections
+@attribute [Authorize]
+@rendermode InteractiveServer
 
-<PageTitle>Home</PageTitle>
+@inject ItemService ItemService
+@inject BorrowingService BorrowingService
+@inject UserService UserService
+@inject ICurrentUserContext CurrentUser
 
-<h1>Hello, world!</h1>
+<div class="catalog">
+    <h3 class="catalog__title">Artikel Verwaltung</h3>
+    <p class="catalog__subtitle">Durchsuchen Sie unsere Sammlung und leihen Sie Artikel aus.</p>
 
-Welcome to your new app.
+    <div class="catalog__toolbar">
+        <input class="catalog__search"
+               placeholder="Suche nach Titel… oder Jahr"
+               value="@_searchTerm"
+               @oninput="OnSearchInput" />
 
-@* This Component will contian a child components*@
+        <select class="catalog__select" value="@_selectedItemTypeText" @onchange="OnTypeChanged">
+            <option value="">Alle Medien</option>
+            @foreach (ItemType t in Enum.GetValues<ItemType>())
+            {
+                <option value="@t.ToString()">@t.ToString()</option>
+            }
+        </select>
+    </div>
+
+    <div class="catalog__meta">
+        @if (_isLoading)
+        {
+            <span>Lade…</span>
+        }
+        else
+        {
+            <span>Gefundene Artikeln: @_items.Count</span>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(_errorMessage))
+    {
+        <div class="catalog__error">@_errorMessage</div>
+    }
+
+    <div class="catalog__grid">
+        @foreach (Item item in _items)
+        {
+            // Linq methods return alias(int) for System.Int32
+            Int32 available = GetAvailableCount(item);
+
+            <article class="item-card">
+                <div class="item-card__cover">
+                    @* Default cover *@
+                    <div class="item-card__coverPlaceholder">Cover</div>
+                </div>
+
+                <div class="item-card__body">
+                    <div class="item-card__title">@item.Name</div>
+                    <div class="item-card__subtitle">@item.Author | @item.Year | @item.ItemType</div>
+
+                    @if (!string.IsNullOrWhiteSpace(item.Description))
+                    {
+                        <div class="item-card__desc">@item.Description</div>
+                    }
+
+                    <div class="item-card__badges">
+                        <span class="badge badge--info">Verfügbar: @available</span>
+                        <span class="badge badge--info">Total Exemplaren: @item.CirculationCount</span>
+                        @if (item.IsArchived)
+                        {
+                            <span class="badge badge--archived">Archiviert</span>
+                        }
+                    </div>
+
+                    <div class="item-card__actions">
+                        <button class="catalog__bth catalog__bth--primary" disabled="@(item.IsArchived || available < 0)" @onclick="() => BorrowAsync(item)">Ausleihen</button>
+                        <button class="catalog__bth" @onclick="() => ReserveAsync(item)">Reservieren</button>
+                    </div>
+
+                </div>
+            </article>
+        }
+    </div>
+</div>
+
+@code {
+    private string _searchTerm { get; set; } = "";
+    private string _selectedItemTypeText { get; set; } = "";
+    private bool _isLoading { get; set; }
+    private string? _errorMessage { get; set; }
+
+    private List<Item> _items { get; set; } = new();
+    private CancellationTokenSource? _reloadCts;
+
+    protected override async Task OnInitializedAsync() => await LoadAsync(CancellationToken.None);
+
+    private void OnSearchInput(ChangeEventArgs e)
+    {
+        _searchTerm = e.Value?.ToString() ?? "";
+        DebouncedReload();
+    }
+
+    private void OnTypeChanged(ChangeEventArgs e)
+    {
+        _selectedItemTypeText = e.Value?.ToString() ?? "";
+        DebouncedReload();
+    }
+
+    private void DebouncedReload()
+    {
+        _reloadCts?.Cancel();
+        _reloadCts?.Dispose();
+        _reloadCts = new CancellationTokenSource();
+
+        _ = DebouncedReloadCoreAsync(_reloadCts.Token);
+    }
+
+    private async Task DebouncedReloadCoreAsync(CancellationToken ct)
+    {
+        try
+        {
+            await Task.Delay(1000, ct);
+            await LoadAsync(ct);
+        }
+        catch (OperationCanceledException) { }
+    }
+
+
+    private async Task LoadAsync(CancellationToken ct)
+    {
+        try
+        {
+            ct.ThrowIfCancellationRequested();
+            _isLoading = true;
+            _errorMessage = null;
+
+            ItemType? itemType = null;
+
+            if (!string.IsNullOrWhiteSpace(_selectedItemTypeText) && Enum.TryParse<ItemType>(_selectedItemTypeText, out var parsed))
+            {
+                itemType = parsed;
+            }
+
+            string? nameFilter = null;
+            int? yearFilter = null;
+
+            string trimmed = _searchTerm?.Trim() ?? "";
+
+            if (int.TryParse(trimmed, out int year) && year > 0 && year <= 2026)
+            {
+                yearFilter = year;
+            }
+            else if (!string.IsNullOrWhiteSpace(trimmed))
+            {
+                nameFilter = trimmed;
+            }
+
+            var result = await ItemService.SearchForDesiredItem(nameContains: nameFilter, yearSelected: yearFilter, itemType: itemType);
+
+            ct.ThrowIfCancellationRequested();
+            _items = result.ToList();
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+        finally
+        {
+            _isLoading = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task<User> GetCurrentUserAsync()
+    {
+        if (CurrentUser.UserId is null)
+        {
+            throw new InvalidOperationException("Nicht angemeldet.");
+        }
+        User? currentUser = await UserService.ReceiveUserByIdAsync(CurrentUser.UserId.Value, CancellationToken.None);
+        return currentUser ?? throw new InvalidOperationException("Angemeldeter Benutzer nicht gefunden.");
+    }
+
+    private async Task BorrowAsync(Item item)
+    {
+        try
+        {
+            _errorMessage = null;
+            User currentUser = await GetCurrentUserAsync();
+
+            await BorrowingService.CreateBorrowedItemAsync(currentUser, item, CancellationToken.None);
+            await LoadAsync(CancellationToken.None);
+
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private async Task ReserveAsync(Item item)
+    {
+        try
+        {
+            _errorMessage = null;
+            User currentUser = await GetCurrentUserAsync();
+
+            await ItemService.CreateReservedItemAsync(currentUser, item, CancellationToken.None);
+            await LoadAsync(CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+    }
+
+    private static int GetAvailableCount(Item item) => item.Copies.Count(c => !c.IsArchived && !c.IsBorrowed && c.ReservedById == null);
+}

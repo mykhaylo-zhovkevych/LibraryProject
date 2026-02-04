@@ -48,5 +48,10 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         {
             throw new NotImplementedException();
         }
+
+        public Task<bool> HasAnyBorrowingsAsync(Guid userId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

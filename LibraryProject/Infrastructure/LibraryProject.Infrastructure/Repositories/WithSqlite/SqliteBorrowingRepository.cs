@@ -79,5 +79,11 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
             ct.ThrowIfCancellationRequested();
             await _db.SaveChangesAsync(ct);
         }
+
+        public Task<bool> HasAnyBorrowingsAsync(Guid userId, CancellationToken ct = default)
+        {
+            ct.ThrowIfCancellationRequested();
+            return _db.Borrowings.AnyAsync(b => b.UserId == userId, ct);
+        }
     }
 }

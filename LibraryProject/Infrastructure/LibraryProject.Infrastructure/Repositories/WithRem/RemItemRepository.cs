@@ -64,7 +64,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             throw new NotImplementedException();
         }
 
-        public Task<Shelf> GetOrCreateDefaultShelfAsync(int shelfId, CancellationToken ct = default)
+        public Task<Shelf> GetOrCreateShelfAsync(int shelfId, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }
@@ -80,6 +80,16 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
         }
 
         public Task<IEnumerable<Item>> GetAllItemsAsync(CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> HasAnyReservationsAsync(Guid userId, CancellationToken ct = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<ItemCopy>> GetReservedCopiesByUserAsync(Guid userId, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }

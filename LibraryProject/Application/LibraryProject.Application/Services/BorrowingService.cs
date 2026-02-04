@@ -39,8 +39,14 @@ namespace LibraryProject.Application.Services
         public async Task CreateBorrowedItemAsync(User user, Item item, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
+
+            if (item.IsArchived)
+            {
+                throw new InvalidOperationException("Das Medium ist archiviert.");
+            }
+
             Policy activePolicy = await _policyRepository.GetPolicyAsync(user.UserType, item.ItemType, ct) ?? throw new NonexistentPolicyException();
-            ItemCopy copy = await _itemRepository.GetCopyToBorrowAsync(item.Id, user.Id, ct) ?? throw new ArgumentException("No available copy.");
+            ItemCopy copy = await _itemRepository.GetCopyToBorrowAsync(item.Id, user.Id, ct) ?? throw new ArgumentException("Kein verfügbares Exemplar vorhanden.");
 
             if (!copy.CheckBorrowPossible(user.Id))
             {
@@ -63,42 +69,47 @@ namespace LibraryProject.Application.Services
         public async Task ReturnBorrowedItemAsync(User user, Guid itemCopyId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No active entry was found for: {user.Name}");
+            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"Kein aktiver Eintrag gefunden für: {user.Name}");
 
             activeBorrowing.ReturnBorrowing();
 
-            await _itemRepository.UpdateCirculationCountAsync(activeBorrowing.ItemCopy.ItemId, +1, ct);
+            if (activeBorrowing.ItemCopy.IsArchived == true)
+            {
+                await _itemRepository.UpdateCirculationCountAsync(activeBorrowing.ItemCopy.ItemId, -1, ct);
+            }
+            else
+            {
+                await _itemRepository.UpdateCirculationCountAsync(activeBorrowing.ItemCopy.ItemId, +1, ct);
+            }
+
             await _itemRepository.UpdateCopyAsync(activeBorrowing.ItemCopy, ct);
             await _borrowedRepository.UpdateBorrowingAsync(activeBorrowing, ct);
 
-            if (activeBorrowing.ItemCopy.IsReserved && activeBorrowing.ItemCopy.ReservedById != null)
+            if (!activeBorrowing.ItemCopy.IsReserved && activeBorrowing.ItemCopy.ReservedById == null)
             {
                 OnInformReserver(new ItemEventArgs(
-                    $"The {activeBorrowing.ItemCopy.Item.Name} is now available",
+                    $"Das Medium {activeBorrowing.ItemCopy.Item.Name} ist jetzt verfügbar.",
                     activeBorrowing.ItemCopy.Item,
                     activeBorrowing.ItemCopy.ReservedBy
                 ));
             }
         }
 
-
         public async Task ExtendBorrowingPeriodAsync(User user, Guid itemCopyId, CancellationToken ct)
         {
             _authorizationService.EnsureAuthenticated();
-            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"No active entry was found for: {user.Name}");
+            Borrowing activeBorrowing = await _borrowedRepository.GetActiveBorrowingByCopyAsync(user.Id, itemCopyId, ct) ?? throw new ArgumentException($"Kein aktiver Eintrag gefunden für: {user.Name}");
 
             activeBorrowing.Extend();
             await _borrowedRepository.UpdateBorrowingAsync(activeBorrowing, ct);
         }
 
-
         public async Task<List<Borrowing>> SearchAllBorrowingsByUserId(Guid userId, CancellationToken ct)
         {
             _authorizationService.EnsureAdmin();
-            List<Borrowing> borrowings =  await _borrowedRepository.GetAllBorrowingsAsync(userId, ct);
+            List<Borrowing> borrowings = await _borrowedRepository.GetAllBorrowingsAsync(userId, ct);
             return borrowings;
         }
-
 
         public async Task<List<Borrowing>> SearchForActiveBorrowingsByUserId(Guid userId, CancellationToken ct)
         {

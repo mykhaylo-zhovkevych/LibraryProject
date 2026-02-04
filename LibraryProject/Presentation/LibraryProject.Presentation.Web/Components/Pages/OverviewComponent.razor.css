@@ -1,0 +1,41 @@
+﻿.overview {
+    padding: 1.125rem 1rem 1.75rem;
+}
+
+.overview__title {
+    margin: 0 0 0.625rem 0;
+    font-size: 1.375rem;
+    font-weight: 800;
+}
+
+.overview__tabs,
+.overview__filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.overview__tab,
+.overview__filter {
+    height: 2.375rem;
+    padding: 0 0.75rem;
+    border-radius: 0.75rem;
+    border: 0.0625rem solid #e2e2e2;
+    background: #f6f6f6;
+    color: #222;
+    font-weight: 800;
+    font-size: 0.875rem;
+    cursor: pointer;
+}
+
+.overview__tab:hover,
+.overview__filter:hover {
+    background: #efefef;
+}
+
+.overview__tab:disabled,
+.overview__filter:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

@@ -16,8 +16,17 @@ namespace LibraryProject.Presentation.DesktopApp.Models
         public string Type { get; }
         public int AvailableCopies { get; }
 
+        public ArchiveStatus ArchiveStatus { get; }
+        public string ArchiveStatusText => ArchiveStatus switch
+        {
+            ArchiveStatus.Yes => "Ja",
+            ArchiveStatus.Partial => "Teilweise",
+            ArchiveStatus.No => "Nein",
+            _ => "Ungültig"
+        };
 
-        public DisplayedItem(Guid id, string title, string author, string description, int year, string type, int availableCopies)
+
+        public DisplayedItem(Guid id, string title, string author, string description, int year, string type, int availableCopies, ArchiveStatus archiveStatus)
         {
             Id = id;
             Title = title;
@@ -26,6 +35,7 @@ namespace LibraryProject.Presentation.DesktopApp.Models
             Year = year;
             Type = type;
             AvailableCopies = availableCopies;
+            ArchiveStatus = archiveStatus;
         }
     }
 }

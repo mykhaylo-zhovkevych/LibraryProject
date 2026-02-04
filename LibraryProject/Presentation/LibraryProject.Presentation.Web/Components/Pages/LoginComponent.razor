@@ -1,7 +1,110 @@
 ﻿@page "/login"
+@attribute [AllowAnonymous]
+@attribute [StreamRendering(false)]
+@using LibraryProject.Domain.Enum
+@using Microsoft.AspNetCore.Antiforgery
+@using Microsoft.AspNetCore.Authorization
+@layout AuthLayout
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IAntiforgery Antiforgery
 
-<h3>LoginComponent</h3>
+
+<div class="auth-card">
+    <h2 class="auth-card__title">Login</h2>
+    <p class="auth-card__subtitle">Melde dich an, um fortzufahren.</p>
+
+    <form method="post" action="/auth/login" class="auth-card__form">
+        <input type="hidden" name="__RequestVerificationToken" value="@_antiForgeryToken" />
+        <input type="hidden" name="returnUrl" value="@returnUrl" />
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="accountName">Kontoname</label>
+            <input id="accountName"
+                   class="auth-card__input"
+                   name="accountName"
+                   value="@_accountName"
+                   @oninput="@(e => _accountName = e.Value?.ToString() ?? "")"
+                   placeholder="z.B. Name" />
+        </div>
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="password">Password</label>
+            <input id="password"
+                   class="auth-card__input"
+                   name="password"
+                   type="password"
+                   value="@_password"
+                   @oninput="@(e => _password = e.Value?.ToString() ?? "")"
+                   placeholder="********" />
+        </div>
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="selectedType">Benutzerart</label>
+            <select id="selectedType"
+                    class="auth-card__select"
+                    name="selectedType"
+                    value="@_selectedType"
+                    @onchange="OnTypeChanged">
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+            </select>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(_flashError))
+        {
+            <div class="auth-card__alert auth-card__alert--error">@_flashError</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(_flashInfo))
+        {
+            <div class="auth-card__alert auth-card__alert--info">@_flashInfo</div>
+        }
+
+        <div class="auth-card__actions">
+            <button class="auth-card__btn auth-card__btn--primary" type="submit">Einloggen</button>
+            <a class="auth-card__btn auth-card__btn--secondary" href="/register">Zurück zu Registrierung</a>
+        </div>
+    </form>
+</div>
+
 
 @code {
+    [Parameter, SupplyParameterFromQuery] public string? returnUrl { get; set; }
 
+    public const string FlashError = "flash_error";
+    public const string FlashInfo = "flash_info";
+
+    private string? _flashError;
+    private string? _flashInfo;
+
+    private string _accountName = "";
+    private string _password = "";
+    private UserType _selectedType = UserType.Student;
+
+    private string _antiForgeryToken = "";
+
+    protected override void OnInitialized()
+    {
+        var http = HttpContextAccessor.HttpContext;
+        if (http is null) return;
+
+        _antiForgeryToken = Antiforgery.GetAndStoreTokens(http).RequestToken ?? "";
+
+        if (http.Request.Cookies.TryGetValue(FlashError, out string? e))
+        {
+            _flashError = Uri.UnescapeDataString(e);
+            http.Response.Cookies.Delete(FlashError);
+        }
+
+        if (http.Request.Cookies.TryGetValue(FlashInfo, out string? i))
+        {
+            _flashInfo = Uri.UnescapeDataString(i);
+            http.Response.Cookies.Delete(FlashInfo);
+        }
+    }
+
+    private void OnTypeChanged(ChangeEventArgs e)
+    {
+        if (Enum.TryParse<UserType>(e.Value?.ToString(), out UserType parsed))
+            _selectedType = parsed;
+    }
 }

@@ -18,15 +18,10 @@ namespace LibraryProject.Domain.Entities
         public Guid? ReservedById { get; private set; }
         public User? ReservedBy { get; private set; }
 
-        public bool CheckBorrowPossible(Guid userId)
-        {
-            if (IsBorrowed)
-                return false;
-            if (IsReserved && ReservedById != userId)
-                return false;
-            return true;
+        public bool IsArchived { get; private set; }
+        public bool ArchiveRequested { get; private set; }
 
-        }
+        public bool CanArchivateNow() => !IsBorrowed && !IsReserved && ReservedById == null;
 
         protected ItemCopy() { }
 
@@ -37,24 +32,61 @@ namespace LibraryProject.Domain.Entities
 
         public static ItemCopy CreateFor(Item item) => new ItemCopy(item.Id);
 
-        public bool CheckReservePossible()
+
+        public void ArchiveNow()
         {
+            if (!CanArchivateNow()) 
+            {
+                throw new InvalidOperationException("Copy cannot be archived now (borrowed/reserved).");
+            }
+            IsArchived = true;
+            ArchiveRequested = false;
+        }
+
+        public void RequestArchive()
+        {
+            ArchiveRequested = true;
+            if (CanArchivateNow())
+            {
+                IsArchived = true;
+            }
+        }
+
+        public bool CheckBorrowPossible(Guid userId)
+        {
+            if (IsArchived) 
+                return false;
             if (IsBorrowed)
                 return false;
+            if (IsReserved && ReservedById != userId)
+                return false;
+            return true;
+        }
 
+        public bool CheckReservePossible()
+        {
+            if (IsArchived) 
+                return false;
+            if (IsBorrowed)
+                return false;
             if (IsReserved)
                 return false;
-
             return true;
         }
 
         public void BorrowItem()
         {
+            if (IsArchived) throw new InvalidOperationException("Copy is archived.");
+            if (IsBorrowed) throw new InvalidOperationException("Copy is already borrowed.");
             IsBorrowed = true;
         }
 
         public void ReserveById(Guid userId)
         {
+            if (IsArchived) throw new InvalidOperationException("Copy is archived.");
+            if (IsBorrowed) throw new InvalidOperationException("Copy is borrowed.");
+            if (IsReserved) throw new InvalidOperationException("Copy is already reserved.");
+
             ReservedById = userId;
             ReservedBy = null;
         }
@@ -68,10 +100,20 @@ namespace LibraryProject.Domain.Entities
         public void ReturnFromBorrowing()
         {
             IsBorrowed = false;
+            // auto-archive after return if it was requested
+            if (ArchiveRequested && ReservedById == null)
+            {
+                IsArchived = true;
+                ArchiveRequested = false;
+            }
         }
 
         public void ReserveItem(User user)
         {
+            if (IsArchived) throw new InvalidOperationException("Copy is archived.");
+            if (IsBorrowed) throw new InvalidOperationException("Copy is borrowed.");
+            if (IsReserved) throw new InvalidOperationException("Copy is already reserved.");
+
             ReservedBy = user;
             ReservedById = user.Id;
         }

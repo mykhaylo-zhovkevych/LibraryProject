@@ -67,6 +67,32 @@ Artikel dürfen nicht gelöscht werden, da sie für andere Use Cases (z. B. Use 
 
 ---
 
+### Use Case 1.3.1 Artikelverwaltung: Artikel löschen mit Reservierungen stornieren und Ausleihen verzögert archivieren
+
+**Beschreibung:**  Als Admin möchte ich einen Artikel löschen damit er im Katalog nicht mehr verfügbar ist, Reservierungen automatisch aufgehoben werden, und ausgeliehene Exemplare erst nach Rückgabe archiviert werden.
+
+**Ablauf:**
+1. Admin navigiert zu **"Verwaltung"**.    
+2. Admin wählt die Untersektion **"Artikelverwaltung"**.
+3. Admin wählt einen Artikel aus der Liste.
+4. System prüft den Artikelstatus:
+    **Bedingung 1:** Artikel ist nicht bereits archiviert
+5. System verarbeitet alle zugehörigen Exemplare (ItemCopy) einzeln:
+	**Bedingung 2**: Wenn Exemplar ist reserviert
+        1. System storniert die Reservierung automatisch
+        2. System archiviert das Exemplar sofort, sofern nicht ausgeliehen.
+	**Bedingung 3:** Wenn Exemplar ist ausgeliehen
+        3. System archiviert das Exemplar **nicht sofort**.
+        4. System markiert es als Archivieren nach Rückgabe.
+6. System aktualisiert die UI: Der Artikel erscheint nicht mehr in normalen Listen/Suchen (nur noch in Archiv/History Ansicht
+
+**Akzeptanzkriterien**
+1. Ein gelöschte(archivierter) Artikel kann **nicht mehr neu reserviert oder ausgeliehen** werden.
+2. Beim Lösung werden alle Reservierungen automatisch storniert.
+
+---
+
+
 ### Use Case 1.4 Artikelverwaltung: Neue Artikelexemplare einfügen
 
 **Beschreibung:**  
@@ -84,6 +110,35 @@ Als Admin möchte ich die bestehenden Artikelexemplare erweitern, damit zusätzl
 2. Die neuen Artikelexemplare können weiter ausgeliehen oder verbucht werden.
 
 ---
+
+## Use Case 1.4.1 Artikelverwaltung: Artikelexemplare nur bei aktiven Artikeln hinzufügen
+
+**Beschreibung:**  
+Als Admin möchte ich zusätzliche Artikelexemplare nur zu aktiven (nicht gelöschten) Artikeln hinzufügen können, damit keine Exemplare zu archivierten Artikeln nachträglich in Umlauf gebracht werden.
+
+**Vorbedingungen:**
+1. Der Artikel(Item) ist **nicht** archiviert 
+
+**Ablauf:**
+1. Admin navigiert zu **"Verwaltung"**.
+2. Admin wählt die Untersektion **"Artikelverwaltung"**.
+3. Admin wählt einen Artikel aus der Liste.
+4. Admin wählt die Aktion **"Exemplare hinzufügen"**.
+5. Admin gibt die gewünschte Menge ein.
+    6. System prüft:
+        - **Bedingung 1:** `count > 0`
+        - **Bedingung 2:** Artikel ist **nicht** archiviert
+7. Wenn alle Bedingungen erfüllt sind, erstellt das System neue ItemCopy-Einträge und aktualisiert die UI.
+8. Wenn eine Bedingung nicht erfüllt ist, zeigt das System eine Fehlermeldung und speichert nichts.
+    
+
+**Akzeptanzkriterien**
+1. Exemplare werden nur hinzugefügt, wenn `IsArchived == false`.
+2. Bei archivierten Artikeln wird nichts gespeichert und eine Fehlermeldung angezeigt.
+3. Nach erfolgreichem Hinzufügen zeigt die UI die aktualisierte Anzahl.
+
+---
+
 
 ### Use Case 2 Benutzerverwaltung: Kundekonto sperren
 
@@ -123,6 +178,33 @@ Als Admin möchte ich ein Kundenkonto entsperren können, damit in Sonderfällen
 **Akzeptanzkriterien**
 1. Der Admin kann das Kundenkonto entsperren.
 2. Das Kundenkonto wird in der UI als "Aktiv" angezeigt.
+
+---
+
+### Use Case2.2 Benutzerverwaltung: Kundenkonto löschen
+
+**Beschreibung:**  
+Als Admin möchte ich ein Kundenkonto löschen können, damit sich der Kunde nicht mehr einloggen kann, während die Personendaten und Historie erhalten bleiben.
+
+**Vorbedingungen:**
+- Admin ist eingeloggt
+- Das Kundenkonto existiert
+
+**Ablauf:**
+1. Admin navigiert zu „Verwaltung“ 
+2. Admin wählt die Untersektion "Benutzerverwaltung" aus.
+3. Admin wählt ein Kundenkonto aus
+4. Admin bestätigt "Konto löschen"
+5. System löscht nur den Account-Datensatz
+	**Bedingungen 1** Wenn das Konto aktive Ausleihen/Reservierungen hat: zeigt eine (Fehlermeldung)
+6. UI aktualisiert sich
+
+
+**Akzeptanzkriterien:**
+- Account ist gelöscht (Login nicht mehr möglich)
+- User bleibt vorhanden
+- Historie bleibt erhalten
+
 
 ---
 

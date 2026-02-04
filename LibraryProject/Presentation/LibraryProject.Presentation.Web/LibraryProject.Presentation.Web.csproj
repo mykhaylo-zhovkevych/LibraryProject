@@ -1,9 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Application\LibraryProject.Application\LibraryProject.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LibraryProject.Infrastructure\LibraryProject.Infrastructure.csproj" />
+    <ProjectReference Include="..\LibraryProject.Presentation.DesktopApp\LibraryProject.Presentation.DesktopApp.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -30,12 +30,12 @@
                 <Label Content="Melden Sie sich mit Ihren Zugangsdaten an" />
 
                 <!--User Id-->
-				<TextBlock Classes="field-label" Text="User Id" FontWeight="SemiBold" ></TextBlock>
-                <TextBox Classes="primary" Watermark="Benutzer Id" Text="{Binding UserId}" />
+				<!--<TextBlock Classes="field-label" Text="User Id" FontWeight="SemiBold" ></TextBlock>
+                <TextBox Classes="primary" Watermark="Benutzer Id" Text="{Binding UserId}" />-->
                 
                 <!--Name-->
 				<TextBlock Classes="field-label" Text="Name" FontWeight="SemiBold" ></TextBlock>
-                <TextBox Classes="primary" Watermark="Ihr vollständiger Name" Text="{Binding Name}" />
+                <TextBox Classes="primary" Watermark="Ihr vollständiger Name" Text="{Binding AccountName}" />
             
                 <!--Password-->
 				<TextBlock Classes="field-label" Text="Password" FontWeight="SemiBold" ></TextBlock>

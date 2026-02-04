@@ -13,12 +13,14 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
     {
         private const int DefaultShelfId = 100;
 
+        // Password: admin12345
+        private const string PrecomputedHash = "100000.3nTcX8KTECxxTDyrg1XgGg==.dIXcIDSZ4j2Hkx6E2NyP2Z4Gt2GQpLRcyeQqlhd1oqg=";
+
         public static async Task SeedAsync(LibraryDbContext db, ItemService service, CancellationToken ct = default)
         {
             await db.Database.EnsureDeletedAsync(ct);
             await db.Database.EnsureCreatedAsync(ct);
 
-            // Seed Shelf first (required for Item.ShelfId FK)
             Shelf defaultShelf = new Shelf(DefaultShelfId);
             db.Shelves.Add(defaultShelf);
 
@@ -30,8 +32,18 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                         ItemType.Book,
                         "Franz Kafka",
                         1975,
-                        "Die Verwandlung ist eine im Jahr 1912 entstandene Erzählung von Franz Kafka. Die Geschichte handelt von Gregor Samsa, dessen plötzliche Verwandlung in ein „Ungeziefer“ die Kommunikation seines sozialen Umfelds mit ihm immer mehr hemmt, bis er von seiner Familie für untragbar gehalten wird und schließlich zugrunde geht. ",
+                        "Die Verwandlung ist eine im Jahr 1912 entstandene Erzählung von Franz Kafka. Die Geschichte handelt von Gregor Samsa, dessen plötzliche Verwandlung in ein „Ungeziefer die Kommunikation seines sozialen Umfelds mit ihm immer mehr hemmt, bis er von seiner Familie für untragbar gehalten wird und schließlich zugrunde geht. ",
                         5,
+                        ct);
+
+                CreateItemWithAmountTest(
+                        defaultShelf,
+                        "Das Schloss ",
+                        ItemType.Book,
+                        "Franz Kafka",
+                        1926,
+                        "Das Schloss“ ist ein berühmter, 1922 entstandener und unvollendeter Roman von\r\nFranz Kafka, der 1926 posthum veröffentlicht wurde. Er handelt von dem Landvermesser K. ",
+                        10,
                         ct);
             }
 
@@ -47,17 +59,34 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
                     LoanFees = 0.25m,
                     LoadPeriodInDays = 14
                 });
+
+                db.PolicyEntries.Add(new PolicyEntry
+                {
+                    Id = Guid.NewGuid(),
+                    UserType = UserType.Student,
+                    ItemType = ItemType.Book,
+                    PolicyName = "Student-Book (Test)",
+                    Extensions = 1,
+                    LoanFees = 0.50m,
+                    LoadPeriodInDays = 21
+                });
             }
 
             if (!await db.Users.AnyAsync(ct) && !await db.Accounts.AnyAsync(ct))
             {
-                User adminUser = new User("admin", UserType.Admin, true);
-                // password: admin12345
-                Account adminAccount = new Account(adminUser, "admin1", "100000.3nTcX8KTECxxTDyrg1XgGg==.dIXcIDSZ4j2Hkx6E2NyP2Z4Gt2GQpLRcyeQqlhd1oqg=", "admin@local");
+                User adminUser = new User("joe", "jonny", "newjersystr", UserType.Admin);
+                Account adminAccount = new Account(adminUser, "admin1", PrecomputedHash, "admin@local");
                 adminAccount.ReactivateAccount();
 
                 db.Users.Add(adminUser);
                 db.Accounts.Add(adminAccount);
+
+                User studentUser = new User("Test", "Student", "teststrasse 1", UserType.Student);
+                Account studentAccount = new Account(studentUser, "testStudent", PrecomputedHash, "student@local");
+                studentAccount.ReactivateAccount();
+
+                db.Users.Add(studentUser);
+                db.Accounts.Add(studentAccount);
 
                 await db.SaveChangesAsync(ct);
             }
@@ -74,11 +103,9 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
-
             var item = new Item(name, itemType, author, year, description, circulationCount);
             defaultShelf.AddItem(item);
             item.AddCopies(circulationCount);
-
         }
     }
 }

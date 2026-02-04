@@ -15,19 +15,16 @@ namespace LibraryProject.Application.Interfaces
         Task UpdateCopyAsync(ItemCopy copy, CancellationToken ct = default);
         Task UpdateItemAsync(Item item, CancellationToken ct = default);
         Task InsertCopiesToItemAsync(Guid itemId, int count, CancellationToken ct = default);
-
         Task<Item?> GetItemByIdAsync(Guid itemId, CancellationToken ct = default);
-
-        Task<Shelf> GetOrCreateDefaultShelfAsync(int shelfId, CancellationToken ct = default);
+        Task<Shelf> GetOrCreateShelfAsync(int shelfId, CancellationToken ct = default);
         Task<Item?> GetExistingItemAsync(string name, ItemType itemType, CancellationToken ct = default);
-
         Task<Shelf?> GetShelfByIdAsync(int id, CancellationToken ct = default);
         Task<IEnumerable<Item>> GetAllItemsAsync(CancellationToken ct = default);
-
         Task<ItemCopy?> GetCopyToBorrowAsync(Guid itemId, Guid userId, CancellationToken ct = default);
-        Task<ItemCopy?> GetCopyToReserveAsync(Guid itemId, CancellationToken ct);
-
+        Task<ItemCopy?> GetCopyToReserveAsync(Guid itemId, CancellationToken ct = default);
         Task UpdateCirculationCountAsync(Guid itemId, int delta, CancellationToken ct = default);
+        Task<bool> HasAnyReservationsAsync(Guid userId, CancellationToken ct = default);
+        Task<List<ItemCopy>> GetReservedCopiesByUserAsync(Guid userId, CancellationToken ct = default);
 
     }
 }

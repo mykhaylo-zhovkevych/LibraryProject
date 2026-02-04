@@ -26,7 +26,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
         [ObservableProperty] private string _newPolicyName = "";
         [ObservableProperty] private string _newPolicyExtensionsText = "1";
         [ObservableProperty] private string _newPolicyLoadPeriodInDaysText = "7";
-        [ObservableProperty] private string _newPolicyFeesText = "0,05";
+        [ObservableProperty] private string _newPolicyFeesText = "0.05";
 
 
         [ObservableProperty]

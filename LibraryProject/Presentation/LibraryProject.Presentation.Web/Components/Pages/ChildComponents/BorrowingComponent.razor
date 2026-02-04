@@ -1,5 +1,189 @@
-﻿<h3>BorrowingComponent</h3>
+﻿@using LibraryProject.Application.Services
+@using LibraryProject.Application.Interfaces
+@using LibraryProject.Domain.Entities
+
+@inject BorrowingService BorrowingService
+@inject UserService UserService
+@inject ICurrentUserContext CurrentUser
+
+@if (_isLoading)
+{
+    <p class="data__loading">Lade Ausleihen...</p>
+}
+else if (!string.IsNullOrWhiteSpace(_error))
+{
+    <p class="data__error">@_error</p>
+}
+else if (_borrowings.Count == 0)
+{
+    <p class="data__empty">Keine @(IsActive ? "aktiven" : "inaktiven") Ausleihen vorhanden.</p>
+}
+else
+{
+    <div class="data-table">
+        <table class="data-table__table">
+            <thead class="data-table__head">
+                <tr>
+                    <th class="data-table__th">Titel</th>
+                    <th class="data-table__th">Exemplar IBAN</th>
+                    <th class="data-table__th">Ausgeliehen</th>
+                    <th class="data-table__th">Fällig</th>
+                    @if (!IsActive)
+                    {
+                        <th class="data-table__th">Zurückgegeben</th>
+                    }
+                    @if (IsActive)
+                    {
+                        <th class="data-table__th">Aktionen</th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody class="data-table__body">
+                @foreach (Borrowing b in _borrowings)
+                {
+                    <tr class="data-table__row">
+                        <td class="data-table__td">@GetTitle(b)</td>
+                        <td class="data-table__td">@b.ItemCopyId</td>
+                        <td class="data-table__td">@Fmt(b.LoanDate)</td>
+                        <td class="data-table__td">@Fmt(b.DueDate)</td>
+
+                        @if (!IsActive)
+                        {
+                            <td class="data-table__td">
+                                @(b.ReturnDate is null ? "-" : b.ReturnDate.Value.ToShortDateString())
+                            </td>
+                        }
+
+                        @if (IsActive)
+                        {
+                            <td class="data-table__td">
+                                <div class="borrow-actions">
+                                    <button class="borrow-actions__btn borrow-actions__btn--primary"
+                                            @onclick="() => ExtendAsync(b.ItemCopyId)" disabled="@_isBusy">
+                                        Verlängern
+                                    </button>
+
+                                    <button class="borrow-actions__btn borrow-actions__btn--danger"
+                                            @onclick="() => ReturnAsync(b.ItemCopyId)" disabled="@_isBusy">
+                                        Zurückgeben
+                                    </button>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 @code {
+    [Parameter] public bool IsActive { get; set; }
 
+    private bool _isLoading;
+    private bool _isBusy;
+    private string? _error;
+
+    private User? _currentUser;
+    private List<Borrowing> _borrowings = new();
+
+    private CancellationTokenSource? _cts;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+        _cts = new CancellationTokenSource();
+
+        _isLoading = true;
+        _error = null;
+
+        try
+        {
+            if (CurrentUser.UserId is null)
+            {
+                _borrowings = new();
+                _error = "Du bist nicht eingeloggt.";
+                return;
+            }
+
+            Guid userId = CurrentUser.UserId.Value;
+
+            _currentUser = await UserService.ReceiveUserByIdAsync(userId, _cts.Token);
+            if (_currentUser is null)
+            {
+                _borrowings = new();
+                _error = "Benutzer wurde nicht gefunden.";
+                return;
+            }
+
+            _borrowings = IsActive ? await BorrowingService.SearchForActiveBorrowingsByUserId(userId, _cts.Token) : await BorrowingService.SearchForInactiveBorrowingsByUserId(userId, _cts.Token);
+        }
+        catch (Exception ex)
+        {
+            _borrowings = new();
+            _error = ex.Message;
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task ExtendAsync(Guid itemCopyId)
+    {
+        if (_currentUser is null) return;
+        _isBusy = true;
+        _error = null;
+
+        try
+        {
+            await BorrowingService.ExtendBorrowingPeriodAsync(_currentUser, itemCopyId, _cts?.Token ?? CancellationToken.None);
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private async Task ReturnAsync(Guid itemCopyId)
+    {
+        if (_currentUser is null) return;
+        _isBusy = true;
+        _error = null;
+
+        try
+        {
+            await BorrowingService.ReturnBorrowedItemAsync(_currentUser, itemCopyId, _cts?.Token ?? CancellationToken.None);
+            await LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            _error = ex.Message;
+        }
+        finally
+        {
+            _isBusy = false;
+        }
+    }
+
+    private static string GetTitle(Borrowing b) => b.ItemCopy?.Item?.Name ?? "(Unbekanntes Medium)";
+    private static string Fmt(DateTime dt) => dt == default ? "-" : dt.ToShortDateString();
+
+    private void Dispose()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
+    }
 }

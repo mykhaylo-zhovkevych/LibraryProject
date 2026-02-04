@@ -38,7 +38,7 @@
 
                   <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center" Margin="10">
 
-                      <Grid ColumnDefinitions="Auto, *" >
+                      <Grid ColumnDefinitions="Auto, *" ColumnSpacing="12">
                           <TextBlock Grid.Column="0" Text="Kontoname"/>
                           <TextBlock Grid.Column="1" FontWeight="Bold" Text="{Binding AccountName}" />
                       </Grid>

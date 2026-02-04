@@ -200,7 +200,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             {
                 try
                 {
-                    await _userService.DeleteExistingUser(SelectedUser.Id);
+                    await _userService.DeleteExistingUserAsync(SelectedUser.Id, default);
                     await ReloadAsync();
                 }
                 catch (Exception ex)
@@ -210,39 +210,39 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels.SubViewModels
             }    
         }
 
-        [RelayCommand]
-        private async Task ConfirmIdentityAsync()
-        {
-            if (SelectedUser == null)
-            {
-                ShowError("Kein Benutzer ausgewählt.");
-                return;
-            }
+        //[RelayCommand]
+        //private async Task ConfirmIdentityAsync()
+        //{
+        //    if (SelectedUser == null)
+        //    {
+        //        ShowError("Kein Benutzer ausgewählt.");
+        //        return;
+        //    }
 
-            ConfirmDialogViewModel dialog = new ConfirmDialogViewModel
-            {
-                Title = "Identität bestätigen",
-                Message = $"Möchten Sie die Identität von {SelectedUser.Name} bestätigen?",
-                ConfirmText = "Bestätigen",
-                CancelText = "Abbrechen"
-            };
+        //    ConfirmDialogViewModel dialog = new ConfirmDialogViewModel
+        //    {
+        //        Title = "Identität bestätigen",
+        //        Message = $"Möchten Sie die Identität von {SelectedUser.Name} bestätigen?",
+        //        ConfirmText = "Bestätigen",
+        //        CancelText = "Abbrechen"
+        //    };
 
-            CurrentDialog = dialog;
-            dialog.Show();
+        //    CurrentDialog = dialog;
+        //    dialog.Show();
 
-            if (await dialog.WaitConfirmationAsync())
-            {
-                try
-                {
-                    await _userService.ConfirmIdentityAsync(SelectedUser.Id, default);
-                    await ReloadAsync();
-                }
-                catch (Exception ex)
-                {
-                    ShowError(ex.Message);
-                }
-            }    
-        }
+        //    if (await dialog.WaitConfirmationAsync())
+        //    {
+        //        try
+        //        {
+        //            await _userService.ConfirmIdentityAsync(SelectedUser.Id, default);
+        //            await ReloadAsync();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ShowError(ex.Message);
+        //        }
+        //    }    
+        //}
 
         [RelayCommand]
         private async Task ShowBorrowingHistoryAsync()

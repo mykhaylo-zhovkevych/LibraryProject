@@ -1,5 +1,297 @@
-﻿<h3>Profile</h3>
+﻿@page "/profile"
+@using Microsoft.AspNetCore.Authorization
+@using LibraryProject.Application.Interfaces
+@using LibraryProject.Application.Services
+@using LibraryProject.Domain.Entities
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+@inject ICurrentUserContext CurrentUser
+@inject UserService UserService
+@inject AccountService AccountService
+
+<div class="profile">
+    <div class="profile__header">
+        <h2 class="profile__title">Profil</h2>
+        <p class="profile__subtitle">Verwalte deine Kontoinformationen.</p>
+    </div>
+
+    @if (_isLoading)
+    {
+        <div class="profile__card">
+            <div class="profile__skeleton"></div>
+            <div class="profile__skeleton"></div>
+            <div class="profile__skeleton"></div>
+        </div>
+    }
+    else
+    {
+        @if (!string.IsNullOrWhiteSpace(_errorMessage))
+        {
+            <div class="profile__alert profile__alert--error">@_errorMessage</div>
+        }
+
+        @if (!string.IsNullOrWhiteSpace(_infoMessage))
+        {
+            <div class="profile__alert profile__alert--info">@_infoMessage</div>
+        }
+
+        <div class="profile__grid">
+            <section class="profile__card">
+                <div class="profile__card-title">Übersicht</div>
+
+                <div class="profile__row">
+                    <div class="profile__label">Kontoname</div>
+                    <div class="profile__value">@_accountName</div>
+                </div>
+
+                <div class="profile__row">
+                    <div class="profile__label">Benutzertyp</div>
+                    <div class="profile__value">@UserType</div>
+                </div>
+
+                <div class="profile__row">
+                    <div class="profile__label">Gesperrt</div>
+                    <div class="profile__value">
+                        <span class="pill @(IsSuspended == "Ja" ? "pill--danger" : "pill--ok")">
+                            @IsSuspended
+                        </span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="profile__card">
+                <div class="profile__card-title">Kontoname</div>
+
+                @if (!IsEditing_accountName)
+                {
+                    <div class="profile__row">
+                        <div class="profile__label">Aktueller Kontoname</div>
+                        <div class="profile__value">@_accountName</div>
+                    </div>
+
+                    <div class="profile__actions">
+                        <button class="btn btn--primary" @onclick="BeginEdit_accountName">Kontoname ändern</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="profile__field">
+                        <label class="field__label" for="_accountNameDraft">Neuer KontoName</label>
+                        <input id="_accountNameDraft"
+                               class="field__input"
+                               value="@_accountNameDraft"
+                               @oninput="e => _accountNameDraft = e.Value?.ToString() ?? string.Empty"
+                               placeholder="max. 20 Zeichen"
+                               maxlength="20" />
+                    </div>
+
+                    <div class="profile__actions">
+                        <button class="btn btn--primary" @onclick="Save_accountNameAsync" disabled="@_isSaving">
+                            @(_isSaving ? "Speichern..." : "Speichern")
+                        </button>
+                        <button class="btn btn--ghost" @onclick="CancelEdit_accountName" disabled="@_isSaving">
+                            Abbrechen
+                        </button>
+                    </div>
+                }
+            </section>
+
+            <section class="profile__card">
+                <div class="profile__card-title">E-Mail</div>
+
+                @if (!IsEditingEmail)
+                {
+                    <div class="profile__row">
+                        <div class="profile__label">Aktuelle E-Mail</div>
+                        <div class="profile__value">@Email</div>
+                    </div>
+                    <div class="profile__actions">
+                        <button class="btn btn--primary" @onclick="BeginEditEmail">E-Mail ändern</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="profile__field">
+                        <label class="field__label" for="emailDraft">Neue E-Mail</label>
+                        <input id="emailDraft"
+                               class="field__input"
+                               value="@EmailDraft"
+                               @oninput="e => EmailDraft = e.Value?.ToString() ?? string.Empty"
+                               placeholder="name@domain.com" />
+                    </div>
+
+                    <div class="profile__actions">
+                        <button class="btn btn--primary" @onclick="SaveEmailAsync" disabled="@_isSaving">
+                            @(_isSaving ? "Speichern..." : "Speichern")
+                        </button>
+                        <button class="btn btn--ghost" @onclick="CancelEditEmail" disabled="@_isSaving">
+                            Abbrechen
+                        </button>
+                    </div>
+                }
+            </section>
+        </div>
+    }
+</div>
 
 @code {
+    private bool _initialized;
 
+    private bool _isLoading { get; set; }
+    private bool _isSaving { get; set; }
+
+    private string? _errorMessage { get; set; }
+    private string? _infoMessage { get; set; }
+
+    private string _accountName { get; set; } = "";
+    private string UserType { get; set; } = "";
+    private string Email { get; set; } = "";
+    private string IsSuspended { get; set; } = "";
+
+    private bool IsEditingEmail { get; set; }
+    private string EmailDraft { get; set; } = "";
+
+    private bool IsEditing_accountName { get; set; }
+    private string _accountNameDraft { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (_initialized) return;
+        _initialized = true;
+
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync(CancellationToken ct = default)
+    {
+        try
+        {
+            _isLoading = true;
+            _errorMessage = null;
+            _infoMessage = null;
+
+            if (CurrentUser.UserId is null)
+            {
+                _errorMessage = "Nicht angemeldet.";
+                return;
+            }
+
+            Guid userId = CurrentUser.UserId.Value;
+
+            User? currentUser = await UserService.ReceiveUserByIdAsync(userId, ct);
+            Account? currentAccount = await AccountService.ReceiveAccountByUserIdAsync(userId, ct);
+
+            if (currentUser is null || currentAccount is null)
+            {
+                _errorMessage = "Profil konnte nicht geladen werden.";
+                return;
+            }
+
+            _accountName = currentAccount.AccountName;
+            UserType = currentUser.UserType.ToString();
+            IsSuspended = currentAccount.IsSuspended ? "Ja" : "Nein";
+            Email = currentAccount.Email ?? "";
+
+            EmailDraft = Email;
+            _accountNameDraft = _accountName;
+            IsEditingEmail = false;
+            IsEditing_accountName = false;
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private void BeginEditEmail()
+    {
+        EmailDraft = Email; 
+        IsEditingEmail = true;
+    }
+
+    private void BeginEdit_accountName()
+    {
+        _errorMessage = null;
+        _infoMessage = null;
+        _accountNameDraft = _accountName;
+        IsEditing_accountName = true;
+    }
+
+    private void CancelEdit_accountName()
+    {
+        _errorMessage = null;
+        _infoMessage = null;
+        _accountNameDraft = _accountName;
+        IsEditing_accountName = false;
+    }
+
+    private void CancelEditEmail()
+    {
+        _errorMessage = null;
+        _infoMessage = null;
+        EmailDraft = Email;
+        IsEditingEmail = false;
+    }
+
+    private async Task SaveEmailAsync()
+    {
+        try
+        {
+            _errorMessage = null;
+            _infoMessage = null;
+
+            _isSaving = true;
+
+            await AccountService.UpdateEmailAsync(EmailDraft);
+
+            Email = EmailDraft;
+            IsEditingEmail = false;
+
+            _infoMessage = "E-Mail wurde gespeichert.";
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+        finally
+        {
+            _isSaving = false;
+        }
+    }
+
+
+    private async Task Save_accountNameAsync()
+    {
+        try
+        {
+            _errorMessage = null;
+            _infoMessage = null;
+
+            _isSaving = true;
+
+            if (string.IsNullOrWhiteSpace(_accountNameDraft))
+            {
+                _errorMessage = "Bitte eine gültige Account Name eingeben.";
+                return;
+            }
+
+            await AccountService.UpdateAccountNameAsync(_accountNameDraft);
+            _accountName = _accountNameDraft;
+            IsEditing_accountName = false;
+            _infoMessage = "Account Name wurde gespeichert.";
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = ex.Message;
+        }
+        finally
+        {
+            _isSaving = false;
+        }
+    }
 }

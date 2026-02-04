@@ -90,10 +90,12 @@
                         VerticalAlignment="Bottom"
                         Margin="0,12,0,0">
 
-                    <StackPanel Grid.Column="0" Spacing="6">
+                    <StackPanel Grid.Column="0">
                       <TextBlock Text="{Binding Year, StringFormat='Jahr: {0}'}" Classes="meta" />
                       <TextBlock Text="{Binding AvailableCopies, StringFormat='Verfügbare exemplaren: {0}'}" Classes="meta" />
+                      <TextBlock Text="{Binding ArchiveStatusText, StringFormat='Archiviert: {0}'}" Classes="meta" />
                     </StackPanel>
+
                   </Grid>
 
                     <Grid Grid.Row="3" >

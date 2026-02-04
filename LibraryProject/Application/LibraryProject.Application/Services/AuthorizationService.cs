@@ -23,7 +23,7 @@ namespace LibraryProject.Application.Services
         {
             if (!_currentUser.IsAuthorised)
             {
-                throw new SecurityException("User is not authenticated.");
+                throw new SecurityException("Benutzer ist nicht angemeldet.");
             }
         }
 
@@ -33,7 +33,7 @@ namespace LibraryProject.Application.Services
 
             if (_currentUser.UserType != UserType.Admin)
             {
-                throw new SecurityException("User does not have admin privileges.");
+                throw new SecurityException("Benutzer hat keine Administratorrechte.");
             }
         }
     }

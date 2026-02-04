@@ -15,7 +15,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithSqlite
         private readonly LibraryDbContext _db;
         public SqliteAccountRepository(LibraryDbContext db) => _db = db;
 
-        public async Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default)
+        public async Task<Account?> GetAccountByAccountNameAsync(string userName, CancellationToken ct = default)
         {
             ct.ThrowIfCancellationRequested();
             return await _db.Accounts

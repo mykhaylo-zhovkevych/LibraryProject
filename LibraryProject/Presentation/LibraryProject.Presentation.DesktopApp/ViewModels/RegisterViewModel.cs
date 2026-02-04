@@ -23,8 +23,13 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             _accountService = accountService;
         }
 
-        [ObservableProperty] private string? _userId;
+        //[ObservableProperty] private string? _userId;
+
         [ObservableProperty] private string? _name;
+        [ObservableProperty] private string? _surname;
+        [ObservableProperty] private string? _address;
+
+        [ObservableProperty] private string? _accountName;
         [ObservableProperty] private string? _email;
         [ObservableProperty] private string? _password;
 
@@ -33,10 +38,10 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
 
         [ObservableProperty] private bool? _showTempUserId;
 
-        partial void OnShowTempUserIdChanged(bool? value)
-        {
-            TempUserId = value == true ? UserId : null;
-        }
+        //partial void OnShowTempUserIdChanged(bool? value)
+        //{
+        //    TempUserId = value == true ? UserId : null;
+        //}
 
         [RelayCommand]
         public async Task TryToRegisterAsync()
@@ -45,20 +50,20 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             TempUserId = null;
             try
             {
-                Account result = await _accountService.RegisterAccountAsync(Name, Password, Email, default);
+                Account result = await _accountService.RegisterAdminAccountAsync(AccountName, Password, Email, Name, Surname, Address, default);
 
                 if (result != null)
                 {
-                    TempUserId = result.UserId.ToString();
-                    await Task.Delay(5000);
-                    TempUserId = null;
+                    //TempUserId = result.UserId.ToString();
+                    //await Task.Delay(5000);
+                    //TempUserId = null;
 
                     await _navigationService.NavigateTo<LoginViewModel>();
                     return;
                 }
                 else
                 {
-                    ErrorMessage = "Registration failed. Please try again.";
+                    ErrorMessage = "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.";
                 }
             }
             catch (Exception ex)

@@ -19,7 +19,6 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
         public DbSet<Borrowing> Borrowings => Set<Borrowing>();
         public DbSet<PolicyEntry> PolicyEntries => Set<PolicyEntry>();
 
-        // Persis items even tought not exposed to EF
         public DbSet<Item> Items => Set<Item>();
         public DbSet<ItemCopy> ItemCopies => Set<ItemCopy>();
 
@@ -107,7 +106,7 @@ namespace LibraryProject.Infrastructure.Persistence.InSqlite
                 b.HasOne(x => x.User)
                     .WithMany()
                     .HasForeignKey(x => x.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 b.HasOne(x => x.ItemCopy)
                     .WithMany()

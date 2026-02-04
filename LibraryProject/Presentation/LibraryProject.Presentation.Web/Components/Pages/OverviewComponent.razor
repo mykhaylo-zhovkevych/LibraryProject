@@ -1,0 +1,48 @@
+﻿@page "/overview"
+@using LibraryProject.Presentation.Web.Components.Pages.ChildComponents
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@rendermode InteractiveServer
+
+<div class="overview">
+    <h3 class="overview__title">Ausleihen & Reservierungen</h3>
+
+    <div class="overview__tabs">
+        <button class="overview__tab" @onclick="() => SelectTab(OverviewTab.Borrowings)" disabled="@(_selectedTab == OverviewTab.Borrowings)">
+            Ausleihen
+        </button>
+
+        <button class="overview__tab" @onclick="() => SelectTab(OverviewTab.Reservations)" disabled="@(_selectedTab == OverviewTab.Reservations)">
+            Reservierungen
+        </button>
+    </div>
+
+    @if (_selectedTab == OverviewTab.Borrowings)
+    {
+        <div class="overview__filters">
+            <button class="overview__filter" @onclick="() => SetBorrowingFilter(true)" disabled="@_borrowingIsActive">
+                Aktiv
+            </button>
+
+            <button class="overview__filter" @onclick="() => SetBorrowingFilter(false)" disabled="@(!_borrowingIsActive)">
+                Inaktiv
+            </button>
+        </div>
+
+        <BorrowingComponent IsActive="@_borrowingIsActive" />
+    }
+    else
+    {
+        <ReservationComponent />
+    }
+</div>
+
+@code {
+    private OverviewTab _selectedTab = OverviewTab.Borrowings;
+    private bool _borrowingIsActive = true;
+
+    private void SelectTab(OverviewTab tab) => _selectedTab = tab;
+    private void SetBorrowingFilter(bool isActive) => _borrowingIsActive = isActive;
+
+    private enum OverviewTab { Borrowings, Reservations }
+}

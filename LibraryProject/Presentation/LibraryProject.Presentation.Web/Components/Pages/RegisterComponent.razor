@@ -1,7 +1,154 @@
 ﻿@page "/register"
+@attribute [AllowAnonymous]
+@attribute [StreamRendering(false)]
+@using LibraryProject.Domain.Enum
+@using Microsoft.AspNetCore.Antiforgery
+@using Microsoft.AspNetCore.Authorization
+@layout AuthLayout
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IAntiforgery Antiforgery
 
-<h3>RegisterComponent</h3>
+<div class="auth-card auth-card--register">
+    <h2 class="auth-card__title">Register</h2>
+    <p class="auth-card__subtitle">Erstelle einen neuen Account.</p>
+
+    <form method="post" action="/auth/register" class="auth-card__form auth-card__form--grid">
+        <input type="hidden" name="__RequestVerificationToken" value="@_antiForgeryToken" />
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="accountName">Kontoname</label>
+            <input id="accountName"
+                   class="auth-card__input"
+                   name="accountName"
+                   value="@_accountName"
+                   @oninput="@(e => _accountName = e.Value?.ToString() ?? "")"
+                   placeholder="z.B. Name" />
+        </div>
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="password">Password</label>
+            <input id="password"
+                   class="auth-card__input"
+                   name="password"
+                   type="password"
+                   value="@password"
+                   @oninput="@(e => password = e.Value?.ToString() ?? "")"
+                   placeholder="mind. 8 Zeichen" />
+        </div>
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="email">Email</label>
+            <input id="email"
+                   class="auth-card__input"
+                   name="email"
+                   type="email"
+                   value="@_email"
+                   @oninput="@(e => _email = e.Value?.ToString() ?? "")"
+                   placeholder="Name@mail.com" />
+        </div>
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="name">Vorname</label>
+            <input id="name"
+                   class="auth-card__input"
+                   name="name"
+                   value="@_name"
+                   @oninput="@(e => _name = e.Value?.ToString() ?? "")"
+                   placeholder="Vorname" />
+        </div>
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="surname">Nachname (optional)</label>
+            <input id="surname"
+                   class="auth-card__input"
+                   name="surname"
+                   value="@_surname"
+                   @oninput="@(e => _surname = e.Value?.ToString())"
+                   placeholder="Nachname" />
+        </div>
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="address">Adresse</label>
+            <input id="address"
+                   class="auth-card__input"
+                   name="address"
+                   value="@_address"
+                   @oninput="@(e => _address = e.Value?.ToString() ?? "")"
+                   placeholder="Adresse" />
+        </div>
+
+        <div class="auth-card__field">
+            <label class="auth-card__label" for="customerType">Benutzerart</label>
+            <select id="customerType"
+                    class="auth-card__select"
+                    name="customerType"
+                    value="@_customerType"
+                    @onchange="OnTypeChanged">
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+            </select>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(flashError))
+        {
+            <div class="auth-card__alert auth-card__alert--error">@flashError</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(flashInfo))
+        {
+            <div class="auth-card__alert auth-card__alert--info">@flashInfo</div>
+        }
+
+        <div class="auth-card__actions auth-card__actions--spaced">
+            <button class="auth-card__btn auth-card__btn--primary" type="submit">Registrieren</button>
+            <a class="auth-card__btn auth-card__btn--secondary" href="/login">Zurück zu Login</a>
+        </div>
+
+        <div class="auth-card__hint"> </div>
+    </form>
+</div>
 
 @code {
+    private const string FlashError = "flash_error";
+    private const string FlashInfo = "flash_info";
 
+    private string? flashError;
+    private string? flashInfo;
+
+    private string _accountName = "";
+    private string password = "";
+    private string _email = "";
+    private string _name = "";
+    private string? _surname;
+    private string _address = "";
+    private UserType _customerType = UserType.Student;
+
+    private string _antiForgeryToken = "";
+
+    protected override void OnInitialized()
+    {
+        HttpContext? http = HttpContextAccessor.HttpContext;
+        if (http is null) return;
+
+        _antiForgeryToken = Antiforgery.GetAndStoreTokens(http).RequestToken ?? "";
+
+        if (http.Request.Cookies.TryGetValue(FlashError, out string? e))
+        {
+            flashError = Uri.UnescapeDataString(e);
+            http.Response.Cookies.Delete(FlashError);
+        }
+
+        if (http.Request.Cookies.TryGetValue(FlashInfo, out string? i))
+        {
+            flashInfo = Uri.UnescapeDataString(i);
+            http.Response.Cookies.Delete(FlashInfo);
+        }
+    }
+
+    private void OnTypeChanged(ChangeEventArgs e)
+    {
+        if (Enum.TryParse<UserType>(e.Value?.ToString(), out UserType parsed)) 
+        {
+            _customerType = parsed;
+        }
+    }
 }

@@ -124,10 +124,10 @@
                       HorizontalAlignment="Right"
                       Spacing="10">
 
-            <Button Content="Identität bestätigen"
+            <!--<Button Content="Identität bestätigen"
                     Command="{Binding ConfirmIdentityCommand}"
                     IsEnabled="{Binding HasSelectedUser}"
-                    Classes="update"/>
+                    Classes="update"/>-->
 
             <Button Content="Ausleihhistorie"
                     Command="{Binding ShowBorrowingHistoryCommand}"

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using Avalonia.Controls.Shapes;
+using CommunityToolkit.Mvvm.Input;
 using LibraryProject.Application.Interfaces;
 using LibraryProject.Application.Services;
 using LibraryProject.Domain.Entities;
@@ -68,7 +69,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 Guid userId = _currentUserContext.UserId.Value;
 
                 Borrowing borrowing = (await _borrowingService.SearchForActiveBorrowingsByUserId(userId, ct)).First(b => b.BorrowingId == db.BorrowingId);
-                User currentUser = await _userService.ReceiveUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("User not found");
+                User currentUser = await _userService.ReceiveUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("Benutzer nicht gefunden");
 
                 await _borrowingService.ExtendBorrowingPeriodAsync(
                     currentUser,
@@ -93,7 +94,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
                 Guid userId = _currentUserContext.UserId.Value;
 
                 Borrowing borrowing = (await _borrowingService.SearchForActiveBorrowingsByUserId(userId, ct)).First(b => b.BorrowingId == db.BorrowingId);
-                User currentUser = await _userService.ReceiveUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("User not found");
+                User currentUser = await _userService.ReceiveUserByIdAsync(userId, ct) ?? throw new InvalidOperationException("Benutzer nicht gefunden");
 
                 await _borrowingService.ReturnBorrowedItemAsync(
                     currentUser,
@@ -106,7 +107,7 @@ namespace LibraryProject.Presentation.DesktopApp.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while returning the borrowing: {ex.Message}");
+                //Console.WriteLine($"An error occurred while returning the borrowing: {ex.Message}");
             }
         }
 

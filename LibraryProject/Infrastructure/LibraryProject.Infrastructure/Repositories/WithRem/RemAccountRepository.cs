@@ -45,7 +45,7 @@ namespace LibraryProject.Infrastructure.Repositories.WithRem
             throw new NotImplementedException();
         }
 
-        public Task<Account?> GetAccountByUsernameAsync(string userName, CancellationToken ct = default)
+        public Task<Account?> GetAccountByAccountNameAsync(string userName, CancellationToken ct = default)
         {
             throw new NotImplementedException();
         }

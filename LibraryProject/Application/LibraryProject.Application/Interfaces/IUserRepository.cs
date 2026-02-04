@@ -13,11 +13,9 @@ namespace LibraryProject.Application.Interfaces
         Task SaveUserAsync(User user, CancellationToken ct = default);
         Task RemoveUserAsync(User user, CancellationToken ct = default);
         Task UpdateUserAsync(User user, CancellationToken ct = default);
-
         Task<User?> GetExistingUserByIdAsync(Guid id, CancellationToken ct = default);
         Task<User?> GetExistingUserAsync(string name, UserType userType, CancellationToken ct = default);
-        Task<User?> GetUserByIdAsync(Guid id, CancellationToken ct);
-
+        Task<User?> GetUserByIdAsync(Guid id, CancellationToken ct = default);
         Task<List<User>> GetAllUsersAsync(CancellationToken ct = default);
     }
 }
