@@ -14,7 +14,8 @@ namespace LibraryProject.Presentation.Web.Auth
 
         private ClaimsPrincipal? User => _httpAccessor.HttpContext?.User;
 
-        public bool IsAuthorised => User?.Identity?.IsAuthenticated ?? false;
+        //public bool IsAuthorised => User?.Identity?.IsAuthenticated ?? false;
+        public bool IsAuthenticated => User?.Identity?.IsAuthenticated ?? false;
 
         public Guid? UserId
         {

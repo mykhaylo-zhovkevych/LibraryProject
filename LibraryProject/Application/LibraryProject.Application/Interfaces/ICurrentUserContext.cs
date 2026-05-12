@@ -11,7 +11,8 @@ namespace LibraryProject.Application.Interfaces
     {
         Guid? UserId { get; }
         UserType? UserType { get; }
-        bool IsAuthorised { get; }
+        //bool IsAuthorised { get; }
+        bool IsAuthenticated { get; }
 
         void SignIn(Guid userId, UserType userType);
         void SignOut();
